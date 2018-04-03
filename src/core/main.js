@@ -1,23 +1,44 @@
 import Axios from 'axios'
 
-export function getReferences (method, path, env, username, password) {
-  Axios({
-    method: method,
-    url: path,
-    headers: {
-      platform: env
-    },
-    withCredentials: true,
-    auth: {
-      username: username,
-      password: password
-    }
+export function healthCheck (method, path, env) {
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: method,
+      url: path,
+      headers: {
+        platform: env
+      }
+    })
+      .then(() => {
+        resolve(true)
+      })
+      .catch((error) => {
+        console.log('rrr', error)
+        reject(error, false)
+      })
   })
-    .then(function (response) {
-      console.log('no error')
-      return response.data
+}
+
+export function callService (method, path, env, username, password, data) {
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: method,
+      url: path,
+      headers: {
+        platform: env
+      },
+      data,
+      withCredentials: true,
+      auth: {
+        username: username,
+        password: password
+      }
     })
-    .catch(function (error) {
-      console.log('error', error)
-    })
+      .then((response) => {
+        resolve(response)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
 }

@@ -1,25 +1,21 @@
 import * as actionTypes from './main-form-action-types'
 import * as mutationTypes from './main-form-mutation-types'
+import { healthCheck } from '../../../core/main'
+import * as constShooter from '../../const'
 
 const state = {
-  username: 'mpdWEB',
-  password: 'mpdWEB',
-  allEnvironments: [
-    { id: 1, text: 'integ1 public', value: 'integ1 public' },
-    { id: 2, text: 'cur1 mobile', value: 'cur1 mobile' },
-    { id: 3, text: 'cur1 private', value: 'cur1 private' },
-    { id: 4, text: 'cur1 public', value: 'cur1 public' },
-    { id: 5, text: 'Pipeline public', value: 'Pipeline public' },
-    { id: 6, text: 'Pipeline mobile', value: 'Pipeline mobile' },
-    { id: 7, text: 'usn1 public', value: 'usn1 public' }
-  ],
-  environment: 'integ1 public'
+  username: constShooter.username.username,
+  password: constShooter.username.password,
+  allEnvironments: constShooter.env.allEnvironments,
+  environment: constShooter.env.environment,
+  currentHealthcheck: null
 }
 
 const getters = {
-  getAllEnvironments: state => state.allEnvironments,
   getUsername: state => state.username,
-  getPassword: state => state.password
+  getPassword: state => state.password,
+  getAllEnvironments: state => state.allEnvironments,
+  getEnvironment: state => state.environment
 }
 
 const mutations = {
@@ -31,18 +27,32 @@ const mutations = {
   },
   [mutationTypes.SET_PASSWORD] (state, password) {
     state.password = password
+  },
+  [mutationTypes.SET_CURRENT_HEALTHCHECK] (state, response) {
+    state.currentHealthcheck = response
   }
 }
 
 const actions = {
-  [actionTypes.EDIT_ENV] ({commit}, environment) {
-    commit(mutationTypes.SET_ENV, environment.target.value)
+  [actionTypes.EDIT_ENV] ({commit, dispatch}, environment) {
+    let env = environment.target.value
+    commit(mutationTypes.SET_ENV, env)
+    dispatch(actionTypes.SEND_HEALTH_CHECK, env)
   },
   [actionTypes.EDIT_USERNAME] ({commit}, username) {
     commit(mutationTypes.SET_USERNAME, username.target.value)
   },
   [actionTypes.EDIT_PASSWORD] ({commit}, password) {
     commit(mutationTypes.SET_PASSWORD, password.target.value)
+  },
+  [actionTypes.SEND_HEALTH_CHECK] ({commit}) {
+    healthCheck(constShooter.methods.methodGet, constShooter.servicesMPD.serviceHealthcheck, state.environment)
+      .then((response) => {
+        commit(mutationTypes.SET_CURRENT_HEALTHCHECK, response)
+      })
+      .catch(() => {
+        commit(mutationTypes.SET_CURRENT_HEALTHCHECK, false)
+      })
   }
 }
 
@@ -52,10 +62,4 @@ export default {
   actions,
   getters,
   mutations
-}
-
-export const mainFormExport = {
-  environment: state.environment,
-  username: state.username,
-  password: state.password
 }

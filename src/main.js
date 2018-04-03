@@ -6,6 +6,9 @@ import router from './router'
 import store from './store/index'
 import './plugins/jquery'
 import './plugins/semantic-ui'
+import TreeView from 'vue-json-tree-view'
+
+Vue.use(TreeView)
 
 Vue.config.productionTip = false
 

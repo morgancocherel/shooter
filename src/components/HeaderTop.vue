@@ -8,22 +8,26 @@
       <div class="item">
         <div class="ui button">Se connecter à un compte client</div>
       </div>
-      <a class="item">
-        <i class="list ul icon"></i>
+      <a class="item js-sidebar">
+        <i class="terminal icon"></i>
       </a>
     </div>
   </div>
 </template>
 
 <script>
+import $ from 'jquery'
 
 export default {
-  name: 'HeaderTop'
+  name: 'HeaderTop',
+  mounted () {
+    $('.ui.right.vertical.inverted.sidebar.menu').sidebar('attach events', '.js-sidebar')
+  }
 }
 </script>
 
 <style scoped>
-  .ui.fixed.menu{ height: 60px; background-color: #1B4B5C; }
+  .ui.fixed.menu{ background-color: #1B4B5C; }
 
   .ui.inverted.menu a.item:hover{ background-color: transparent; }
 

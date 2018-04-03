@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
+import Proposal from '@/components/booking/Proposal'
 
 /*eslint-disable */
 import '../plugins/jquery'
@@ -14,6 +15,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/proposal',
+      name: Proposal,
+      component: Proposal
     }
   ]
 })
