@@ -1,38 +1,35 @@
 <template>
   <div id="headerDown">
-    <div class="ui grid container tiny form">
-      <div class="sixteen wide column">
-        <h3 class="ui header">Identifiants et environnement</h3>
+    <div class="ui grid container form">
+      <div class="sixteen wide column middle aligned">
+        <h3 class="ui header js-hide-show-form">Identifiants et environnement</h3>
       </div>
-      <div class="five wide column">
-        <input class="fluid" placeholder="Identifiant" type="text" title="username" :value="getUsername" @input="updateUsername" />
+      <div class="four wide column username-container">
+        <input class="fluid" placeholder="Identifiant" type="text" title="username" :value="getUsername"
+               @input="updateUsername"/>
       </div>
-      <div class="five wide column">
-        <input class="fluid" placeholder="Mot de passe" type="password" title="password" :value="getPassword" @input="updatePassword" />
+      <div class="four wide column password-container">
+        <input class="fluid" placeholder="Mot de passe" type="password" title="password" :value="getPassword"
+               @input="updatePassword"/>
       </div>
-      <div class="five wide column">
+      <div class="five wide column env-container">
         <select class="ui dropdown fluid" title="environment" @input="updateEnv">
           <option v-for="env in getAllEnvironments" :key="env.id" :value="env.value">{{ env.text }}</option>
         </select>
       </div>
-      <div class="one wide column">
-        <div v-show="currentHealthcheck">
+      <div class="three wide column current-health-check-container">
+        <div v-show="getCurrentHealthCheck">
           <div class="content up-down-env">
             <i class="check large icon grey"></i>
-            <div class="sub header">Up</div>
+            <h5 class="ui header current-health-check-text">Up - {{ getCurrentEnvVersion }}</h5>
           </div>
         </div>
-        <div v-show="!currentHealthcheck">
+        <div v-show="!getCurrentHealthCheck">
           <div class="content up-down-env">
             <i class="exclamation large icon grey"></i>
-            <div class="sub header">Down</div>
+            <h5 class="ui header current-health-check-text">Down - {{ getCurrentEnvVersion }}</h5>
           </div>
         </div>
-      </div>
-      <div class="sixteen wide column hide-show-form" id="js-hide-show-form">
-        <a class="item">
-          <i class="large grey angle down icon"></i>
-        </a>
       </div>
     </div>
   </div>
@@ -43,18 +40,17 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../store/modules/main-form/main-form-action-types'
 import $ from 'jquery'
 
-const {mapGetters, mapActions, mapState} = createNamespacedHelpers('HeaderDown')
+const {mapGetters, mapActions} = createNamespacedHelpers('HeaderDown')
 
 export default {
   name: 'HeaderDown',
   computed: {
-    ...mapState([
-      'currentHealthcheck'
-    ]),
     ...mapGetters([
       'getAllEnvironments',
       'getUsername',
-      'getPassword'
+      'getPassword',
+      'getCurrentHealthCheck',
+      'getCurrentEnvVersion'
     ])
   },
   methods: {
@@ -66,9 +62,8 @@ export default {
     })
   },
   mounted () {
-    $(this.$el).find('#js-hide-show-form').click(function () {
-      $('.five.wide.column, .one.wide.column').slideToggle()
-      $(this).toggleClass('rotate')
+    $(this.$el).find('.js-hide-show-form').click(function () {
+      $('.current-health-check-container, .username-container, .password-container, .env-container').slideToggle()
     })
     this.sendHealthCheck()
   }
@@ -76,20 +71,51 @@ export default {
 </script>
 
 <style scoped>
-  #headerDown {background-color: #F48A4F; }
-
-  #headerDown .ui.header{ color: #FFF; }
-
-  #headerDown .form{ padding-top: 0; }
-
-  input, select{ height: 32px !important; }
-
-  .rotate{
-    -ms-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
-    transform: rotate(180deg);
+  #headerDown {
+    background-color: #F2F4F7;
   }
 
-  .hide-show-form{ cursor: pointer; padding: 0 !important; }
+  #headerDown .ui.header {
+    color: #323E42;
+  }
+
+  #headerDown .form {
+    padding-top: 0;
+  }
+
+  input, select {
+    height: 32px !important;
+  }
+
+  select {
+    padding: 0 7px !important;
+  }
+
+  .sixteen.wide.column .ui.header:hover{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .username-container,
+  .password-container,
+  .env-container {
+    padding-top: 0 !important;
+  }
+
+  .hide-show-form i {
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .up-down-env i {
+    margin: 0;
+  }
+
+  .current-health-check-text {
+    margin: 0;
+  }
+
+  .current-health-check-container {
+    padding: 0 14px !important;
+  }
 </style>

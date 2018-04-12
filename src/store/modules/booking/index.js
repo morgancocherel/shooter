@@ -1,29 +1,43 @@
-import * as actionTypes from './booking-form-action-types'
-import * as mutationTypes from './booking-form-mutation-types'
-import * as mutationTypesAllRequest from '../all-request/all-request-mutation-types'
+import * as actionTypes from './booking-action-types'
+import * as mutationTypes from './booking-mutation-types'
+import * as actionTypesConsole from '../console/console-action-types'
 import * as constShooter from '../../const'
-import {callService} from '../../../core/main'
+import {callService, formatCTOResponse, formatRequestConsole, addId, toDisplayDate, toDateEntered} from '../../../core/main'
+import router from '../../../router/index'
+import $ from 'jquery'
 
 const state = {
   devis: constShooter.booking.travelMode,
   originTrain: constShooter.booking.originTrain,
-  dateDepart: constShooter.booking.dateDepart,
+  departureDate: constShooter.booking.departureDate,
   departureTime: constShooter.booking.departureTime,
   destinationTrain: constShooter.booking.destinationTrain,
-  dateArrivee: constShooter.booking.dateArrivee,
+  returnDate: constShooter.booking.returnDate,
   returnTime: constShooter.booking.returnTime,
-  proposal: constShooter.booking.proposal
+  proposalBrut: constShooter.booking.proposalBrut,
+  proposalFormated: constShooter.booking.proposalFormated,
+  dateDisplay: constShooter.booking.dateDisplay,
+  returnForm: constShooter.booking.returnForm,
+  bookingIsLoading: constShooter.booking.bookingIsLoading,
+  proposalSelected: constShooter.booking.proposalSelected,
+  travelerData: constShooter.booking.travelerData
 }
 
 const getters = {
   getDevis: state => state.devis,
   getOriginTrain: state => state.originTrain,
-  getDateDepart: state => state.dateDepart,
+  getDepartureDate: state => state.departureDate,
   getDepartureTime: state => state.departureTime,
   getDestinationTrain: state => state.destinationTrain,
-  getDateArrivee: state => state.dateArrivee,
+  getReturnDate: state => state.returnDate,
   getReturnTime: state => state.returnTime,
-  getProposal: state => state.proposal
+  getProposalBrut: state => state.proposalBrut,
+  getProposalFormated: state => state.proposalFormated,
+  getDateDisplay: state => state.dateDisplay,
+  getReturnForm: state => state.returnForm,
+  getBookingIsLoading: state => state.bookingIsLoading,
+  getProposalSelected: state => state.proposalSelected,
+  getTravelerData: state => state.travelerData
 }
 
 const mutations = {
@@ -33,8 +47,8 @@ const mutations = {
   [mutationTypes.SET_ORIGIN_TRAIN] (state, originTrain) {
     state.originTrain = originTrain
   },
-  [mutationTypes.SET_DATE_DEPART] (state, dateDepart) {
-    state.dateDepart = dateDepart
+  [mutationTypes.SET_DEPARTURE_DATE] (state, departureDate) {
+    state.departureDate = departureDate
   },
   [mutationTypes.SET_DEPARTURE_TIME] (state, departureTime) {
     state.departureTime = departureTime
@@ -42,26 +56,46 @@ const mutations = {
   [mutationTypes.SET_DESTINATION_TRAIN] (state, destinationTrain) {
     state.destinationTrain = destinationTrain
   },
-  [mutationTypes.SET_DATE_ARRIVEE] (state, dateArrivee) {
-    state.dateArrivee = dateArrivee
+  [mutationTypes.SET_DATE_ARRIVEE] (state, returnDate) {
+    state.returnDate = returnDate
   },
   [mutationTypes.SET_RETURN_TIME] (state, returnTime) {
     state.returnTime = returnTime
   },
-  [mutationTypes.SET_PROPOSAL] (state, response) {
-    state.proposal = response
+  [mutationTypes.SET_PROPOSAL_BRUT] (state, proposal) {
+    state.proposalBrut = proposal
+  },
+  [mutationTypes.SET_PROPOSAL_FORMATED] (state, proposal) {
+    state.proposalFormated = proposal
+  },
+  [mutationTypes.SET_DATE_DISPLAY] (state, date) {
+    state.dateDisplay = date
+  },
+  [mutationTypes.SET_RETURN_FORM] (state, value) {
+    state.returnForm = value === 'AR'
+  },
+  [mutationTypes.SET_BOOKING_IS_LOADING] (state, boolean) {
+    state.bookingIsLoading = boolean
+  },
+  [mutationTypes.SET_PROPOSAL_SELECTED] (state, proposal) {
+    state.proposalSelected = proposal
+  },
+  [mutationTypes.SET_TRAVELER_DATA] (state, data) {
+    state.travelerData = data
   }
 }
 
 const actions = {
   [actionTypes.EDIT_DEVIS] ({commit}, devis) {
-    commit(mutationTypes.SET_DEVIS, devis.target.value)
+    let value = devis.target.value
+    commit(mutationTypes.SET_RETURN_FORM, value)
+    commit(mutationTypes.SET_DEVIS, value)
   },
   [actionTypes.EDIT_ORIGIN_TRAIN] ({commit}, originTrain) {
     commit(mutationTypes.SET_ORIGIN_TRAIN, originTrain.target.value)
   },
-  [actionTypes.EDIT_DATE_DEPART] ({commit}, dateDepart) {
-    commit(mutationTypes.SET_DATE_DEPART, dateDepart)
+  [actionTypes.EDIT_DEPARTURE_DATE] ({commit}, departureDate) {
+    commit(mutationTypes.SET_DEPARTURE_DATE, departureDate)
   },
   [actionTypes.EDIT_DEPARTURE_TIME] ({commit}, departureTime) {
     commit(mutationTypes.SET_DEPARTURE_TIME, departureTime)
@@ -75,31 +109,56 @@ const actions = {
   [actionTypes.EDIT_RETURN_TIME] ({commit}, returnTime) {
     commit(mutationTypes.SET_RETURN_TIME, returnTime)
   },
-  [actionTypes.SUBMIT_BOOKING_FORM] ({commit, rootState}) {
+  [actionTypes.SWAP_ORIGIN_DESTINATION_TRAIN] ({commit}, train) {
+    commit(mutationTypes.SET_ORIGIN_TRAIN, train.origin)
+    commit(mutationTypes.SET_DESTINATION_TRAIN, train.destination)
+  },
+  [actionTypes.SUBMIT_BOOKING_FORM] ({commit, dispatch, rootState}) {
+    commit(mutationTypes.SET_BOOKING_IS_LOADING, true)
+
     let mainFormState = rootState.HeaderDown
-    let dateDepart = state.dateDepart
-    let dateArrivee = state.dateArrivee
+
+    // Data required for the CTO Request
+    let method = constShooter.methods.methodPost
+    let service = constShooter.servicesMPD.serviceCTO
+    let env = mainFormState.environment
+    let username = mainFormState.username
+    let password = mainFormState.password
+    let departureDate = toDateEntered(state.departureDate, state.departureTime)
     let originTrain = state.originTrain
     let destinationTrain = state.destinationTrain
+    let travelerData = state.travelerData
+    let body = getBodyCTO(departureDate, travelerData, originTrain, destinationTrain)
 
-    let requestContent = null
-    callService(
-      constShooter.methods.methodPost,
-      constShooter.servicesMPD.serviceCOH,
-      mainFormState.environment,
-      mainFormState.username,
-      mainFormState.password,
-      getBodyCOH(dateDepart, dateArrivee, originTrain, destinationTrain))
+    commit(mutationTypes.SET_DATE_DISPLAY, toDisplayDate(departureDate))
+
+    callService(method, service, env, username, password, body)
       .then((response) => {
-        requestContent = response
-        commit(mutationTypes.SET_PROPOSAL, response.data)
+        let trajets = response.data.trajets
+        let CTOResponseFormated = formatCTOResponse(trajets)
+        let trajetsWithId = addId(trajets)
+
+        commit(mutationTypes.SET_PROPOSAL_FORMATED, CTOResponseFormated)
+        commit(mutationTypes.SET_PROPOSAL_BRUT, trajetsWithId)
+        commit(mutationTypes.SET_PROPOSAL_SELECTED, trajetsWithId[0])
+
+        dispatch('Console/' + actionTypesConsole.EDIT_NEW_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response), {root: true})
+
+        router.push({path: '/proposal'})
+
+        commit(mutationTypes.SET_BOOKING_IS_LOADING, false)
       })
-      .catch((error) => {
-        requestContent = error
+      .catch((error, response) => {
+        // dispatch('Console/' + actionTypesConsole.EDIT_NEW_REQUEST_TO_CONSOLE, formatRequestConsole(response), {root: true})
         console.log(error, 'Request COP error')
       })
-    console.log('fff', requestContent)
-    commit(mutationTypesAllRequest.SET_ALL_REQUEST, requestContent)
+  },
+  [actionTypes.EDIT_PROPOSAL_SELECTED] ({commit}, proposalId) {
+    $.each(state.proposalBrut, function () {
+      if (this.id.toString() === proposalId.toString()) {
+        commit(mutationTypes.SET_PROPOSAL_SELECTED, this)
+      }
+    })
   }
 }
 
@@ -111,54 +170,21 @@ export default {
   mutations
 }
 
-function getBodyCOH (dateDepart, dateArrivee, originTrain, destinationTrain) {
-  const bodyCOH =
+function getBodyCTO (departureDate, travelerData, originTrain, destinationTrain) {
+  const bodyCTO =
     {
-      idDemande: '0041',
+      trajet: {
+        origin: originTrain,
+        destination: destinationTrain,
+        departureDatetime: departureDate,
+        includeTypes: 'TER'
+      },
+      voyageurs: travelerData,
+      idDemande: 1,
       diffusion: 'HORAIRE',
       supportsMat: [
-        {
-          libelle: 'DIGITALISE'
-        }
-      ],
-      itineraires: [
-        {
-          idItineraire: 1,
-          origine: {
-            uic: '87481002'
-          },
-          destination: {
-            uic: '87471003'
-          },
-          dateDepart: dateDepart,
-          dateArrivee: dateArrivee,
-          segments: [
-            {
-              id: 1,
-              typeNumTrain: 'SUM',
-              origine: {
-                uic: '87481002',
-                libelle: originTrain
-              },
-              destination: {
-                uic: '87471003',
-                libellele: destinationTrain
-              },
-              numTrain: '856619',
-              dateDepart: dateDepart,
-              dateArrivee: dateArrivee,
-              codeEquipement: 'TER'
-            }
-          ]
-        }
-      ],
-      voyageurs: [
-        {
-          num: 1,
-          typologie: 'Adulte',
-          age: 30
-        }
+        'DIGITALISE'
       ]
     }
-  return bodyCOH
+  return bodyCTO
 }

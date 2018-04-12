@@ -16,13 +16,9 @@
 </template>
 
 <script>
-import $ from 'jquery'
 
 export default {
-  name: 'HeaderTop',
-  mounted () {
-    $('.ui.right.vertical.inverted.sidebar.menu').sidebar('attach events', '.js-sidebar')
-  }
+  name: 'HeaderTop'
 }
 </script>
 
@@ -34,7 +30,6 @@ export default {
   .header.item{
     color: #FFF;
     font-size: 16px;
-    color: #FFF;
   }
 
   .ui.button{

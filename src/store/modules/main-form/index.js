@@ -4,18 +4,21 @@ import { healthCheck } from '../../../core/main'
 import * as constShooter from '../../const'
 
 const state = {
-  username: constShooter.username.username,
-  password: constShooter.username.password,
-  allEnvironments: constShooter.env.allEnvironments,
-  environment: constShooter.env.environment,
-  currentHealthcheck: null
+  username: constShooter.mainForm.username,
+  password: constShooter.mainForm.password,
+  allEnvironments: constShooter.mainForm.allEnvironments,
+  environment: constShooter.mainForm.environment,
+  currentHealthCheck: constShooter.mainForm.currentHealthCheck,
+  currentEnvVersion: constShooter.mainForm.currentEnvVersion
 }
 
 const getters = {
   getUsername: state => state.username,
   getPassword: state => state.password,
   getAllEnvironments: state => state.allEnvironments,
-  getEnvironment: state => state.environment
+  getEnvironment: state => state.environment,
+  getCurrentHealthCheck: state => state.currentHealthCheck,
+  getCurrentEnvVersion: state => state.currentEnvVersion
 }
 
 const mutations = {
@@ -29,7 +32,10 @@ const mutations = {
     state.password = password
   },
   [mutationTypes.SET_CURRENT_HEALTHCHECK] (state, response) {
-    state.currentHealthcheck = response
+    state.currentHealthCheck = response
+  },
+  [mutationTypes.SET_CURRENT_ENV_VERSION] (state, response) {
+    state.currentEnvVersion = response
   }
 }
 
@@ -48,10 +54,15 @@ const actions = {
   [actionTypes.SEND_HEALTH_CHECK] ({commit}) {
     healthCheck(constShooter.methods.methodGet, constShooter.servicesMPD.serviceHealthcheck, state.environment)
       .then((response) => {
-        commit(mutationTypes.SET_CURRENT_HEALTHCHECK, response)
+        let version = response.data.version
+        let status = response.data.status === 200
+
+        commit(mutationTypes.SET_CURRENT_ENV_VERSION, version)
+        commit(mutationTypes.SET_CURRENT_HEALTHCHECK, status)
       })
-      .catch(() => {
-        commit(mutationTypes.SET_CURRENT_HEALTHCHECK, false)
+      .catch((response) => {
+        let status = response.data.status === 200
+        commit(mutationTypes.SET_CURRENT_HEALTHCHECK, status)
       })
   }
 }

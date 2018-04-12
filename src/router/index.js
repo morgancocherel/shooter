@@ -7,9 +7,10 @@ import Proposal from '@/components/booking/Proposal'
 import '../plugins/jquery'
 import '../plugins/semantic-ui'
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',

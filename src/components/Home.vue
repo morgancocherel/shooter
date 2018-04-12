@@ -1,22 +1,24 @@
 <template>
   <div>
+    <sidebar></sidebar>
     <header-top></header-top>
     <header-down></header-down>
-    <booking-form></booking-form>
-    <sidebar></sidebar>
+    <div class="pusher">
+      <booking-form></booking-form>
+    </div>
   </div>
 </template>
 
 <script>
 import BookingForm from './booking/BookingForm'
-import Sidebar from './all-request/Sidebar'
 import HeaderTop from '../components/HeaderTop'
 import HeaderDown from './main-form/HeaderDown'
+import Sidebar from './console/Sidebar'
 
 export default {
   components: {
-    BookingForm,
     Sidebar,
+    BookingForm,
     HeaderTop,
     HeaderDown
   },

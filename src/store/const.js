@@ -1,25 +1,37 @@
 export const today = new Date()
 
-/* booking-form */
+/* booking */
 export const booking = {
   travelMode: 'AS',
-  originTrain: 'Nantes',
-  dateDepart: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+  originTrain: 'FRNTE',
+  departureDate: today,
   departureTime: today.getHours(),
-  destinationTrain: 'Rennes',
-  dateArrivee: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+  destinationTrain: 'FRRNS',
+  returnDate: null,
   returnTime: today.getHours() + 8,
-  proposal: null
+  returnForm: false,
+  proposalBrut: '',
+  proposalFormated: null,
+  dateDisplay: null,
+  bookingIsLoading: false,
+  travelerData: [
+    {
+      id: 1,
+      typologie: 'Adulte',
+      age: 30,
+      num: 1
+    }
+  ],
+  proposalSelected: ''
 }
 
-/* username */
-export const username = {
-  username: 'mpdWEB',
-  password: 'mpdWEB'
+/* console */
+export const console = {
+  allRequest: []
 }
 
 /* main-form */
-export const env = {
+export const mainForm = {
   allEnvironments: [
     { text: 'integ1 public', value: 'integ1 public' },
     { text: 'cur1 mobile', value: 'cur1 mobile' },
@@ -29,7 +41,11 @@ export const env = {
     { text: 'Pipeline mobile', value: 'Pipeline mobile' },
     { text: 'usn1 public', value: 'usn1 public' }
   ],
-  environment: 'integ1 public'
+  environment: 'integ1 public',
+  username: 'mpdWEB',
+  password: 'mpdWEB',
+  currentHealthCheck: null,
+  currentEnvVersion: null
 }
 
 /* Service MPD */
@@ -37,7 +53,22 @@ export const servicesMPD = {
   serviceHealthcheck: '/api/healthcheck',
   serviceREF: '/api/references',
   serviceCOP: '/api/voyages/mono',
-  serviceCOH: '/api/voyages'
+  serviceCOH: '/api/voyages',
+  serviceCTO: '/api/trajetsOffres'
+}
+
+export const serviceMPDDescription = {
+  '/api/references': 'REF - Récupérer les données de références d\'un canal',
+  '/api/voyages/mono': 'COP - Consulter les offres par accès Produit',
+  '/api/voyages': 'COH - Consulter les offres TER par accès Horaire',
+  '/api/trajetsOffres': 'CTO - Consulter les trajest et les offres'
+}
+
+export const serviceMPDMethod = {
+  '/references': 'get',
+  '/voyages/mono': 'post',
+  '/voyages': 'post',
+  '/trajetsOffres': 'post'
 }
 
 /* Methods */

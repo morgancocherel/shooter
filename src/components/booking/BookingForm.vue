@@ -3,13 +3,13 @@
     <div class="inline fields">
       <div class="field">
         <div class="ui radio checkbox">
-          <input name="devis" checked="checked" type="radio" value="AS" @input="updateDevis">
+          <input name="devis" type="radio" value="AS" v-model="getDevis" @input="updateDevis">
           <label>Aller simple</label>
         </div>
       </div>
       <div class="field">
         <div class="ui radio checkbox">
-          <input name="devis" type="radio" value="AR" @input="updateDevis">
+          <input name="devis" type="radio" value="AR" v-model="getDevis" @input="updateDevis">
           <label>Aller-retour</label>
         </div>
       </div>
@@ -17,22 +17,24 @@
     <div class="fields booking-form-data">
       <div class="ten wide field train-input">
         <div class="origin-train">
-          <input placeholder="Départ : gare, adresse, lieu" type="text" :value="getOriginTrain" @input="updateOriginTrain">
+          <input placeholder="Départ : gare, adresse, lieu" type="text" :value="getOriginTrain"
+                 @input="updateOriginTrain">
         </div>
         <div class="destination-train">
-          <input placeholder="Arrivée : gare, adresse, lieu" type="text" :value="getDestinationTrain" @input="updateDestinationTrain">
+          <input placeholder="Arrivée : gare, adresse, lieu" type="text" :value="getDestinationTrain"
+                 @input="updateDestinationTrain">
         </div>
       </div>
       <div class="three wide field date-input">
         <div class="ui calendar" id="js-departure-date">
           <div class="ui input left icon departure-date">
-            <input type="text" placeholder="Date" :value="getDateDepart" @input="updateDateDepart">
+            <input type="text" placeholder="Départ" :value="getDepartureDate" @input="updateDepartureDate">
             <i class="calendar icon departure-date-icon"></i>
           </div>
         </div>
         <div class="ui calendar" id="js-return-date">
           <div class="ui input left icon">
-            <input type="text" placeholder="Date" :value="getDateArrivee" @input="updateDateArrivee">
+            <input type="text" placeholder="Retour" :value="getReturnDate" @input="updateReturnDate">
             <i class="calendar icon"></i>
           </div>
         </div>
@@ -47,18 +49,19 @@
         <div class="ui calendar" id="js-return-time">
           <div class="ui input left icon">
             <i class="time icon"></i>
-            <input type="text" placeholder="Time" :value="getDepartureTime" @input="updateDepartureTime">
+            <input type="text" placeholder="Time" :value="getReturnTime" @input="updateReturnTime">
           </div>
         </div>
       </div>
     </div>
-    <router-link @click.native="submitBookingForm" class="ui button" to="/proposal">Propositions</router-link>
+    <button @click="submitBookingForm" class="ui button submit-booking-form" v-bind:class="{ loading: getBookingIsLoading }">Rechercher</button>
   </div>
 </template>
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
-import * as actions from '../../store/modules/booking/booking-form-action-types'
+import * as bookingActions from '../../store/modules/booking/booking-action-types'
+
 import $ from 'jquery'
 
 const {mapGetters, mapActions} = createNamespacedHelpers('Booking')
@@ -69,23 +72,24 @@ export default {
     ...mapGetters([
       'getDevis',
       'getOriginTrain',
-      'getDateDepart',
+      'getDepartureDate',
       'getDepartureTime',
       'getDestinationTrain',
-      'getDateArrivee',
-      'getReturnTime'
+      'getReturnDate',
+      'getReturnTime',
+      'getBookingIsLoading'
     ])
   },
   methods: {
     ...mapActions({
-      'updateDevis': actions.EDIT_DEVIS,
-      'updateOriginTrain': actions.EDIT_ORIGIN_TRAIN,
-      'updateDateDepart': actions.EDIT_DATE_DEPART,
-      'updateDepartureTime': actions.EDIT_DEPARTURE_TIME,
-      'updateDestinationTrain': actions.EDIT_DESTINATION_TRAIN,
-      'updateDateArrivee': actions.EDIT_DATE_ARRIVEE,
-      'updateReturnTime': actions.EDIT_RETURN_TIME,
-      'submitBookingForm': actions.SUBMIT_BOOKING_FORM
+      'updateDevis': bookingActions.EDIT_DEVIS,
+      'updateOriginTrain': bookingActions.EDIT_ORIGIN_TRAIN,
+      'updateDepartureDate': bookingActions.EDIT_DEPARTURE_DATE,
+      'updateDepartureTime': bookingActions.EDIT_DEPARTURE_TIME,
+      'updateDestinationTrain': bookingActions.EDIT_DESTINATION_TRAIN,
+      'updateReturnDate': bookingActions.EDIT_DATE_ARRIVEE,
+      'updateReturnTime': bookingActions.EDIT_RETURN_TIME,
+      'submitBookingForm': bookingActions.SUBMIT_BOOKING_FORM
     })
   },
   mounted () {
@@ -95,6 +99,7 @@ export default {
     $(this.$el).find('#js-departure-date').calendar({
       type: 'date',
       minDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+      firstDayOfWeek: 1,
       formatter: {
         date: function (date) {
           if (!date) return ''
@@ -104,8 +109,8 @@ export default {
           return day + '/' + month + '/' + year
         }
       },
-      onChange: function (date) {
-        self.updateDateDepart(date)
+      onChange: function (mode) {
+        self.updateDepartureDate(mode)
       }
     })
     $(this.$el).find('#js-departure-time').calendar({
@@ -142,7 +147,7 @@ export default {
         }
       },
       onChange (mode) {
-        self.updateDateArrivee(mode)
+        self.updateReturnDate(mode)
       }
     })
     $(this.$el).find('#js-return-time').calendar({
@@ -164,37 +169,68 @@ export default {
 </script>
 
 <style scoped>
-  .ui.form.container{ margin: 115px 0; }
-  .ui.button{
+  .ui.form.container {
+    margin: 115px 0;
+  }
+
+  .submit-booking-form {
     text-transform: uppercase;
     background-color: #01C3A7;
     color: #FFF;
   }
 
-  .container{
+  .submit-booking-form:hover {
+    background-color: #01aa91;
+    border-color: #01aa91;
+    color: #FFF;
+  }
+
+  .container {
     padding: 24px 40px;
     border: 2px solid #ECECEC;
     border-radius: .3125em;
   }
 
-  input:focus{ border: 1px solid #01C3A7 !important; }
+  input:focus {
+    border: 1px solid #01C3A7 !important;
+  }
 
-  input{
+  input {
     border: 1px solid transparent !important;
     color: #323E42 !important;
   }
 
-  .column{ background-color: aliceblue; }
-
   .origin-train,
   .departure-date,
-  .departure-time{
+  .departure-time {
     border-bottom: 1px solid #ECECEC !important;
   }
 
-  .train-input{ padding-right: 16px !important; border-right: 1px solid #ECECEC !important; }
+  .train-input {
+    padding-right: 16px !important;
+    border-right: 1px solid #ECECEC !important;
+  }
 
-  .date-input{ padding: 0 16px !important; border-right: 1px solid #ECECEC !important; }
+  .date-input {
+    padding: 0 16px !important;
+    border-right: 1px solid #ECECEC !important;
+  }
 
-  .time-input{ padding-left: 16px !important; }
+  .time-input {
+    padding-left: 16px !important;
+  }
+
+  .submit-booking-form {
+    text-transform: uppercase;
+    background-color: #01C3A7;
+    color: #FFF;
+    margin: 0;
+  }
+
+  .submit-booking-form:hover,
+  .submit-booking-form:focus {
+    background-color: #01aa91;
+    border-color: #01aa91;
+    color: #FFF;
+  }
 </style>

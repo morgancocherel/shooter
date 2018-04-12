@@ -11,19 +11,19 @@
           <div><i class="caret right icon js-open-close-request-icon"></i></div>
         </div>
         <div class="one wide column middle aligned center aligned">
-          <h5 class="ui header">{{ getAllRequest }}</h5>
+          <h5 class="ui header">1</h5>
         </div>
         <div class="two wide column middle aligned center aligned">
-          <h5 class="ui header"></h5>
+          <h5 class="ui header">{{ getAllRequest[0].request.method }}</h5>
         </div>
         <div class="three wide column middle aligned left aligned">
-          <h5 class="ui header">/voyages</h5>
+          <h5 class="ui header">{{ getAllRequest[0].request.service }}</h5>
         </div>
         <div class="seven wide column middle aligned right aligned">
-          <h5 class="ui header">COH - Consulter les offres TER par accès Horaire</h5>
+          <h5 class="ui header">{{ getAllRequest[0].request.serviceDescription }}</h5>
         </div>
         <div class="two wide column middle aligned center aligned">
-          <h5 class="ui header">200</h5>
+          <h5 class="ui header">{{ getAllRequest[0].response.status }}</h5>
         </div>
         <div class="sixteen wide column data-request js-data-request" style="display: none;">
           <div class="ui pointing menu">
@@ -32,9 +32,6 @@
             </a>
             <a class="item">
               Output
-            </a>
-            <a class="item">
-              XML
             </a>
           </div>
           <div class="ui segment">
@@ -60,14 +57,11 @@
 import {createNamespacedHelpers} from 'vuex'
 import $ from 'jquery'
 
-const {mapGetters, mapState} = createNamespacedHelpers('Console')
+const {mapGetters} = createNamespacedHelpers('Console')
 
 export default {
   name: 'Sidebar',
   computed: {
-    ...mapState([
-      'allRequest'
-    ]),
     ...mapGetters(['getAllRequest'])
   },
   mounted () {
@@ -87,6 +81,10 @@ export default {
   .ui.right.vertical.sidebar.menu{
     width: 40% !important;
     margin-left: -40% !important;
+  }
+
+  .row {
+    border-bottom: 1px solid #DCE3E6
   }
 
   .ui.header.centered {
