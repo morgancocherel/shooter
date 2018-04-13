@@ -47,16 +47,17 @@ export function callService (method, path, env, username, password, data) {
 }
 
 export function formatRequestConsole (method, service, env, body, response) {
-  let request = {}
+  let requestSent = {}
+  let responseReceived = {}
 
-  request.method = method.toUpperCase()
-  request.service = service
-  request.serviceDescription = constStore.serviceMPDDescription[service]
-  request.body = body
+  requestSent.method = method.toUpperCase()
+  requestSent.service = service
+  requestSent.serviceDescription = constStore.serviceMPDDescription[service]
+  requestSent.body = body
 
-  response.response = response
+  responseReceived.responseReceived = response
 
-  return { request, response }
+  return { requestSent, responseReceived }
 }
 
 export function addId (trajetsData) {

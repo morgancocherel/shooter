@@ -17,7 +17,7 @@
     <div class="fields booking-form-data">
       <div class="ten wide field train-input">
         <div class="origin-train">
-          <input placeholder="Départ : gare, adresse, lieu" type="text" :value="getOriginTrain"
+          <input placeholder="Départ : gare, adresse, lieu" class="js-booking-form-field" type="text" :value="getOriginTrain"
                  @input="updateOriginTrain">
         </div>
         <div class="destination-train">
@@ -54,7 +54,7 @@
         </div>
       </div>
     </div>
-    <button @click="submitBookingForm" class="ui button submit-booking-form" v-bind:class="{ loading: getBookingIsLoading }">Rechercher</button>
+    <button @click="submitBookingForm" class="ui button submit-booking-form js-submit-booking-form" v-bind:class="{ loading: getBookingIsLoading }">Rechercher</button>
   </div>
 </template>
 

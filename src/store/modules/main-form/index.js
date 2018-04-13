@@ -9,7 +9,8 @@ const state = {
   allEnvironments: constShooter.mainForm.allEnvironments,
   environment: constShooter.mainForm.environment,
   currentHealthCheck: constShooter.mainForm.currentHealthCheck,
-  currentEnvVersion: constShooter.mainForm.currentEnvVersion
+  currentEnvVersion: constShooter.mainForm.currentEnvVersion,
+  loadingHealthCheck: constShooter.mainForm.loadingHealthCheck
 }
 
 const getters = {
@@ -18,7 +19,8 @@ const getters = {
   getAllEnvironments: state => state.allEnvironments,
   getEnvironment: state => state.environment,
   getCurrentHealthCheck: state => state.currentHealthCheck,
-  getCurrentEnvVersion: state => state.currentEnvVersion
+  getCurrentEnvVersion: state => state.currentEnvVersion,
+  getLoadingHealthCheck: state => state.loadingHealthCheck
 }
 
 const mutations = {
@@ -36,6 +38,9 @@ const mutations = {
   },
   [mutationTypes.SET_CURRENT_ENV_VERSION] (state, response) {
     state.currentEnvVersion = response
+  },
+  [mutationTypes.SET_LOADING_HEALTH_CHECK] (state, boolean) {
+    state.loadingHealthCheck = boolean
   }
 }
 
@@ -52,16 +57,20 @@ const actions = {
     commit(mutationTypes.SET_PASSWORD, password.target.value)
   },
   [actionTypes.SEND_HEALTH_CHECK] ({commit}) {
+    // commit(mutationTypes.SET_LOADING_HEALTH_CHECK, true)
+
     healthCheck(constShooter.methods.methodGet, constShooter.servicesMPD.serviceHealthcheck, state.environment)
       .then((response) => {
         let version = response.data.version
         let status = response.data.status === 200
 
+        // timeout(commit(mutationTypes.SET_LOADING_HEALTH_CHECK, false))
         commit(mutationTypes.SET_CURRENT_ENV_VERSION, version)
         commit(mutationTypes.SET_CURRENT_HEALTHCHECK, status)
       })
       .catch((response) => {
         let status = response.data.status === 200
+        // timeout(commit(mutationTypes.SET_LOADING_HEALTH_CHECK, false))
         commit(mutationTypes.SET_CURRENT_HEALTHCHECK, status)
       })
   }

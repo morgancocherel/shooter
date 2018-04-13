@@ -11,10 +11,10 @@ const getters = {
 }
 
 const mutations = {
-  [mutationTypes.SET_NEW_REQUEST_TO_CONSOLE] (state, request) {
+  [mutationTypes.SET_NEW_REQUEST_TO_CONSOLE] (state, data) {
     state.allRequest.push({
-      request: request.request,
-      response: request.response
+      requestSent: data.requestSent,
+      responseReceived: data.responseReceived
     })
   }
 }

@@ -6,7 +6,7 @@
           <h3 class="ui header centered">Requêtes en cours</h3>
         </div>
       </div>
-      <div class="row">
+      <div class="row" v-for="req in getAllRequest" :key="req.id">
         <div class="one wide column middle aligned center aligned">
           <div><i class="caret right icon js-open-close-request-icon"></i></div>
         </div>
@@ -14,16 +14,16 @@
           <h5 class="ui header">1</h5>
         </div>
         <div class="two wide column middle aligned center aligned">
-          <h5 class="ui header">{{ getAllRequest[0].request.method }}</h5>
+          <h5 class="ui header">{{ req.requestSent.status }}</h5>
         </div>
         <div class="three wide column middle aligned left aligned">
-          <h5 class="ui header">{{ getAllRequest[0].request.service }}</h5>
+          <h5 class="ui header"></h5>
         </div>
         <div class="seven wide column middle aligned right aligned">
-          <h5 class="ui header">{{ getAllRequest[0].request.serviceDescription }}</h5>
+          <h5 class="ui header"></h5>
         </div>
         <div class="two wide column middle aligned center aligned">
-          <h5 class="ui header">{{ getAllRequest[0].response.status }}</h5>
+          <h5 class="ui header"></h5>
         </div>
         <div class="sixteen wide column data-request js-data-request" style="display: none;">
           <div class="ui pointing menu">

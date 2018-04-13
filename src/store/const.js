@@ -45,6 +45,7 @@ export const mainForm = {
   username: 'mpdWEB',
   password: 'mpdWEB',
   currentHealthCheck: null,
+  loadingHealthCheck: null,
   currentEnvVersion: null
 }
 
