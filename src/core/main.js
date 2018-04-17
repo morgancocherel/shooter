@@ -60,12 +60,16 @@ export function formatRequestConsole (method, service, env, body, response) {
   return { requestSent, responseReceived }
 }
 
-export function addId (trajetsData) {
+// For each trajet, add a unique id, price and class selected
+export function addData (trajetsData) {
   let id = 1
   let trajets = []
-
   $.each(trajetsData, function () {
     this.id = id
+    let current = this
+    let offerLength = this.voyage.offres.length
+
+    this.proposal = proposalSelectedData(current, id, offerLength)
     trajets.push(this)
     id = id + 1
   })
@@ -73,56 +77,27 @@ export function addId (trajetsData) {
   return trajets
 }
 
-export function formatCTOResponse (trajetsData) {
-  let trajets = []
-  let id = 1
+function proposalSelectedData (current, id, offerLength) {
+  let firstClass = {}
+  let secondClass = {}
+  let firstProposal = id === 1
 
-  $.each(trajetsData, function () {
-    let offre = {}
+  let proposalSelected = firstProposal
+  let classSelected = 'DEUXIEME'
+  if (offerLength === 2) {
+    firstClass.price = current.voyage.offres[0].prix
+    secondClass.price = current.voyage.offres[1].prix
+  } else {
+    firstClass.price = '-'
+    secondClass.price = current.voyage.offres[0].prix
+  }
+  secondClass.selected = firstProposal
+  firstClass.selected = false
 
-    offre.id = id
-
-    if (this.voyage.offres.length === 2) {
-      offre.travel_mode = this.legs[0].type
-      $.each(this.voyage.offres, function () {
-        if (this.classe === 'PREMIERE') {
-          offre.price_first_class = this.prix
-        } else {
-          offre.price_second_class = this.prix
-        }
-      })
-    } else {
-      offre.travel_mode = this.legs[0].type
-
-      $.each(this.voyage.offres, function () {
-        offre.price_first_class = '-'
-        if (this.classe === 'DEUXIEME') {
-          offre.price_second_class = this.prix
-        }
-      })
-    }
-    // Basic travel information
-    offre.departure_time = this.departure_time.text
-    offre.arrival_time = this.arrival_time.text
-    offre.duration = secondsToHm(this.duration.value)
-    offre.start_point = this.start_point.label
-    offre.end_point = this.end_point.label
-
-    // Other information
-    offre.authorities_ids = this.authorities_ids[0]
-    offre.carbon_footprint = this.carbon_footprint
-    offre.feasible = this.feasible
-    offre.most_bike = this.most_bike
-    offre.most_walk = this.most_walk
-    offre.type = this.type
-
-    trajets.push(offre)
-    id = id + 1
-  })
-
-  return trajets
+  return { proposalSelected, classSelected, firstClass, secondClass }
 }
 
+/*
 function secondsToHm (d) {
   d = Number(d)
   let h = Math.floor(d / 3600)
@@ -131,6 +106,7 @@ function secondsToHm (d) {
 
   return h + 'H' + mDisplay
 }
+*/
 
 export function toDisplayDate (date) {
   let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }

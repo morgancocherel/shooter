@@ -60,7 +60,7 @@
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
-import * as bookingActions from '../../store/modules/booking/booking-action-types'
+import * as actions from '../../store/modules/booking/booking-action-types'
 
 import $ from 'jquery'
 
@@ -82,14 +82,14 @@ export default {
   },
   methods: {
     ...mapActions({
-      'updateDevis': bookingActions.EDIT_DEVIS,
-      'updateOriginTrain': bookingActions.EDIT_ORIGIN_TRAIN,
-      'updateDepartureDate': bookingActions.EDIT_DEPARTURE_DATE,
-      'updateDepartureTime': bookingActions.EDIT_DEPARTURE_TIME,
-      'updateDestinationTrain': bookingActions.EDIT_DESTINATION_TRAIN,
-      'updateReturnDate': bookingActions.EDIT_DATE_ARRIVEE,
-      'updateReturnTime': bookingActions.EDIT_RETURN_TIME,
-      'submitBookingForm': bookingActions.SUBMIT_BOOKING_FORM
+      'updateDevis': actions.EDIT_DEVIS,
+      'updateOriginTrain': actions.EDIT_ORIGIN_TRAIN,
+      'updateDepartureDate': actions.EDIT_DEPARTURE_DATE,
+      'updateDepartureTime': actions.EDIT_DEPARTURE_TIME,
+      'updateDestinationTrain': actions.EDIT_DESTINATION_TRAIN,
+      'updateReturnDate': actions.EDIT_DATE_ARRIVEE,
+      'updateReturnTime': actions.EDIT_RETURN_TIME,
+      'submitBookingForm': actions.SUBMIT_BOOKING_FORM
     })
   },
   mounted () {
@@ -115,11 +115,6 @@ export default {
     })
     $(this.$el).find('#js-departure-time').calendar({
       type: 'time',
-      text: {
-        days: ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.'],
-        months: ['Janvier', 'Février', 'Mars', 'Avril', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        monthsShort: ['Janvier', 'Février', 'Mars', 'Avril', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      },
       ampm: false,
       minDate: new Date(today.getHours(), today.getMinutes()),
       disableMinute: true,

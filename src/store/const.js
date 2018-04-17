@@ -11,7 +11,6 @@ export const booking = {
   returnTime: today.getHours() + 8,
   returnForm: false,
   proposalBrut: '',
-  proposalFormated: null,
   dateDisplay: null,
   bookingIsLoading: false,
   travelerData: [
@@ -22,7 +21,23 @@ export const booking = {
       num: 1
     }
   ],
-  proposalSelected: ''
+  proposalSelected: '',
+  proposalSelectedData:
+  {
+    proposalId: 1,
+    classSelected: 'DEUXIEME'
+  }
+}
+
+/* Travel Mode */
+export const travelMode = {
+  oneWay: 'AS',
+  roundTrip: 'AR'
+}
+
+/* Supports Mat */
+export const supportsMat = {
+  digitalise: 'DIGITALISE'
 }
 
 /* console */
@@ -41,7 +56,7 @@ export const mainForm = {
     { text: 'Pipeline mobile', value: 'Pipeline mobile' },
     { text: 'usn1 public', value: 'usn1 public' }
   ],
-  environment: 'integ1 public',
+  environment: 'cur1 public',
   username: 'mpdWEB',
   password: 'mpdWEB',
   currentHealthCheck: null,
@@ -55,7 +70,9 @@ export const servicesMPD = {
   serviceREF: '/api/references',
   serviceCOP: '/api/voyages/mono',
   serviceCOH: '/api/voyages',
-  serviceCTO: '/api/trajetsOffres'
+  serviceCTO: '/api/trajetsOffres',
+  serviceAVOnew: '/api/commandes/current/voyages',
+  serviceAVO: '/api/commandes/{idCommande}/voyages'
 }
 
 export const serviceMPDDescription = {
@@ -76,6 +93,13 @@ export const serviceMPDMethod = {
 export const methods = {
   methodGet: 'get',
   methodPost: 'post'
+}
+
+/* Classes */
+export const classes = {
+  premiere: 'PREMIERE',
+  deuxieme: 'DEUXIEME',
+  noClass: 'no class'
 }
 
 /* COP Body */

@@ -1,5 +1,5 @@
 <template>
-  <div class="ui grid form container">
+  <div class="ui grid form container header-down">
     <div class="sixteen wide column middle aligned">
       <h3 class="ui header js-hide-show-form">Identifiants et environnement</h3>
     </div>
@@ -13,7 +13,7 @@
     </div>
     <div class="five wide column env-container">
       <select class="ui dropdown fluid" title="environment" @input="updateEnv">
-        <option v-for="env in getAllEnvironments" :key="env.id" :value="env.value">{{ env.text }}</option>
+        <option v-for="env in getAllEnvironments" :key="env.id" :value="getEnvironment">{{ env.text }}</option>
       </select>
     </div>
     <div class="three wide column current-health-check-container">
@@ -29,7 +29,7 @@
       <div v-show="!getCurrentHealthCheck">
         <div class="content up-down-env">
           <i class="exclamation large icon grey"></i>
-          <h5 class="ui header current-health-check-text">Down - {{ getCurrentEnvVersion }}</h5>
+          <h5 class="ui header current-health-check-text">Down</h5>
         </div>
       </div>
     </div>
@@ -53,7 +53,8 @@ export default {
       'getPassword',
       'getCurrentHealthCheck',
       'getCurrentEnvVersion',
-      'getLoadingHealthCheck'
+      'getLoadingHealthCheck',
+      'getEnvironment'
     ])
   },
   methods: {
@@ -75,6 +76,10 @@ export default {
 </script>
 
 <style scoped>
+  .header-down {
+    padding-top: 0 !important;
+  }
+
   input, select {
     height: 32px !important;
   }

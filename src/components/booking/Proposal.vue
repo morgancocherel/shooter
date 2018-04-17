@@ -31,27 +31,27 @@
           <div class="three wide column center aligned search-result-header">
             <span>1<sup>ère</sup> classe</span>
           </div>
-          <div class="ui vertical pointing menu sixteen wide column devis-row-container"  v-for="offre in getProposalFormated" :key="offre.id" :value="offre.id">
-            <a class="item js-proposal">
+          <div class="ui vertical pointing menu sixteen wide column devis-row-container" v-for="prop in getProposalBrut" :key="prop.id" :value="prop.id">
+            <a class="item" v-bind:class="{ active: prop.proposal.proposalSelected }">
               <div class="ui grid devis-row">
-                <div class="three wide column">
-                  <h5 class="ui header">{{ offre.departure_time }}</h5>
-                  <h5 class="ui header">{{ offre.arrival_time }}</h5>
+                <div class="three wide column js-proposal-no-class">
+                  <h5 class="ui header">{{ prop.departure_time.text }}</h5>
+                  <h5 class="ui header">{{ prop.arrival_time.text }}</h5>
                 </div>
-                <div class="three wide column">
-                  <h5 class="ui header">{{ offre.start_point }}</h5>
-                  <h5 class="ui header">{{ offre.end_point }}</h5>
+                <div class="three wide column js-proposal-no-class">
+                  <h5 class="ui header">{{ prop.start_point.label }}</h5>
+                  <h5 class="ui header">{{ prop.end_point.label }}</h5>
                 </div>
-                <div class="four wide column center aligned middle aligned">
+                <div class="four wide column center aligned middle aligned js-proposal-no-class">
                   <h5 class="ui header">
-                    {{ offre.duration }} - {{ offre.travel_mode }}
+                    {{ prop.duration.text }} - {{ prop.voyage.itineraireAller.segments[0].libelleEquipement }}
                   </h5>
                 </div>
-                <div class="three wide column center aligned middle aligned">
-                  <h5 class="ui header">{{ offre.price_second_class }}</h5>
+                <div class="three wide column center aligned middle aligned js-set-price js-proposal-second-class second-class">
+                  <div class="ui label large devis-price" v-bind:class="{ active: prop.proposal.secondClass.selected }">{{ prop.proposal.secondClass.price }}</div>
                 </div>
-                <div class="three wide column center aligned middle aligned">
-                  <h5 class="ui header">{{ offre.price_first_class }}</h5>
+                <div class="three wide column center aligned middle aligned js-set-price js-proposal-first-class first-class">
+                  <div class="ui label large devis-price" v-bind:class="{ active: prop.proposal.firstClass.selected }">{{ prop.proposal.firstClass.price }}</div>
                 </div>
               </div>
             </a>
@@ -361,6 +361,11 @@
               </div>
             </div>
           </div>
+          <div class="ui grid">
+            <div class="sixteen wide column right aligned">
+              <button @click="submitDevis"  class="ui button choose-devis-button">Choisir ()</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -404,7 +409,8 @@ export default {
       'getReturnForm',
       'getBookingIsLoading',
       'getProposalSelected',
-      'getTravelerData'
+      'getTravelerData',
+      'getPriceSelected'
     ])
   },
   methods: {
@@ -418,7 +424,9 @@ export default {
       'updateReturnTime': actions.EDIT_RETURN_TIME,
       'submitBookingForm': actions.SUBMIT_BOOKING_FORM,
       'swapOriginDestinationTrain': actions.SWAP_ORIGIN_DESTINATION_TRAIN,
-      'updateProposalSelected': actions.EDIT_PROPOSAL_SELECTED
+      'updateProposalSelected': actions.EDIT_PROPOSAL_SELECTED,
+      'updatePriceSelected': actions.EDIT_PRICE_SELECTED,
+      'submitDevis': actions.SUBMIT_DEVIS
     })
   },
   mounted () {
@@ -444,11 +452,6 @@ export default {
     })
     $(this.$el).find('#js-departure-time').calendar({
       type: 'time',
-      text: {
-        days: ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.'],
-        months: ['Janvier', 'Février', 'Mars', 'Avril', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        monthsShort: ['Janvier', 'Février', 'Mars', 'Avril', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      },
       ampm: false,
       minDate: new Date(today.getHours(), today.getMinutes()),
       disableMinute: true,
@@ -502,22 +505,24 @@ export default {
       self.swapOriginDestinationTrain(train)
     })
 
-    // Set up first active row
-    $('.js-list-devis .menu').first().children().addClass('active')
+    // Set travel active on click
+    function setProposalSelected (el, classSelected) {
+      let data = {}
+      data.proposalId = el.parent().parent().parent().attr('value')
+      data.classSelected = classSelected
+      self.updateProposalSelected(data)
+    }
 
-    // Set devis active on click
-    $(this.$el).find('.js-proposal').click(function () {
-      // Remove active class from other proposal
-      $.each($('.js-list-devis .menu a'), function () {
-        if ($(this).hasClass('active')) {
-          $(this).removeClass('active')
-        }
-      })
+    $(this.$el).find('.js-proposal-no-class').click(function () {
+      setProposalSelected($(this), 'no class')
+    })
 
-      // Add class active for the new proposal selected
-      $(this).addClass('active')
-      let id = $(this).parent().attr('value')
-      self.updateProposalSelected(id)
+    $(this.$el).find('.js-proposal-first-class').click(function () {
+      setProposalSelected($(this), 'PREMIERE')
+    })
+
+    $(this.$el).find('.js-proposal-second-class').click(function () {
+      setProposalSelected($(this), 'DEUXIEME')
     })
 
     // Set up all accordions menus
@@ -567,7 +572,8 @@ export default {
     padding: 6px 12px;
   }
 
-  .your-travel button:hover {
+  .your-travel button:hover,
+  .your-travel button:focus{
     border-color: #7E9196;
     background-color: #7E9196;
     color: #FFF;
@@ -618,6 +624,17 @@ export default {
 
   span {
     font-size: 13px;
+  }
+
+  .devis-price {
+    padding: 20px 15px;
+    color: #13181A;
+    background-color: transparent;
+  }
+
+  .devis-price.active {
+    color: #FFF;
+    background-color: #01C3A7;
   }
 
   /* Accordion View */
@@ -678,5 +695,20 @@ export default {
 
   .no-padding-left {
     padding-left: 0 !important;
+  }
+
+  .choose-devis-button {
+    background-color: #01C3A7;
+    color: #FFF;
+    padding: 12px 22px;
+    border-radius: 0.3125em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .choose-devis-button:hover {
+    background-color: #01aa91;
+    border-color: #01aa91;
+    color: #FFF;
   }
 </style>
