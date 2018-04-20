@@ -42,10 +42,10 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../store/modules/main-form/main-form-action-types'
 import $ from 'jquery'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('HeaderDown')
+const {mapGetters, mapActions} = createNamespacedHelpers('MainForm')
 
 export default {
-  name: 'HeaderDown',
+  name: 'MainForm',
   computed: {
     ...mapGetters([
       'getAllEnvironments',

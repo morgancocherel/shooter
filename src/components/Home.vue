@@ -2,25 +2,25 @@
   <div>
     <sidebar></sidebar>
     <header-top></header-top>
-    <header-down></header-down>
+    <main-form></main-form>
     <div class="pusher">
-      <booking-form></booking-form>
+      <devis-form></devis-form>
     </div>
   </div>
 </template>
 
 <script>
-import BookingForm from './booking/BookingForm'
-import HeaderTop from '../components/HeaderTop'
-import HeaderDown from './main-form/HeaderDown'
+import devisForm from './devis/devisForm'
+import HeaderTop from './header-top/HeaderTop'
+import MainForm from './main-form/HeaderDown'
 import Sidebar from './console/Sidebar'
 
 export default {
   components: {
     Sidebar,
-    BookingForm,
+    devisForm,
     HeaderTop,
-    HeaderDown
+    MainForm
   },
   name: 'Home'
 }

@@ -2,17 +2,17 @@
   <div>
     <sidebar></sidebar>
     <header-top></header-top>
-    <header-down></header-down>
+    <main-form></main-form>
     <div class="js-booking-form" style="display: none">
-      <booking-form></booking-form>
+      <devis-form></devis-form>
     </div>
-    <div class="ui grid proposal-content">
+    <div class="ui grid commande-conatainer">
       <div class="five wide column left aligned your-travel">
         <div class="js-result">
-          <span>Votre Trajet {{ getOriginTrain }}</span>
+          <span>Votre Trajet {{ getProposalSelected.start_point.label }}</span>
           <i class="large right arrow icon"></i>
-          <span>{{ getDestinationTrain }}</span>
-          <button class="mini ui button js-dispay-booking-form">Modifier la recherche</button>
+          <span>{{ getProposalSelected.end_point.label }}</span>
+          <button class="mini ui button js-display-booking-form">Modifier la recherche</button>
         </div>
       </div>
       <div class="eleven wide column"></div>
@@ -95,7 +95,7 @@
             <h3 class="ui header">Proposition</h3>
           </div>
           <div class="content">
-            <div class="ui grid first-level-accordion proposal-accordion-stations-data">
+            <div class="ui grid first-level-accordion commande-accordion-stations-data">
               <div class="one wide column no-padding-left"></div>
               <div class="one wide column"><strong>Texte</strong></div>
               <div class="four wide column"><b>Valeur</b></div>
@@ -363,7 +363,7 @@
           </div>
           <div class="ui grid">
             <div class="sixteen wide column right aligned">
-              <button @click="submitDevis"  class="ui button choose-devis-button">Choisir ()</button>
+              <button @click="addToBasket"  class="ui button add-to-basket">Choisir ({{ getPriceSelected }})</button>
             </div>
           </div>
         </div>
@@ -374,59 +374,41 @@
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
-import * as actions from '../../store/modules/booking/booking-action-types'
-import $ from 'jquery'
-import HeaderTop from '../HeaderTop'
-import HeaderDown from '../main-form/HeaderDown'
-import VueJsonPretty from 'vue-json-pretty'
+import HeaderTop from '../header-top/HeaderTop'
+import MainForm from '../main-form/HeaderDown'
 import Sidebar from '../console/Sidebar'
-import BookingForm from './BookingForm'
+import devisForm from '../devis/devisForm'
+import $ from 'jquery'
+import * as actionsCommande from '../../store/modules/commande/commande-action-types'
+import * as actionsDevis from '../../store/modules/devis/devis-action-types'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('Booking')
+const {mapGetters, mapActions} = createNamespacedHelpers('Commande')
 
 export default {
-  name: 'Proposal',
+  name: 'Commande',
   components: {
-    BookingForm,
     Sidebar,
     HeaderTop,
-    HeaderDown,
-    VueJsonPretty
+    MainForm,
+    devisForm
   },
   computed: {
     ...mapGetters([
-      'getDevis',
-      'getOriginTrain',
-      'getDepartureDate',
-      'getDepartureTime',
-      'getDestinationTrain',
-      'getReturnDate',
-      'getReturnTime',
-      'getProposalBrut',
-      'getProposalFormated',
-      'getToday',
       'getDateDisplay',
-      'getReturnForm',
-      'getBookingIsLoading',
+      'getProposalBrut',
       'getProposalSelected',
-      'getTravelerData',
       'getPriceSelected'
     ])
   },
   methods: {
     ...mapActions({
-      'updateDevis': actions.EDIT_DEVIS,
-      'updateOriginTrain': actions.EDIT_ORIGIN_TRAIN,
-      'updateDepartureDate': actions.EDIT_DEPARTURE_DATE,
-      'updateDepartureTime': actions.EDIT_DEPARTURE_TIME,
-      'updateDestinationTrain': actions.EDIT_DESTINATION_TRAIN,
-      'updateReturnDate': actions.EDIT_DATE_ARRIVEE,
-      'updateReturnTime': actions.EDIT_RETURN_TIME,
-      'submitBookingForm': actions.SUBMIT_BOOKING_FORM,
-      'swapOriginDestinationTrain': actions.SWAP_ORIGIN_DESTINATION_TRAIN,
-      'updateProposalSelected': actions.EDIT_PROPOSAL_SELECTED,
-      'updatePriceSelected': actions.EDIT_PRICE_SELECTED,
-      'submitDevis': actions.SUBMIT_DEVIS
+      'updateDepartureDate': actionsDevis.EDIT_DEPARTURE_DATE,
+      'updateReturnDate': actionsDevis.EDIT_RETURN_DATE,
+      'updateDepartureTime': actionsDevis.EDIT_DEPARTURE_TIME,
+      'updateReturnTime': actionsDevis.EDIT_RETURN_TIME,
+      'updateProposalSelected': actionsCommande.EDIT_PROPOSAL_SELECTED,
+      'updatePriceSelected': actionsCommande.EDIT_PRICE_SELECTED,
+      'addToBasket': actionsCommande.ADD_TO_BASKET
     })
   },
   mounted () {
@@ -496,19 +478,10 @@ export default {
         }
       }
     })
-
-    // Swap stations feature
-    $(this.$el).find('.js-swap-origin-destination-train').click(function () {
-      let train = {}
-      train.origin = $('.js-destination-train').val()
-      train.destination = $('.js-origin-train').val()
-      self.swapOriginDestinationTrain(train)
-    })
-
     // Set travel active on click
     function setProposalSelected (el, classSelected) {
       let data = {}
-      data.proposalId = el.parent().parent().parent().attr('value')
+      data.id = el.parent().parent().parent().attr('value')
       data.classSelected = classSelected
       self.updateProposalSelected(data)
     }
@@ -529,7 +502,7 @@ export default {
     $('.js-accordion').accordion({exclusive: false})
 
     // Display booking form on click
-    $('.js-dispay-booking-form').click(function () {
+    $('.js-display-booking-form').click(function () {
       $('.js-booking-form').slideToggle()
     })
 
@@ -542,7 +515,7 @@ export default {
 
 <style scoped>
   /* Mutual Styles */
-  .proposal-content {
+  .commande-conatainer {
     margin: 0 !important;
   }
 
@@ -678,7 +651,7 @@ export default {
     margin: 0 25px;
   }
 
-  .proposal-accordion-stations-data,
+  .commande-accordion-stations-data,
   .legs-accordion-stations-data,
   .offers-accordion-data,
   .devis-accordion-data{
@@ -697,7 +670,7 @@ export default {
     padding-left: 0 !important;
   }
 
-  .choose-devis-button {
+  .add-to-basket {
     background-color: #01C3A7;
     color: #FFF;
     padding: 12px 22px;
@@ -706,7 +679,8 @@ export default {
     font-weight: 400;
   }
 
-  .choose-devis-button:hover {
+  .add-to-basket:hover,
+  .add-to-basket:focus {
     background-color: #01aa91;
     border-color: #01aa91;
     color: #FFF;

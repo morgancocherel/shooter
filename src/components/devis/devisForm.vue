@@ -14,10 +14,10 @@
         </div>
       </div>
     </div>
-    <div class="fields booking-form-data">
+    <div class="fields">
       <div class="ten wide field train-input">
         <div class="origin-train">
-          <input placeholder="Départ : gare, adresse, lieu" class="js-booking-form-field" type="text" :value="getOriginTrain"
+          <input placeholder="Départ : gare, adresse, lieu" type="text" :value="getOriginTrain"
                  @input="updateOriginTrain">
         </div>
         <div class="destination-train">
@@ -54,20 +54,20 @@
         </div>
       </div>
     </div>
-    <button @click="submitBookingForm" class="ui button submit-booking-form js-submit-booking-form" v-bind:class="{ loading: getBookingIsLoading }">Rechercher</button>
+    <button @click="submitDevisForm" class="ui button submit-devis-form js-submit-devis-form" v-bind:class="{ loading: getDevisIsLoading }">Rechercher</button>
   </div>
 </template>
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
-import * as actions from '../../store/modules/booking/booking-action-types'
+import * as actions from '../../store/modules/devis/devis-action-types'
 
 import $ from 'jquery'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('Booking')
+const {mapGetters, mapActions} = createNamespacedHelpers('Devis')
 
 export default {
-  name: 'Booking',
+  name: 'Devis',
   computed: {
     ...mapGetters([
       'getDevis',
@@ -77,7 +77,7 @@ export default {
       'getDestinationTrain',
       'getReturnDate',
       'getReturnTime',
-      'getBookingIsLoading'
+      'getDevisIsLoading'
     ])
   },
   methods: {
@@ -87,9 +87,9 @@ export default {
       'updateDepartureDate': actions.EDIT_DEPARTURE_DATE,
       'updateDepartureTime': actions.EDIT_DEPARTURE_TIME,
       'updateDestinationTrain': actions.EDIT_DESTINATION_TRAIN,
-      'updateReturnDate': actions.EDIT_DATE_ARRIVEE,
+      'updateReturnDate': actions.EDIT_RETURN_DATE,
       'updateReturnTime': actions.EDIT_RETURN_TIME,
-      'submitBookingForm': actions.SUBMIT_BOOKING_FORM
+      'submitDevisForm': actions.SUBMIT_DEVIS_FORM
     })
   },
   mounted () {
@@ -168,13 +168,13 @@ export default {
     margin: 115px 0;
   }
 
-  .submit-booking-form {
+  .submit-devis-form {
     text-transform: uppercase;
     background-color: #01C3A7;
     color: #FFF;
   }
 
-  .submit-booking-form:hover {
+  .submit-devis-form:hover {
     background-color: #01aa91;
     border-color: #01aa91;
     color: #FFF;
@@ -215,15 +215,15 @@ export default {
     padding-left: 16px !important;
   }
 
-  .submit-booking-form {
+  .submit-devis-form {
     text-transform: uppercase;
     background-color: #01C3A7;
     color: #FFF;
     margin: 0;
   }
 
-  .submit-booking-form:hover,
-  .submit-booking-form:focus {
+  .submit-devis-form:hover,
+  .submit-devis-form:focus {
     background-color: #01aa91;
     border-color: #01aa91;
     color: #FFF;

@@ -1,6 +1,6 @@
 import * as actionTypes from './main-form-action-types'
 import * as mutationTypes from './main-form-mutation-types'
-import { healthCheck } from '../../../core/main'
+import { callService } from '../../../core/main'
 import * as constShooter from '../../const'
 
 const state = {
@@ -58,8 +58,15 @@ const actions = {
   },
   [actionTypes.SEND_HEALTH_CHECK] ({commit}) {
     // commit(mutationTypes.SET_LOADING_HEALTH_CHECK, true)
+    let method = constShooter.methods.methodGet
+    let service = constShooter.servicesMPD.serviceHealthcheck
+    let env = state.environment
+    let username = state.username
+    let password = state.password
+    let body = null
+    let contentType = constShooter.contentType.json
 
-    healthCheck(constShooter.methods.methodGet, constShooter.servicesMPD.serviceHealthcheck, state.environment)
+    callService(method, service, env, contentType, body, username, password)
       .then((response) => {
         let version = response.data.version
         let status = response.data.status === 200

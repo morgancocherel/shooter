@@ -1,7 +1,7 @@
 export const today = new Date()
 
-/* booking */
-export const booking = {
+/* devis */
+export const devis = {
   travelMode: 'AS',
   originTrain: 'FRNTE',
   departureDate: today,
@@ -10,9 +10,8 @@ export const booking = {
   returnDate: null,
   returnTime: today.getHours() + 8,
   returnForm: false,
-  proposalBrut: '',
   dateDisplay: null,
-  bookingIsLoading: false,
+  devisIsLoading: false,
   travelerData: [
     {
       id: 1,
@@ -20,13 +19,60 @@ export const booking = {
       age: 30,
       num: 1
     }
-  ],
-  proposalSelected: '',
+  ]
+}
+
+/* commande */
+export const commande = {
+  proposalSelected: null,
+  proposalBrut: null,
+  priceSelected: null,
+  dateDisplay: null,
   proposalSelectedData:
-  {
-    proposalId: 1,
-    classSelected: 'DEUXIEME'
-  }
+    {
+      proposalId: 1,
+      classSelected: 'DEUXIEME'
+    },
+  idCommande: null,
+  civility: null,
+  allCivilities: [
+    {text: 'M.', value: 'monsieur'},
+    {text: 'Mme', value: 'madame'}
+  ],
+  firsname: 'Morgan',
+  lastname: 'Cocherel',
+  dayBirth: null,
+  allMonths: [
+    { text: 'Janvier' },
+    { text: 'Février' },
+    { text: 'Mars' },
+    { text: 'Avril' },
+    { text: 'Mai' },
+    { text: 'Juin' },
+    { text: 'Juillet' },
+    { text: 'Août' },
+    { text: 'Septembre' },
+    { text: 'Octobre' },
+    { text: 'Novembre' },
+    { text: 'Décembre' }
+  ],
+  monthBirth: null,
+  yearBirth: null,
+  allTravelers: [
+    {text: 'Passager 1'}
+  ],
+  travelerContact: null,
+  emailTravelerContact: 'mcocherel@oui.sncf'
+}
+
+/* Finalisation */
+export const finalisation = {
+  jetonTransaction: null,
+  dureeValiditeJeton: null,
+  urlIhmPaiement: null,
+  operationDistributionId: null,
+  finalData: null,
+  transactionIsLoading: false
 }
 
 /* Travel Mode */
@@ -43,6 +89,14 @@ export const supportsMat = {
 /* console */
 export const console = {
   allRequest: []
+}
+
+/* header top */
+export const headerTop = {
+  devisActiveStep: true,
+  commandeActiveStep: false,
+  paymentActiveStep: false,
+  finalisationActiveStep: false
 }
 
 /* main-form */
@@ -72,21 +126,25 @@ export const servicesMPD = {
   serviceCOH: '/api/voyages',
   serviceCTO: '/api/trajetsOffres',
   serviceAVOnew: '/api/commandes/current/voyages',
-  serviceAVO: '/api/commandes/{idCommande}/voyages'
+  serviceAVO: '/api/commandes/{idCommande}/voyages',
+  serviceCCM: '/api/commandes/{idCommande}',
+  serviceDPC: '/api/commandes/{idCommande}/paiements',
+  serviceRRP: '/api/soap/finTransaction',
+  serviceFRC: '/api/commandes/{idCommande}/paiements/{jetonTransaction}'
 }
 
 export const serviceMPDDescription = {
+  '/api/healthcheck': 'Verifie si le service est up ou down',
   '/api/references': 'REF - Récupérer les données de références d\'un canal',
   '/api/voyages/mono': 'COP - Consulter les offres par accès Produit',
   '/api/voyages': 'COH - Consulter les offres TER par accès Horaire',
-  '/api/trajetsOffres': 'CTO - Consulter les trajest et les offres'
-}
-
-export const serviceMPDMethod = {
-  '/references': 'get',
-  '/voyages/mono': 'post',
-  '/voyages': 'post',
-  '/trajetsOffres': 'post'
+  '/api/trajetsOffres': 'CTO - Consulter les trajest et les offres',
+  '/api/commandes/current/voyages': 'AVO - Ajouter un voyage à une nouvelle commande',
+  '/api/commandes/{idCommande}/voyages': 'AVO - Ajouter un voyage à une commande',
+  '/api/commandes/{idCommande}': 'CCM - Consulter une commande en cours',
+  '/api/commandes/{idCommande}/paiements': 'DPC - Demander le paiement d\'une commande',
+  '/api/soap/finTransaction': 'RRP - Recevoir le résultat du paiement',
+  '/api/commandes/{idCommande}/paiements/{jetonTransaction}': 'FRC - Fournir le résultat du paiement'
 }
 
 /* Methods */
@@ -100,6 +158,12 @@ export const classes = {
   premiere: 'PREMIERE',
   deuxieme: 'DEUXIEME',
   noClass: 'no class'
+}
+
+/* Content type */
+export const contentType = {
+  json: 'application/json',
+  xml: 'text/xml'
 }
 
 /* COP Body */

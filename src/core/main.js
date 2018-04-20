@@ -2,33 +2,16 @@ import Axios from 'axios'
 import * as constStore from '../store/const'
 import $ from 'jquery'
 
-export function healthCheck (method, path, env) {
+export function callService (method, service, env, contentType, data, username, password) {
   return new Promise((resolve, reject) => {
     Axios({
       method: method,
-      url: path,
-      headers: {
-        platform: env
-      }
-    })
-      .then((response) => {
-        resolve(response)
-      })
-      .catch((error, response) => {
-        reject(error, response)
-      })
-  })
-}
-
-export function callService (method, path, env, username, password, data) {
-  return new Promise((resolve, reject) => {
-    Axios({
-      method: method,
-      url: path,
+      url: service,
       headers: {
         platform: env,
         'X-CorrelationId': 'shooter-' + Math.random(),
-        'Content-Type': 'application/json'
+        'Content-Type': contentType,
+        'IDEXTERNECOMMANDE': 1234567890
       },
       data,
       withCredentials: true,
@@ -70,6 +53,21 @@ export function addData (trajetsData) {
     let offerLength = this.voyage.offres.length
 
     this.proposal = proposalSelectedData(current, id, offerLength)
+
+    // Add data required for AVO to the proposal selected and body
+    let origineLibelle = 'Nantes'
+    let destinationLibelle = 'Rennes'
+    let typeNumTrain = 'SUM'
+    let dureeItineraire = 123
+
+    this.voyage.itineraireAller.origine.libelle = origineLibelle
+    this.voyage.itineraireAller.destination.libelle = destinationLibelle
+    this.voyage.itineraireAller.dureeItineraire = dureeItineraire
+    this.voyage.itineraireAller.segments[0].typeNumTrain = typeNumTrain
+    if (this.voyage.itineraireAller.segments.length === 2) {
+      this.voyage.itineraireAller.segments[1].typeNumTrain = typeNumTrain
+    }
+
     trajets.push(this)
     id = id + 1
   })
