@@ -2,17 +2,15 @@
   <div>
     <sidebar></sidebar>
     <header-top></header-top>
-    <main-form></main-form>
-    <div class="pusher">
-      <devis-form></devis-form>
-    </div>
+    <username></username>
+    <devis-form></devis-form>
   </div>
 </template>
 
 <script>
 import devisForm from './devis/devisForm'
 import HeaderTop from './header-top/HeaderTop'
-import MainForm from './main-form/HeaderDown'
+import Username from './main-form/Username'
 import Sidebar from './console/Sidebar'
 
 export default {
@@ -20,7 +18,7 @@ export default {
     Sidebar,
     devisForm,
     HeaderTop,
-    MainForm
+    Username
   },
   name: 'Home'
 }

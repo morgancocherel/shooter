@@ -120,31 +120,31 @@ export const mainForm = {
 
 /* Service MPD */
 export const servicesMPD = {
-  serviceHealthcheck: '/api/healthcheck',
-  serviceREF: '/api/references',
-  serviceCOP: '/api/voyages/mono',
-  serviceCOH: '/api/voyages',
-  serviceCTO: '/api/trajetsOffres',
-  serviceAVOnew: '/api/commandes/current/voyages',
-  serviceAVO: '/api/commandes/{idCommande}/voyages',
-  serviceCCM: '/api/commandes/{idCommande}',
-  serviceDPC: '/api/commandes/{idCommande}/paiements',
-  serviceRRP: '/api/soap/finTransaction',
-  serviceFRC: '/api/commandes/{idCommande}/paiements/{jetonTransaction}'
+  serviceHealthcheck: '/healthcheck',
+  serviceREF: '/references',
+  serviceCOP: '/voyages/mono',
+  serviceCOH: '/voyages',
+  serviceCTO: '/trajetsOffres',
+  serviceAVOnew: '/commandes/current/voyages',
+  serviceAVO: '/commandes/{idCommande}/voyages',
+  serviceCCM: '/commandes/{idCommande}',
+  serviceDPC: '/commandes/{idCommande}/paiements',
+  serviceRRP: '/soap/finTransaction',
+  serviceFRC: '/commandes/{idCommande}/paiements/{jetonTransaction}'
 }
 
-export const serviceMPDDescription = {
-  '/api/healthcheck': 'Verifie si le service est up ou down',
-  '/api/references': 'REF - Récupérer les données de références d\'un canal',
-  '/api/voyages/mono': 'COP - Consulter les offres par accès Produit',
-  '/api/voyages': 'COH - Consulter les offres TER par accès Horaire',
-  '/api/trajetsOffres': 'CTO - Consulter les trajest et les offres',
-  '/api/commandes/current/voyages': 'AVO - Ajouter un voyage à une nouvelle commande',
-  '/api/commandes/{idCommande}/voyages': 'AVO - Ajouter un voyage à une commande',
-  '/api/commandes/{idCommande}': 'CCM - Consulter une commande en cours',
-  '/api/commandes/{idCommande}/paiements': 'DPC - Demander le paiement d\'une commande',
-  '/api/soap/finTransaction': 'RRP - Recevoir le résultat du paiement',
-  '/api/commandes/{idCommande}/paiements/{jetonTransaction}': 'FRC - Fournir le résultat du paiement'
+export const serviceMPPDescription = {
+  '/healthcheck': 'Verifie si le service est up ou down',
+  '/references': 'REF - Récupérer les données de références d\'un canal',
+  '/voyages/mono': 'COP - Consulter les offres par accès Produit',
+  '/voyages': 'COH - Consulter les offres TER par accès Horaire',
+  '/trajetsOffres': 'CTO - Consulter les trajest et les offres',
+  '/commandes/current/voyages': 'AVO - Ajouter un voyage à une nouvelle commande',
+  '/commandes/{idCommande}/voyages': 'AVO - Ajouter un voyage à une commande',
+  '/commandes/{idCommande}': 'CCM - Consulter une commande en cours',
+  '/commandes/{idCommande}/paiements': 'DPC - Demander le paiement d\'une commande',
+  '/soap/finTransaction': 'RRP - Recevoir le résultat du paiement',
+  '/commandes/{idCommande}/paiements/{jetonTransaction}': 'FRC - Fournir le résultat du paiement'
 }
 
 /* Methods */

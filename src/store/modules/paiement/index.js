@@ -56,7 +56,7 @@ const actions = {
     let mainFormState = rootState.MainForm
 
     let method = constShooter.methods.methodPost
-    let service = constShooter.servicesMPD.serviceDPC.replace(/{idCommande}/i, state.idCommande)
+    let service = '/api' + constShooter.servicesMPD.serviceDPC.replace(/{idCommande}/i, state.idCommande)
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = mainFormState.username

@@ -21,9 +21,8 @@
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
-import MainForm from '../main-form/HeaderDown'
+import MainForm from '../main-form/Username'
 import Sidebar from '../console/Sidebar'
-// import $ from 'jquery'
 import * as actions from '../../store/modules/finalisation/finalisation-action-types'
 
 const {mapGetters, mapActions} = createNamespacedHelpers('Finalisation')

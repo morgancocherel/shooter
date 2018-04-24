@@ -99,7 +99,7 @@ const actions = {
 
     // Data required for the CTO Request
     let method = constShooter.methods.methodPost
-    let service = constShooter.servicesMPD.serviceCTO
+    let service = '/api' + constShooter.servicesMPD.serviceCTO
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = mainFormState.username
@@ -126,7 +126,7 @@ const actions = {
         commit(mutationTypes.SET_DEVIS_IS_LOADING, false)
       })
       .catch((error, response) => {
-        // dispatch('Console/' + actionTypesConsole.EDIT_NEW_REQUEST_TO_CONSOLE, formatRequestConsole(response), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_NEW_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response), {root: true})
         console.log(error, 'Request CTO error')
       })
   }

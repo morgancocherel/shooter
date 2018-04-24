@@ -14,7 +14,7 @@ const mutations = {
   [mutationTypes.SET_NEW_REQUEST_TO_CONSOLE] (state, data) {
     state.allRequest.push({
       requestSent: data.requestSent,
-      responseReceived: data.responseReceived
+      responseReceived: data.response
     })
   }
 }

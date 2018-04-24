@@ -59,7 +59,7 @@ const actions = {
   [actionTypes.SEND_HEALTH_CHECK] ({commit}) {
     // commit(mutationTypes.SET_LOADING_HEALTH_CHECK, true)
     let method = constShooter.methods.methodGet
-    let service = constShooter.servicesMPD.serviceHealthcheck
+    let service = '/api' + constShooter.servicesMPD.serviceHealthcheck
     let env = state.environment
     let username = state.username
     let password = state.password

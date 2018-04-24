@@ -1,16 +1,18 @@
 <template>
   <div class="ui fixed inverted menu">
-    <router-link class="header grey item no-border" to="/">Shooter MPD</router-link>
-    <div class="ui compact menu">
-      <a class="item step-container" v-bind:class="{ active: getDevisActiveStep }">
+    <div class="left menu">
+      <div class="ui header item no-border" @click="goHome">Shooter MPD</div>
+    </div>
+    <div class="menu" style="margin: 0 auto;">
+      <a class="item step-container js-step" v-bind:class="{ active: getDevisActiveStep }">
         <i class="search icon"></i>
         <span class="active">Devis</span>
       </a>
-      <a class="item step-container" v-bind:class="{ active: getCommandeActiveStep }">
+      <a class="item step-container js-step" v-bind:class="{ active: getCommandeActiveStep }">
         <i class="shopping basket icon"></i>
         <span>Commande</span>
       </a>
-      <a class="item step-container" v-bind:class="{ active: getPaymentActiveStep }">
+      <a class="item step-container js-step" v-bind:class="{ active: getPaymentActiveStep }">
         <i class="credit card icon"></i>
         <span>Paiement</span>
       </a>
@@ -20,7 +22,9 @@
       </a>
     </div>
     <div class="right menu">
-      <a class="item js-sidebar no-border">
+      <a class="item no-border js-username-form">Identifiants</a>
+      <a class="item no-border">Environnment</a>
+      <a class="item js-console no-border">
         <i class="terminal icon"></i>
       </a>
     </div>
@@ -29,8 +33,10 @@
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
+import * as actions from '../../store/modules/header-top/header-top-action-types'
+import $ from 'jquery'
 
-const { mapGetters } = createNamespacedHelpers('HeaderTop')
+const { mapGetters, mapActions } = createNamespacedHelpers('HeaderTop')
 
 export default {
   name: 'HeaderTop',
@@ -41,6 +47,22 @@ export default {
       'getPaymentActiveStep',
       'getFinalisationActiveStep'
     ])
+  },
+  methods: {
+    ...mapActions({
+      'goHome': actions.GO_HOME
+    })
+  },
+  mounted () {
+    $('.js-console').click(function () {
+      $('.js-console-content').toggleClass('inactive-console')
+      $('.js-console-content').toggleClass('active-console')
+    })
+
+    $('.js-username-form').click(function () {
+      $('.js-username-form-content').toggleClass('inactive-username-form')
+      $('.js-username-form-content').toggleClass('active-username-form')
+    })
   }
 }
 </script>
@@ -49,14 +71,24 @@ export default {
   .ui.fixed.menu {
     background-color: #21314D;
     height: 60px;
+    z-index: 2;
   }
 
   .ui.inverted.menu a.item:hover {
     background-color: transparent;
   }
 
-  .ui.compact.menu {
+  .ui.menu {
     background-color: transparent;
+  }
+
+  .ui.header {
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .item.step-container {
+    cursor: context-menu !important;
   }
 
   .step-container i{
@@ -66,20 +98,21 @@ export default {
     color: rgba(255, 255, 255, 0.5);
   }
 
-  .step-container span{
+  span,
+  .right.menu a.item.no-border{
     text-transform: uppercase;
     letter-spacing: 0.025em;
     font-size: 13px;
     font-weight: bold;
     color: rgba(255, 255, 255, 0.5);
-    padding-right: 25px;
+    padding-right: 16px;
   }
 
   .no-border::before {
     background: 0 0 !important;
   }
 
-  .step-container::after {
+  .item.step-container::after {
     content: '';
     position: absolute;
     background-color: #37465f;
@@ -95,7 +128,7 @@ export default {
     transform: skew(-20deg);
   }
 
-  .step-container::before {
+  .item.step-container::before {
     content: '';
     position: absolute;
     background-color: #37465f !important;
@@ -111,6 +144,11 @@ export default {
     transform: skew(20deg);
   }
 
+  .item.step-container:last-child::before,
+  .item.step-container:last-child::after {
+    display: none;
+  }
+
   .item.step-container.active span,
   .item.step-container.active i {
     color: #FFF;
@@ -118,5 +156,28 @@ export default {
 
   .ui.inverted.menu .active.item {
     background: transparent;
+  }
+
+  /* Right menu */
+  .right.menu a.item.no-border:hover{
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #FFF;
+  }
+
+  /* active - inactive sidebars */
+  .active-console {
+    width: 600px;
+  }
+
+  .inactive-console {
+    width: 0;
+  }
+
+  .active-username-form {
+    width: 600px;
+  }
+
+  .inactive-username-form {
+    width: 0;
   }
 </style>

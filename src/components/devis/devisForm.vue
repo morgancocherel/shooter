@@ -166,6 +166,7 @@ export default {
 <style scoped>
   .ui.form.container {
     margin: 115px 0;
+    background-color: #FFF;
   }
 
   .submit-devis-form {

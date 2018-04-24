@@ -97,7 +97,7 @@ const actions = {
     let mainFormState = rootState.MainForm
 
     let method = constShooter.methods.methodPost
-    let service = constShooter.servicesMPD.serviceRRP
+    let service = '/api' + constShooter.servicesMPD.serviceRRP
     let env = mainFormState.environment
     let contentType = constShooter.contentType.xml
     let username = mainFormState.username
@@ -121,7 +121,7 @@ const actions = {
     let mainFormState = rootState.MainForm
 
     let method = constShooter.methods.methodPost
-    let service = constShooter.servicesMPD.serviceFRC.replace(/{idCommande}/i, state.idCommande).replace(/{jetonTransaction}/i, state.jetonTransaction)
+    let service = '/api' + constShooter.servicesMPD.serviceFRC.replace(/{idCommande}/i, state.idCommande).replace(/{jetonTransaction}/i, state.jetonTransaction)
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = mainFormState.username
@@ -132,7 +132,7 @@ const actions = {
 
     callService(method, service, env, contentType, body, username, password)
       .then((response) => {
-        dispatch(actionTypes.EDIT_FINAL_DATA, response.data)
+        dispatch(actionTypes.EDIT_FINAL_DATA, response.data.commande)
         router.push({path: '/commandes/paiements/transaction'})
       })
       .catch((error) => {

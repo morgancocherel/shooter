@@ -143,7 +143,7 @@ const actions = {
   [actionTypes.ADD_TO_BASKET] ({commit, dispatch, rootState}) {
     let mainFormState = rootState.MainForm
     let method = constShooter.methods.methodPost
-    let service = constShooter.servicesMPD.serviceAVOnew
+    let service = '/api' + constShooter.servicesMPD.serviceAVOnew
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = mainFormState.username
@@ -194,7 +194,7 @@ const actions = {
   [actionTypes.CONSULT_COMMANDE_IN_PROGRESS] ({dispatch, rootState}) {
     let mainFormState = rootState.MainForm
     let method = constShooter.methods.methodGet
-    let service = constShooter.servicesMPD.serviceCCM.replace(/{idCommande}/i, state.idCommande)
+    let service = '/api' + constShooter.servicesMPD.serviceCCM.replace(/{idCommande}/i, state.idCommande)
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = mainFormState.username

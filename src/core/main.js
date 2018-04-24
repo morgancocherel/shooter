@@ -31,16 +31,14 @@ export function callService (method, service, env, contentType, data, username, 
 
 export function formatRequestConsole (method, service, env, body, response) {
   let requestSent = {}
-  let responseReceived = {}
 
   requestSent.method = method.toUpperCase()
-  requestSent.service = service
-  requestSent.serviceDescription = constStore.serviceMPDDescription[service]
+  let serviceUsed = service.slice(4)
+  requestSent.service = serviceUsed
+  requestSent.serviceDescription = constStore.serviceMPPDescription[serviceUsed]
   requestSent.body = body
 
-  responseReceived.responseReceived = response
-
-  return { requestSent, responseReceived }
+  return { requestSent, response }
 }
 
 // For each trajet, add a unique id, price and class selected
