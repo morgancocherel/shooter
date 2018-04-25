@@ -1,24 +1,24 @@
 <template>
   <div>
-    <sidebar></sidebar>
+    <console></console>
     <header-top></header-top>
-    <username></username>
+    <main-form></main-form>
     <devis-form></devis-form>
   </div>
 </template>
 
 <script>
-import devisForm from './devis/devisForm'
+import devisForm from './devis/DevisForm'
 import HeaderTop from './header-top/HeaderTop'
-import Username from './main-form/Username'
-import Sidebar from './console/Sidebar'
+import MainForm from './main-form/MainForm'
+import Console from './console/Console'
 
 export default {
   components: {
-    Sidebar,
+    Console,
     devisForm,
     HeaderTop,
-    Username
+    MainForm
   },
   name: 'Home'
 }

@@ -86,8 +86,8 @@
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
-import MainForm from '../main-form/Username'
-import Sidebar from '../console/Sidebar'
+import MainForm from '../main-form/MainForm'
+import Sidebar from '../console/Console'
 import $ from 'jquery'
 import * as actions from '../../store/modules/finalisation/finalisation-action-types'
 
@@ -154,6 +154,11 @@ export default {
   label.name-traveler {
     color: #8C9DA1;
     font-size: 14px;
+  }
+
+  .segment {
+    border: 1px solid #DCE3E6;
+    box-shadow: none;
   }
 
   /* Accordion View */

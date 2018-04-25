@@ -93,8 +93,8 @@
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
-import MainForm from '../main-form/Username'
-import Sidebar from '../console/Sidebar'
+import MainForm from '../main-form/MainForm'
+import Sidebar from '../console/Console'
 import * as actions from '../../store/modules/commande/commande-action-types'
 
 const {mapGetters, mapActions} = createNamespacedHelpers('Commande')
@@ -147,6 +147,11 @@ export default {
 
   .ui.segment {
     padding: 10px 25px;
+  }
+
+  .segment {
+    border: 1px solid #DCE3E6;
+    box-shadow: none;
   }
 
   .wide.column {

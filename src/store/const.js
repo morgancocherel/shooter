@@ -138,7 +138,7 @@ export const serviceMPPDescription = {
   '/references': 'REF - Récupérer les données de références d\'un canal',
   '/voyages/mono': 'COP - Consulter les offres par accès Produit',
   '/voyages': 'COH - Consulter les offres TER par accès Horaire',
-  '/trajetsOffres': 'CTO - Consulter les trajest et les offres',
+  '/trajetsOffres': 'CTO - Consulter les trajest et les offres Consulter les trajest et les offres Consulter les trajest et les offres',
   '/commandes/current/voyages': 'AVO - Ajouter un voyage à une nouvelle commande',
   '/commandes/{idCommande}/voyages': 'AVO - Ajouter un voyage à une commande',
   '/commandes/{idCommande}': 'CCM - Consulter une commande en cours',

@@ -135,8 +135,8 @@
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
-import MainForm from '../main-form/Username'
-import Sidebar from '../console/Sidebar'
+import MainForm from '../main-form/MainForm'
+import Sidebar from '../console/Console'
 import $ from 'jquery'
 
 const { mapGetters } = createNamespacedHelpers('Finalisation')
@@ -167,6 +167,11 @@ export default {
   .final-transaction-title p {
     color: #323E42;
     font-size: 17px;
+  }
+
+  .segment {
+    border: 1px solid #DCE3E6;
+    box-shadow: none;
   }
 
   /* Accordion View */

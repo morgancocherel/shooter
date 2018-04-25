@@ -22,8 +22,7 @@
       </a>
     </div>
     <div class="right menu">
-      <a class="item no-border js-username-form">Identifiants</a>
-      <a class="item no-border">Environnment</a>
+      <a class="item no-border js-main-form">Identifiants & Environnements</a>
       <a class="item js-console no-border">
         <i class="terminal icon"></i>
       </a>
@@ -54,14 +53,24 @@ export default {
     })
   },
   mounted () {
-    $('.js-console').click(function () {
+    function toggleClassConsoleSidebar () {
       $('.js-console-content').toggleClass('inactive-console')
       $('.js-console-content').toggleClass('active-console')
+    }
+
+    function toggleClassMainFormSidebar () {
+      $('.js-main-form-content').toggleClass('inactive-main-form')
+      $('.js-main-form-content').toggleClass('active-main-form')
+    }
+
+    // open close console sidebar
+    $('.js-console').click(function () {
+      toggleClassConsoleSidebar()
     })
 
-    $('.js-username-form').click(function () {
-      $('.js-username-form-content').toggleClass('inactive-username-form')
-      $('.js-username-form-content').toggleClass('active-username-form')
+    // open close main form (username, password and environment form) sidebar
+    $('.js-main-form').click(function () {
+      toggleClassMainFormSidebar()
     })
   }
 }
@@ -165,19 +174,13 @@ export default {
   }
 
   /* active - inactive sidebars */
-  .active-console {
+  .active-console,
+  .active-main-form {
     width: 600px;
   }
 
-  .inactive-console {
-    width: 0;
-  }
-
-  .active-username-form {
-    width: 600px;
-  }
-
-  .inactive-username-form {
+  .active-console,
+  .active-main-form {
     width: 0;
   }
 </style>

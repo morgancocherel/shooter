@@ -65,8 +65,8 @@
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
-import MainForm from '../main-form/Username'
-import Sidebar from '../console/Sidebar'
+import MainForm from '../main-form/MainForm'
+import Sidebar from '../console/Console'
 import * as actions from '../../store/modules/paiement/payment-action-types'
 
 const {mapGetters, mapActions} = createNamespacedHelpers('Payment')
@@ -123,6 +123,11 @@ export default {
 
   .no-pading-right {
     padding-left: 0 !important;
+  }
+
+  .segment {
+    border: 1px solid #DCE3E6;
+    box-shadow: none;
   }
 
   /* Traveler and ticket information*/

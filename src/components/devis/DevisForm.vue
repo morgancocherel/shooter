@@ -181,9 +181,9 @@ export default {
     color: #FFF;
   }
 
-  .container {
+  .ui.form.container {
     padding: 24px 40px;
-    border: 2px solid #ECECEC;
+    border: 1px solid #DCE3E6;
     border-radius: .3125em;
   }
 

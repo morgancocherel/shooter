@@ -1,7 +1,10 @@
 <template>
   <div class="console-content js-console-content inactive-console">
-    <div class="ui grid">
-      <div class="sixteen wide column center aligned middle aligned">
+    <div class="ui internally celled grid">
+      <div class="sixteen wide column right aligned">
+        <button type="button" tabindex="11" title="close" class="close-console js-close-console"></button>
+      </div>
+      <div class="sixteen wide column left aligned">
         <h3 class="ui header centered">Requêtes en cours</h3>
       </div>
       <div class="ui stackable celled grid request-container" v-for="req in getAllRequest" :key="req.id">
@@ -34,16 +37,19 @@
           </div>
           <div class="ui segment">
             <div class="ui secondary pointing menu js-item">
-              <a class="item js-formated-data">
+              <a class="item js-formated-data active">
                 Formaté
               </a>
-              <a class="item js-json active">
+              <a class="item js-json">
                 JSON
               </a>
             </div>
-            <div class="ui segment">
+            <div class="ui segment request-data-display-container">
               <p class="js-request-data-display request-data-display">
-                <vue-json-pretty :data="req.requestSent" :options="{maxDepth: 3}"></vue-json-pretty>
+                <tree-view :data="req.requestSent" :options="{maxDepth: 3}" class="js-input-formated-data active-data-view"></tree-view>
+                <vue-json-pretty :data="req.requestSent" :options="{maxDepth: 3}" class="js-input-json inactive-data-view"></vue-json-pretty>
+                <tree-view :data="req.responseReceived" :options="{maxDepth: 3}" class="js-output-formated-data inactive-data-view"></tree-view>
+                <vue-json-pretty :data="req.responseReceived" :options="{maxDepth: 3}" class="js-output-json inactive-data-view"></vue-json-pretty>
               </p>
             </div>
           </div>
@@ -61,7 +67,7 @@ import VueJsonPretty from 'vue-json-pretty'
 const {mapGetters} = createNamespacedHelpers('Console')
 
 export default {
-  name: 'Sidebar',
+  name: 'Console',
   components: {
     VueJsonPretty
   },
@@ -69,16 +75,6 @@ export default {
     ...mapGetters(['getAllRequest'])
   },
   mounted () {
-    $(document).mouseup(function (e) {
-      let container = $('.js-console-content')
-
-      // if the target of the click isn't the container nor a descendant of the container
-      if (!container.is(e.target) && container.has(e.target).length === 0) {
-        container.removeClass('active-sidebar')
-        container.addClass('inactive-sidebar')
-      }
-    })
-
     // Open request on click on the icon
     $('.js-open-close-request-icon').click(function () {
       $('.js-data-request').slideToggle()
@@ -104,28 +100,46 @@ export default {
 
       // Append the data with the format selected
       let menuSelectedTable = []
+      let newDataView = null
       $('.js-item').children().each(function () {
         if ($(this).hasClass('active')) {
           menuSelectedTable.push($.trim(this.className.split('js-')[1].replace(/active.*/i, '')))
         }
         let menuSelectedString = menuSelectedTable.join(' ')
 
-        $('.js-request-data-display').html()
         switch (true) {
           case (menuSelectedString === 'input formated-data'):
-            $('.js-request-data-display').html('<vue-tree-view :data="req.requestSent" :options="{maxDepth: 3}"></vue-tree-view>')
+            newDataView = 'js-input-formated-data'
             break
           case (menuSelectedString === 'input json'):
-            $('.js-request-data-display').html('<vue-json-pretty :data="req.requestSent" :options="{maxDepth: 3}"></vue-json-pretty>')
+            newDataView = 'js-input-json'
             break
           case (menuSelectedString === 'output formated-data'):
-            $('.js-request-data-display').html('<vue-tree-view :data="req.responseReceived" :options="{maxDepth: 3}"></vue-tree-view>')
+            newDataView = 'js-output-formated-data'
             break
           case (menuSelectedString === 'output json'):
-            $('.js-request-data-display').html('<vue-json-pretty :data="req.responseReceived" :options="{maxDepth: 3}"></vue-json-pretty>')
+            newDataView = 'js-output-json'
             break
         }
       })
+
+      // Hide previous menu data view selected
+      $('.js-request-data-display').children().each(function () {
+        if ($(this).hasClass('active-data-view')) {
+          $(this).removeClass('active-data-view')
+          $(this).addClass('inactive-data-view')
+        }
+      })
+
+      // Set the new menu data view selected
+      $('.' + newDataView).addClass('active-data-view')
+      $('.' + newDataView).removeClass('inactive-data-view')
+    })
+
+    // Close console
+    $('.js-close-console').click(function () {
+      $('.js-console-content').toggleClass('inactive-console')
+      $('.js-console-content').toggleClass('active-console')
     })
   }
 }
@@ -142,7 +156,7 @@ export default {
     right: 0;
     background-color: #FFF;
     overflow-x: hidden;
-    padding-top: 60px;
+    margin-top: 60px;
     transition: 0.5s;
   }
 
@@ -152,6 +166,15 @@ export default {
 
   .request-container {
     margin-top: 0 !important;
+    padding: 0;
+  }
+
+  .service-description-request span {
+    display: block;
+    max-width: 240px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   span {
@@ -189,6 +212,7 @@ export default {
 
   .service-description-request {
     color: #10A54A;
+    white-space: nowrap;
   }
 
   /* Data request */
@@ -198,6 +222,30 @@ export default {
 
   .request-data-display {
     text-align: left;
+  }
+
+  .request-data-display-container {
+    height: 400px;
+    max-height: 400px;
+    overflow-y: scroll;
+  }
+
+  .request-data-display .inactive-data-view {
+    display: none !important;
+  }
+
+  button.close-sidebar:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  button.close-console {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: url('../../assets/closeIcon.svg') no-repeat center center transparent;
+    background-size: 20px 20px;
+    opacity: 0.5;
   }
 
   /* active - inacive sidebar*/

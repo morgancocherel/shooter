@@ -375,9 +375,9 @@
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
-import MainForm from '../main-form/Username'
-import Sidebar from '../console/Sidebar'
-import devisForm from '../devis/devisForm'
+import MainForm from '../main-form/MainForm'
+import Sidebar from '../console/Console'
+import devisForm from '../devis/DevisForm'
 import $ from 'jquery'
 import * as actionsCommande from '../../store/modules/commande/commande-action-types'
 import * as actionsDevis from '../../store/modules/devis/devis-action-types'
@@ -517,6 +517,11 @@ export default {
   /* Mutual Styles */
   .commande-conatainer {
     margin: 0 !important;
+  }
+
+  .segment {
+    border: 1px solid #DCE3E6;
+    box-shadow: none;
   }
 
   /* List Devis */
