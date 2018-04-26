@@ -1,5 +1,4 @@
 import Axios from 'axios'
-import * as constStore from '../store/const'
 import $ from 'jquery'
 
 export function callService (method, service, env, contentType, data, username, password) {
@@ -27,18 +26,6 @@ export function callService (method, service, env, contentType, data, username, 
         reject(error)
       })
   })
-}
-
-export function formatRequestConsole (method, service, env, body, response) {
-  let requestSent = {}
-
-  requestSent.method = method.toUpperCase()
-  let serviceUsed = service.slice(4)
-  requestSent.service = serviceUsed
-  requestSent.serviceDescription = constStore.serviceMPPDescription[serviceUsed]
-  requestSent.body = body
-
-  return { requestSent, response }
 }
 
 // For each trajet, add a unique id, price and class selected
@@ -92,17 +79,6 @@ function proposalSelectedData (current, id, offerLength) {
 
   return { proposalSelected, classSelected, firstClass, secondClass }
 }
-
-/*
-function secondsToHm (d) {
-  d = Number(d)
-  let h = Math.floor(d / 3600)
-  let m = Math.floor(d % 3600 / 60)
-  let mDisplay = m.toString().length === 1 ? '0' + m : m
-
-  return h + 'H' + mDisplay
-}
-*/
 
 export function toDisplayDate (date) {
   let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }

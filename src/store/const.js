@@ -3,12 +3,12 @@ export const today = new Date()
 /* devis */
 export const devis = {
   travelMode: 'AS',
-  originTrain: 'FRNTE',
+  originTrain: 'FRUIP',
   departureDate: today,
   departureTime: today.getHours(),
   destinationTrain: 'FRRNS',
   returnDate: null,
-  returnTime: today.getHours() + 8,
+  returnTime: null,
   returnForm: false,
   dateDisplay: null,
   devisIsLoading: false,
@@ -39,8 +39,8 @@ export const commande = {
     {text: 'M.', value: 'monsieur'},
     {text: 'Mme', value: 'madame'}
   ],
-  firsname: 'Morgan',
-  lastname: 'Cocherel',
+  firsname: null,
+  lastname: null,
   dayBirth: null,
   allMonths: [
     { text: 'Janvier' },
@@ -62,7 +62,14 @@ export const commande = {
     {text: 'Passager 1'}
   ],
   travelerContact: null,
-  emailTravelerContact: 'mcocherel@oui.sncf'
+  emailTravelerContact: null,
+  commandeButtonIsLoading: false,
+  hideDevisResult: false
+}
+
+/* Payment */
+export const payment = {
+  paymentButtonIsLoading: false
 }
 
 /* Finalisation */
@@ -72,7 +79,7 @@ export const finalisation = {
   urlIhmPaiement: null,
   operationDistributionId: null,
   finalData: null,
-  transactionIsLoading: false
+  finalisationButtonIsLoading: false
 }
 
 /* Travel Mode */
@@ -134,17 +141,17 @@ export const servicesMPD = {
 }
 
 export const serviceMPPDescription = {
-  '/healthcheck': 'Verifie si le service est up ou down',
-  '/references': 'REF - Récupérer les données de références d\'un canal',
-  '/voyages/mono': 'COP - Consulter les offres par accès Produit',
-  '/voyages': 'COH - Consulter les offres TER par accès Horaire',
-  '/trajetsOffres': 'CTO - Consulter les trajest et les offres Consulter les trajest et les offres Consulter les trajest et les offres',
-  '/commandes/current/voyages': 'AVO - Ajouter un voyage à une nouvelle commande',
-  '/commandes/{idCommande}/voyages': 'AVO - Ajouter un voyage à une commande',
-  '/commandes/{idCommande}': 'CCM - Consulter une commande en cours',
-  '/commandes/{idCommande}/paiements': 'DPC - Demander le paiement d\'une commande',
-  '/soap/finTransaction': 'RRP - Recevoir le résultat du paiement',
-  '/commandes/{idCommande}/paiements/{jetonTransaction}': 'FRC - Fournir le résultat du paiement'
+  1: 'Verifie si le service est up ou down',
+  2: 'REF - Récupérer les données de références d\'un canal',
+  3: 'COP - Consulter les offres par accès Produit',
+  4: 'COH - Consulter les offres TER par accès Horaire',
+  5: 'CTO - Consulter les trajest et les offres',
+  6: 'AVO - Ajouter un voyage à une nouvelle commande',
+  7: 'AVO - Ajouter un voyage à une commande',
+  8: 'CCM - Consulter une commande en cours',
+  9: 'DPC - Demander le paiement d\'une commande',
+  10: 'RRP - Recevoir le résultat du paiement',
+  11: 'FRC - Fournir le résultat du paiement'
 }
 
 /* Methods */

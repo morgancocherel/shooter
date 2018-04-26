@@ -1,11 +1,13 @@
 import * as actionTypes from './payment-action-types'
 import * as mutationTypes from './payment-mutation-types'
 import { callService } from '../../../core/main'
+import { formatRequestConsole } from '../../../core/console/index'
 import * as constShooter from '../../const'
 import router from '../../../router'
 
 import * as actionTypesFinalisation from '../finalisation/finalisation-action-types'
 import * as actionTypesHeaderTop from '../header-top/header-top-action-types'
+import * as actionTypesConsole from '../console/console-action-types'
 
 const state = {
   firstname: constShooter.commande.firsname,
@@ -14,7 +16,8 @@ const state = {
   proposalSelected: constShooter.commande.proposalSelected,
   priceSelected: constShooter.commande.priceSelected,
   emailTravelerContact: constShooter.commande.emailTravelerContact,
-  idCommande: constShooter.commande.idCommande
+  idCommande: constShooter.commande.idCommande,
+  paymentButtonIsLoading: constShooter.payment.paymentButtonIsLoading
 }
 
 const getters = {
@@ -24,7 +27,8 @@ const getters = {
   getProposalSelected: state => state.proposalSelected,
   getPriceSelected: state => state.priceSelected,
   getEmailTravelerContact: state => state.emailTravelerContact,
-  getIdCommande: state => state.idCommande
+  getIdCommande: state => state.idCommande,
+  getPaymentButtonIsLoading: state => state.paymentButtonIsLoading
 }
 
 const mutations = {
@@ -48,11 +52,16 @@ const mutations = {
   },
   [mutationTypes.SET_ID_COMMANDE] (state, id) {
     state.idCommande = id
+  },
+  [mutationTypes.SET_PAYMENT_BUTTON_IS_LOADING] (state, boolean) {
+    state.paymentButtonIsLoading = boolean
   }
 }
 
 const actions = {
   [actionTypes.SUBMIT_PAYMENT] ({rootState, dispatch}) {
+    dispatch(actionTypes.EDIT_PAYMENT_BUTTON_IS_LOADING, true)
+
     let mainFormState = rootState.MainForm
 
     let method = constShooter.methods.methodPost
@@ -62,6 +71,7 @@ const actions = {
     let username = mainFormState.username
     let password = mainFormState.password
     let body = getBodyDPC(state.emailTravelerContact)
+    let idService = 9
 
     callService(method, service, env, contentType, body, username, password)
       .then((response) => {
@@ -75,10 +85,17 @@ const actions = {
 
         dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_PAYMENT_ACTIVE_STEP, false, {root: true})
         dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_FINALISATION_ACTIVE_STEP, true, {root: true})
+
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+
         router.push({path: '/soap/finTransaction'})
+        dispatch(actionTypes.EDIT_PAYMENT_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
+        let response = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
         console.log(error, 'Request DPC error')
+        dispatch(actionTypes.EDIT_PAYMENT_BUTTON_IS_LOADING, false)
       })
   },
   [actionTypes.EDIT_TRAVELER_EMAIL_CONTACT] ({commit}, email) {
@@ -101,6 +118,15 @@ const actions = {
   },
   [actionTypes.EDIT_ID_COMMANDE] ({commit}, id) {
     commit(mutationTypes.SET_ID_COMMANDE, id)
+  },
+  [actionTypes.EDIT_PAYMENT_BUTTON_IS_LOADING] ({commit}, boolean) {
+    commit(mutationTypes.SET_PAYMENT_BUTTON_IS_LOADING, boolean)
+  },
+  [actionTypes.RETURN_TO_BASKET] ({dispatch}) {
+    dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_PAYMENT_ACTIVE_STEP, false, {root: true})
+    dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, true, {root: true})
+
+    router.push({path: '/commandes/current/voyages'})
   }
 }
 

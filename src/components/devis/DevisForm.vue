@@ -43,13 +43,13 @@
         <div class="ui calendar" id="js-departure-time">
           <div class="ui input left icon departure-time">
             <i class="time icon"></i>
-            <input type="text" placeholder="Time" :value="getDepartureTime" @input="updateDepartureTime">
+            <input type="text" placeholder="Aller" :value="getDepartureTime" @input="updateDepartureTime">
           </div>
         </div>
         <div class="ui calendar" id="js-return-time">
           <div class="ui input left icon">
             <i class="time icon"></i>
-            <input type="text" placeholder="Time" :value="getReturnTime" @input="updateReturnTime">
+            <input type="text" placeholder="Retour" :value="getReturnTime" @input="updateReturnTime">
           </div>
         </div>
       </div>

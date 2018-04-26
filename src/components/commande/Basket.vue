@@ -1,6 +1,6 @@
 <template>
   <div>
-    <sidebar></sidebar>
+    <console></console>
     <header-top></header-top>
     <main-form></main-form>
     <div class="ui grid container basket-content">
@@ -10,18 +10,18 @@
             <div class="sncf_logo"></div>
           </div>
           <div class="thirteen wide column left aligned basket-information-container">
-            <p>Aller simple de <strong>{{ getProposalSelected.start_point.label }}</strong> </p>
+            <p>Aller simple de <strong>{{ getProposalSelected.start_point.label | stationFormat }} à {{ getProposalSelected.end_point.label | stationFormat }}</strong> </p>
             <p>Pour un <strong>{{ getProposalSelected.voyage.voyageurs[0].typologie }}</strong> </p>
             <p><strong>{{ getProposalSelected.departure_time.text }} - {{ getProposalSelected.arrival_time.text }} </strong> le {{ getDateDisplay }} </p>
           </div>
           <div class="two wide column right aligned middle aligned">
-            <span><strong>{{ getPriceSelected }}</strong></span>
+            <span><strong>{{ getPriceSelected | priceFormat}}</strong></span>
           </div>
         </div>
       </div>
       <div class="ui header who-travel">Qui voyage ?</div>
       <div class="sixteen wide column">
-      <div class="ui grid form segment">
+        <div class="ui grid form segment">
         <div class="sixteen wide column left aligned basket-information-container">
           <p>Information du passager</p>
           <span class="traveler-name-information">Le nom figurera sur les billets</span>
@@ -61,7 +61,7 @@
                  @input="updateYearBirth"/>
         </div>
       </div>
-    </div>
+      </div>
       <div class="sixteen wide column">
         <div class="ui grid form segment">
           <div class="sixteen wide column left aligned basket-information-container">
@@ -81,10 +81,10 @@
         </div>
       </div>
       <div class="eight wide column left aligned">
-        <router-link to="/trajetsOffres"><button class="ui button submit-button back-button">Retour</button></router-link>
+        <button class="ui button submit-button back-button" @click="returnToDevisForm">Retour</button>
       </div>
       <div class="eight wide column right aligned">
-        <button @click="consultCommandeInProgress"  class="ui button submit-button submit-basket">Réserver ({{ getPriceSelected }})</button>
+        <button @click="consultCommandeInProgress"  class="ui button submit-button submit-basket" v-bind:class="{ loading: getCommandeButtonIsLoading }">Réserver ({{ getPriceSelected | priceFormat }})</button>
       </div>
     </div>
   </div>
@@ -94,18 +94,20 @@
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
 import MainForm from '../main-form/MainForm'
-import Sidebar from '../console/Console'
+import Console from '../console/Console'
 import * as actions from '../../store/modules/commande/commande-action-types'
+import filters from '../../mixins/filters'
 
 const {mapGetters, mapActions} = createNamespacedHelpers('Commande')
 
 export default {
   name: 'Commande',
   components: {
-    Sidebar,
+    Console,
     HeaderTop,
     MainForm
   },
+  mixins: [filters],
   computed: {
     ...mapGetters([
       'getProposalSelected',
@@ -120,7 +122,8 @@ export default {
       'getAllMonths',
       'getAllTravelers',
       'getEmailTravelerContact',
-      'getTravelerContact'
+      'getTravelerContact',
+      'getCommandeButtonIsLoading'
     ])
   },
   methods: {
@@ -133,7 +136,8 @@ export default {
       'updateYearBirth': actions.EDIT_YEAR_BIRTH,
       'updateTravelerContact': actions.EDIT_TRAVELER_CONTACT,
       'updateEmailTravelerContact': actions.EDIT_TRAVELER_EMAIL_CONTACT,
-      'consultCommandeInProgress': actions.CONSULT_COMMANDE_IN_PROGRESS
+      'consultCommandeInProgress': actions.CONSULT_COMMANDE_IN_PROGRESS,
+      'returnToDevisForm': actions.RETURN_TO_DEVIS_FORM
     })
   }
 }
@@ -141,6 +145,11 @@ export default {
 
 <style scoped>
   /* Mutual styles */
+  .basket-content {
+    margin: 40px 0 0 0;
+    display: inline-flex;
+  }
+
   .basket-information-container {
     line-height: 28px;
   }

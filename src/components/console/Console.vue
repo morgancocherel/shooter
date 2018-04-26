@@ -7,24 +7,18 @@
       <div class="sixteen wide column left aligned">
         <h3 class="ui header centered">Requêtes en cours</h3>
       </div>
-      <div class="ui stackable celled grid request-container" v-for="req in getAllRequest" :key="req.id">
+      <div class="ui stackable celled grid request-container js-request-container" v-for="req in getAllRequest" :key="req.id">
         <div class="one wide column middle aligned center aligned">
           <div><i class="caret right icon js-open-close-request-icon"></i></div>
         </div>
-        <div class="one wide column middle aligned center aligned count-request">
-          <span>1</span>
-        </div>
-        <div class="two wide column middle aligned center aligned method-request">
+        <div class="two wide column middle aligned center aligned method-request js-method-request">
           <span>{{ req.requestSent.method }}</span>
         </div>
-        <div class="three wide column middle aligned left aligned service-request">
-          <span>{{ req.requestSent.service }}</span>
-        </div>
-        <div class="seven wide column middle aligned right aligned service-description-request">
+        <div class="eleven wide column middle aligned right aligned service-description-request js-service-description-request">
           <span>{{ req.requestSent.serviceDescription }}</span>
         </div>
         <div class="two wide column middle aligned center aligned status-request">
-          <span>{{ req.responseReceived.status }}</span>
+          <span>{{ req.responseReceived.status}}</span>
         </div>
         <div class="sixteen wide column data-request js-data-request" style="display: none;">
           <div class="ui pointing menu js-item">
@@ -77,7 +71,7 @@ export default {
   mounted () {
     // Open request on click on the icon
     $('.js-open-close-request-icon').click(function () {
-      $('.js-data-request').slideToggle()
+      $(this).closest('.js-request-container').find('.js-data-request').slideToggle()
       $(this).toggleClass('rotate')
     })
 
@@ -141,6 +135,26 @@ export default {
       $('.js-console-content').toggleClass('inactive-console')
       $('.js-console-content').toggleClass('active-console')
     })
+
+    // Set the right background color for method request
+    setMethodColor()
+
+    function setMethodColor () {
+      $('.js-method-request').each(function () {
+        let currentMethod = $(this).children().html().toLowerCase()
+        console.log(currentMethod)
+        switch (true) {
+          case (currentMethod === 'post'):
+            $(this).addClass('post-method')
+            $(this).closest('js-service-description-request').children().addClass('post-service-description-request')
+            break
+          case (currentMethod === 'get'):
+            $(this).addClass('get-method')
+            $(this).closest('js-service-description-request').children().addClass('get-service-description-request')
+            break
+        }
+      })
+    }
   }
 }
 
@@ -171,7 +185,6 @@ export default {
 
   .service-description-request span {
     display: block;
-    max-width: 240px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -195,14 +208,25 @@ export default {
   }
 
   .method-request {
-    background-color: #10A54A;
     border-radius: 2px;
     color: #FFF;
     font-weight: 600;
   }
 
-  .count-request {
-    color: #FF0000;
+  .post-method {
+    background-color: #10A54A;
+  }
+
+  .get-method {
+    background-color: #0f6ab4;
+  }
+
+  .get-service-description-request {
+    color: #0f6ab4;
+  }
+
+  .post-service-description-request {
+    color: #10A54A;
   }
 
   .service-request,
@@ -211,7 +235,6 @@ export default {
   }
 
   .service-description-request {
-    color: #10A54A;
     white-space: nowrap;
   }
 
@@ -234,7 +257,7 @@ export default {
     display: none !important;
   }
 
-  button.close-sidebar:hover {
+  button.close-console:hover {
     opacity: 1;
     cursor: pointer;
   }

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <sidebar></sidebar>
+    <console></console>
     <header-top></header-top>
     <main-form></main-form>
-    <div class="ui grid container">
+    <div class="ui grid container final-operation-container">
       <div class="sixteen wide column left aligned">
         <h3 class="ui header travel-information-reminder">Rappel du trajet</h3>
         <p class="sub-travel-information-reminder">Vous trouverez ci-dessous le résumé du trajet commandé.</p>
@@ -26,7 +26,7 @@
             <h5 class="ui header">{{ getProposalSelected.end_point.label }}</h5>
           </div>
           <div class="four wide column center aligned middle aligned no-padding-top-bottom no-pading-right" v-for="segment in getProposalSelected.voyage.itineraireAller.segments" :key="segment.id">
-            <span>{{ getProposalSelected.duration.text }}</span>
+            <span>{{ getProposalSelected.duration.value | durationFormat }}</span>
             <span>{{ segment.libelleEquipement }} {{ segment.numTrain }} | 2<sup>e</sup> class</span>
           </div>
         </div>
@@ -74,10 +74,10 @@
         </div>
       </div>
       <div class="eight wide column left aligned">
-        <router-link to="/commandes"><button class="ui button submit-button back-button">Annuler transaction</button></router-link>
+        <button class="ui button submit-button back-button" @click="returnToPayment">Annuler transaction</button>
       </div>
       <div class="eight wide column right aligned">
-        <button @click="submitTransaction"  class="ui button submit-button submit-finalisation">Continuer</button>
+        <button @click="submitTransaction"  class="ui button submit-button submit-finalisation" v-bind:class="{ loading: getFinalisationButtonIsLoading }">Continuer</button>
       </div>
     </div>
   </div>
@@ -87,15 +87,16 @@
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
 import MainForm from '../main-form/MainForm'
-import Sidebar from '../console/Console'
+import Console from '../console/Console'
 import $ from 'jquery'
 import * as actions from '../../store/modules/finalisation/finalisation-action-types'
+import filters from '../../mixins/filters'
 
 const {mapGetters, mapActions} = createNamespacedHelpers('Finalisation')
 
 export default {
   name: 'Finalisation',
-  components: {Sidebar, MainForm, HeaderTop},
+  components: {Console, MainForm, HeaderTop},
   computed: {
     ...mapGetters([
       'getEmailTravelerContact',
@@ -104,12 +105,15 @@ export default {
       'getProposalSelected',
       'getJetonTransaction',
       'getDureeValiditeJeton',
-      'getUrlIhmPaiement'
+      'getUrlIhmPaiement',
+      'getFinalisationButtonIsLoading'
     ])
   },
+  mixins: [filters],
   methods: {
     ...mapActions({
-      'submitTransaction': actions.SUBMIT_TRANSACTION
+      'submitTransaction': actions.SUBMIT_TRANSACTION,
+      'returnToPayment': actions.RETURN_TO_PAYMENT
     })
   },
   mounted () {
@@ -121,6 +125,11 @@ export default {
 
 <style scoped>
   /* Mutual styles */
+  .final-operation-container {
+    margin: 40px 0 0 0;
+    display: inline-flex;
+  }
+
   .no-padding-top-bottom {
     padding-top: 0 !important;
     padding-bottom: 0 !important;

@@ -1,12 +1,12 @@
 <template>
   <div>
-    <sidebar></sidebar>
+    <console></console>
     <header-top></header-top>
     <main-form></main-form>
-    <div class="ui grid container">
+    <div class="ui grid container final-transaction-container">
       <div class="sixteen wide column left aligned final-transaction-title">
         <h3 class="ui header">Confirmation de votre voyage</h3>
-        <p>Un email a été ennvoyé à {{ getEmailTravelerContact }} contenant l'ensemble des informations de votre trajet.</p>
+        <p>Un email de confirmation a été ennvoyé à {{ getEmailTravelerContact }} contenant l'ensemble des informations de votre trajet.</p>
       </div>
       <div class="sixteen wide column left aligned">
         <div class="ui accordion segment js-accordion">
@@ -136,14 +136,14 @@
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
 import MainForm from '../main-form/MainForm'
-import Sidebar from '../console/Console'
+import Console from '../console/Console'
 import $ from 'jquery'
 
 const { mapGetters } = createNamespacedHelpers('Finalisation')
 
 export default {
   name: 'Finalisation',
-  components: {Sidebar, MainForm, HeaderTop},
+  components: {Console, MainForm, HeaderTop},
   computed: {
     ...mapGetters([
       'getFinalData',
@@ -158,6 +158,11 @@ export default {
 </script>
 
 <style scoped>
+  .final-transaction-container {
+    margin: 40px 0 0 0;
+    display: inline-flex;
+  }
+
   .final-transaction-title h3{
     color: #13181A;
     font-size: 20px !important;

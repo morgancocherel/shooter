@@ -1,7 +1,7 @@
 <template>
   <div class="ui fixed inverted menu">
     <div class="left menu">
-      <div class="ui header item no-border" @click="goHome">Shooter MPD</div>
+      <div class="ui header item no-border shooter-mpd" @click="goHome">Shooter MPD</div>
     </div>
     <div class="menu" style="margin: 0 auto;">
       <a class="item step-container js-step" v-bind:class="{ active: getDevisActiveStep }">
@@ -23,7 +23,7 @@
     </div>
     <div class="right menu">
       <a class="item no-border js-main-form">Identifiants & Environnements</a>
-      <a class="item js-console no-border">
+      <a class="item js-console no-border open-console-icon">
         <i class="terminal icon"></i>
       </a>
     </div>
@@ -81,6 +81,10 @@ export default {
     background-color: #21314D;
     height: 60px;
     z-index: 2;
+  }
+
+  .item {
+    padding: 12px 20px !important;
   }
 
   .ui.inverted.menu a.item:hover {

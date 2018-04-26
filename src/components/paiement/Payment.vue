@@ -1,9 +1,9 @@
 <template>
   <div>
-    <sidebar></sidebar>
+    <console></console>
     <header-top></header-top>
     <main-form></main-form>
-    <div class="ui grid container">
+    <div class="ui grid container payment-container">
       <div class="sixteen wide column left aligned summary-traveler-information">
         <h3 class="ui header check-your-ticket">Vérifiez votre billet avant le paiement</h3>
         <p class="traveler-information">L'email de confirmation sera envoyé à <strong>{{ getFirstname }} {{ getLastname }}</strong> à l'adresse
@@ -23,7 +23,7 @@
             <h5 class="ui header">{{ getProposalSelected.end_point.label }}</h5>
           </div>
           <div class="two wide column right aligned middle aligned">
-            <span><strong>{{ getPriceSelected }}</strong></span>
+            <span><strong>{{ getPriceSelected | priceFormat }}</strong></span>
           </div>
           <div class="sixteen wide column ticket-information-container">
             <div class="ui grid segment sub-segment">
@@ -53,10 +53,10 @@
         </div>
       </div>
       <div class="eight wide column left aligned">
-        <router-link to="/commandes/current/voyages"><button class="ui button submit-button back-button">Retour</button></router-link>
+        <button class="ui button submit-button back-button" @click="returnToBasket">Retour</button>
       </div>
       <div class="eight wide column right aligned">
-        <button @click="submitPayment"  class="ui button submit-button submit-payment">Payer {{ getPriceSelected }}</button>
+        <button @click="submitPayment"  class="ui button submit-button submit-payment" v-bind:class="{loading : getPaymentButtonIsLoading}">Payer {{ getPriceSelected | priceFormat}}</button>
       </div>
     </div>
   </div>
@@ -66,8 +66,9 @@
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
 import MainForm from '../main-form/MainForm'
-import Sidebar from '../console/Console'
+import Console from '../console/Console'
 import * as actions from '../../store/modules/paiement/payment-action-types'
+import filters from '../../mixins/filters'
 
 const {mapGetters, mapActions} = createNamespacedHelpers('Payment')
 
@@ -76,8 +77,9 @@ export default {
   components: {
     HeaderTop,
     MainForm,
-    Sidebar
+    Console
   },
+  mixins: [filters],
   computed: {
     ...mapGetters([
       'getFirstname',
@@ -85,12 +87,14 @@ export default {
       'getEmailTravelerContact',
       'getDateDisplay',
       'getProposalSelected',
-      'getPriceSelected'
+      'getPriceSelected',
+      'getPaymentButtonIsLoading'
     ])
   },
   methods: {
     ...mapActions({
-      'submitPayment': actions.SUBMIT_PAYMENT
+      'submitPayment': actions.SUBMIT_PAYMENT,
+      'returnToBasket': actions.RETURN_TO_BASKET
     })
   }
 }
@@ -98,6 +102,11 @@ export default {
 
 <style scoped>
   /* Mutual styles */
+  .payment-container {
+    margin: 40px 0 0 0;
+    display: inline-flex;
+  }
+
   .traveler-information-container {
     line-height: 28px;
   }

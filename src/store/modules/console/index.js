@@ -11,7 +11,7 @@ const getters = {
 }
 
 const mutations = {
-  [mutationTypes.SET_NEW_REQUEST_TO_CONSOLE] (state, data) {
+  [mutationTypes.SET_ADD_REQUEST_TO_CONSOLE] (state, data) {
     state.allRequest.push({
       requestSent: data.requestSent,
       responseReceived: data.response
@@ -20,8 +20,8 @@ const mutations = {
 }
 
 const actions = {
-  [actionTypes.EDIT_NEW_REQUEST_TO_CONSOLE] ({commit}, request) {
-    commit(mutationTypes.SET_NEW_REQUEST_TO_CONSOLE, request)
+  [actionTypes.EDIT_ADD_REQUEST_TO_CONSOLE] ({commit}, request) {
+    commit(mutationTypes.SET_ADD_REQUEST_TO_CONSOLE, request)
   }
 }
 

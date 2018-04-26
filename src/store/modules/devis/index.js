@@ -1,7 +1,8 @@
 import * as actionTypes from './devis-action-types'
 import * as mutationTypes from './devis-mutation-types'
 import * as constShooter from '../../const'
-import { callService, formatRequestConsole, addData, toDisplayDate, toDateEntered } from '../../../core/main'
+import { callService, addData, toDisplayDate, toDateEntered } from '../../../core/main'
+import { formatRequestConsole } from '../../../core/console/index'
 import router from '../../../router/index'
 
 import * as actionTypesConsole from '../console/console-action-types'
@@ -69,28 +70,38 @@ const mutations = {
 }
 
 const actions = {
-  [actionTypes.EDIT_DEVIS] ({commit}, devis) {
+  [actionTypes.EDIT_DEVIS] ({commit, dispatch}, devis) {
     let value = devis.target.value
-    commit(mutationTypes.SET_RETURN_FORM, value)
+    dispatch(actionTypes.EDIT_RETURN_FORM, value)
+    dispatch('Commande/' + actionTypesCommande.EDIT_HIDE_DEVIS_RESULT, true, {root: true})
     commit(mutationTypes.SET_DEVIS, value)
   },
-  [actionTypes.EDIT_ORIGIN_TRAIN] ({commit}, originTrain) {
+  [actionTypes.EDIT_ORIGIN_TRAIN] ({commit, dispatch}, originTrain) {
+    dispatch('Commande/' + actionTypesCommande.EDIT_HIDE_DEVIS_RESULT, true, {root: true})
     commit(mutationTypes.SET_ORIGIN_TRAIN, originTrain.target.value)
   },
-  [actionTypes.EDIT_DEPARTURE_DATE] ({commit}, departureDate) {
+  [actionTypes.EDIT_DEPARTURE_DATE] ({commit, dispatch}, departureDate) {
+    dispatch('Commande/' + actionTypesCommande.EDIT_HIDE_DEVIS_RESULT, true, {root: true})
     commit(mutationTypes.SET_DEPARTURE_DATE, departureDate)
   },
-  [actionTypes.EDIT_DEPARTURE_TIME] ({commit}, departureTime) {
+  [actionTypes.EDIT_DEPARTURE_TIME] ({commit, dispatch}, departureTime) {
+    dispatch('Commande/' + actionTypesCommande.EDIT_HIDE_DEVIS_RESULT, true, {root: true})
     commit(mutationTypes.SET_DEPARTURE_TIME, departureTime)
   },
-  [actionTypes.EDIT_DESTINATION_TRAIN] ({commit}, destinationTrain) {
+  [actionTypes.EDIT_DESTINATION_TRAIN] ({commit, dispatch}, destinationTrain) {
+    dispatch('Commande/' + actionTypesCommande.EDIT_HIDE_DEVIS_RESULT, true, {root: true})
     commit(mutationTypes.SET_DESTINATION_TRAIN, destinationTrain.target.value)
   },
-  [actionTypes.EDIT_RETURN_DATE] ({commit}, returnTime) {
+  [actionTypes.EDIT_RETURN_DATE] ({commit, dispatch}, returnTime) {
+    dispatch('Commande/' + actionTypesCommande.EDIT_HIDE_DEVIS_RESULT, true, {root: true})
     commit(mutationTypes.SET_RETURN_DATE, returnTime)
   },
-  [actionTypes.EDIT_RETURN_TIME] ({commit}, returnTime) {
+  [actionTypes.EDIT_RETURN_TIME] ({commit, dispatch}, returnTime) {
+    dispatch('Commande/' + actionTypesCommande.EDIT_HIDE_DEVIS_RESULT, true, {root: true})
     commit(mutationTypes.SET_RETURN_TIME, returnTime)
+  },
+  [actionTypes.EDIT_RETURN_FORM] ({commit}, returnForm) {
+    commit(mutationTypes.SET_RETURN_FORM, returnForm)
   },
   [actionTypes.SUBMIT_DEVIS_FORM] ({commit, dispatch, rootState}) {
     commit(mutationTypes.SET_DEVIS_IS_LOADING, true)
@@ -109,6 +120,7 @@ const actions = {
     let destinationTrain = state.destinationTrain
     let travelerData = state.travelerData
     let body = getBodyCTO(departureDate, travelerData, originTrain, destinationTrain)
+    let idService = 5
 
     dispatch('Commande/' + actionTypesCommande.EDIT_DATE_DISPLAY, toDisplayDate(departureDate), {root: true})
 
@@ -118,16 +130,18 @@ const actions = {
         dispatch('Commande/' + actionTypesCommande.EDIT_PROPOSAL_BRUT, proposals, {root: true})
         dispatch('Commande/' + actionTypesCommande.EDIT_DEFAULT_PROPOSAL_SELECTED, proposals[0], {root: true})
         dispatch('Commande/' + actionTypesCommande.EDIT_PRICE_SELECTED, proposals[0].proposal, {root: true})
-        dispatch('Console/' + actionTypesConsole.EDIT_NEW_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
         dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_DEVIS_ACTIVE_STEP, false, {root: true})
         dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, true, {root: true})
         router.push({path: '/trajetsOffres'})
         commit(mutationTypes.SET_DEVIS_IS_LOADING, false)
       })
-      .catch((error, response) => {
-        dispatch('Console/' + actionTypesConsole.EDIT_NEW_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response), {root: true})
+      .catch((error) => {
+        let response = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
         console.log(error, 'Request CTO error')
+        commit(mutationTypes.SET_DEVIS_IS_LOADING, false)
       })
   }
 }

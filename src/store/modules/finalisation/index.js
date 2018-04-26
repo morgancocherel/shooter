@@ -1,10 +1,13 @@
 import * as mutationTypes from './finalisation-mutation-types'
 import * as actionTypes from './finalisation-action-types'
 import * as constShooter from '../../const'
-// import router from '../../../router'
+import router from '../../../router'
 import { callService } from '../../../core/main'
 import { getBodyRRP, getBodyFRC } from '../../../core/finalisation/index'
-import router from '../../../router'
+import { formatRequestConsole } from '../../../core/console/index'
+
+import * as actionTypesHeaderTop from '../header-top/header-top-action-types'
+import * as actionTypesConsole from '../console/console-action-types'
 
 const state = {
   emailTravelerContact: constShooter.commande.emailTravelerContact,
@@ -18,7 +21,7 @@ const state = {
   idCommande: constShooter.commande.idCommande,
   activeStep: constShooter.finalisation.activeStep,
   finalData: constShooter.finalisation.finalData,
-  transactionIsLoading: constShooter.finalisation.transactionIsLoading
+  finalisationButtonIsLoading: constShooter.finalisation.finalisationButtonIsLoading
 }
 
 const getters = {
@@ -32,7 +35,7 @@ const getters = {
   getOperationDistributionId: state => state.operationDistributionId,
   getidCommande: state => state.idCommande,
   getFinalData: state => state.finalData,
-  getTransactionIsLoading: state => state.transactionIsLoading
+  getFinalisationButtonIsLoading: state => state.finalisationButtonIsLoading
 }
 
 const mutations = {
@@ -66,8 +69,8 @@ const mutations = {
   [mutationTypes.SET_FINAL_DATA] (state, data) {
     state.finalData = data
   },
-  [mutationTypes.SET_TRANSACTION_IS_LOADING] (state, boolean) {
-    state.transactionIsLoading = boolean
+  [mutationTypes.SET_FINALISATION_BUTTON_IS_LOADING] (state, boolean) {
+    state.finalisationButtonIsLoading = boolean
   }
 }
 
@@ -94,6 +97,8 @@ const actions = {
     commit(mutationTypes.SET_URL_IHM_PAIEMENT, url)
   },
   [actionTypes.SUBMIT_TRANSACTION] ({commit, dispatch, rootState}) {
+    dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, true)
+
     let mainFormState = rootState.MainForm
 
     let method = constShooter.methods.methodPost
@@ -103,20 +108,28 @@ const actions = {
     let username = mainFormState.username
     let password = mainFormState.password
     let body = getBodyRRP(state.jetonTransaction)
+    let idService = 10
 
     callService(method, service, env, contentType, body, username, password)
-      .then(() => {
+      .then((response) => {
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+
         router.push({path: '/commandes/paiements'})
+        dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
+        let response = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+
         console.log(error, 'Request RRP error')
+        dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, false)
       })
   },
   [actionTypes.EDIT_OPERATION_DISTRIBUTION_ID] ({commit}, id) {
     commit(mutationTypes.SET_OPERATION_DISTRIBUTION_ID, id)
   },
   [actionTypes.SUBMIT_COMMANDE] ({rootState, dispatch}) {
-    dispatch(actionTypes.EDIT_TRANSACTION_IS_LOADING, true)
+    dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, true)
 
     let mainFormState = rootState.MainForm
 
@@ -127,16 +140,25 @@ const actions = {
     let username = mainFormState.username
     let password = mainFormState.password
     let dateBirth = '1995-01-18'
+    let idService = 11
 
     let body = getBodyFRC(state.operationDistributionId, state.lastname, state.firstname, dateBirth)
 
     callService(method, service, env, contentType, body, username, password)
       .then((response) => {
         dispatch(actionTypes.EDIT_FINAL_DATA, response.data.commande)
+
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+
         router.push({path: '/commandes/paiements/transaction'})
+        dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
+        let response = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+
         console.log(error, 'Request FRC error')
+        dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, false)
       })
   },
   [actionTypes.EDIT_ID_COMMANDE] ({commit}, id) {
@@ -145,8 +167,17 @@ const actions = {
   [actionTypes.EDIT_FINAL_DATA] ({commit}, data) {
     commit(mutationTypes.SET_FINAL_DATA, data)
   },
-  [actionTypes.EDIT_TRANSACTION_IS_LOADING] ({commit}, boolean) {
-    commit(mutationTypes.SET_TRANSACTION_IS_LOADING, boolean)
+  [actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING] ({commit}, boolean) {
+    commit(mutationTypes.SET_FINALISATION_BUTTON_IS_LOADING, boolean)
+  },
+  [actionTypes.RETURN_TO_PAYMENT] ({dispatch}) {
+    dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_FINALISATION_ACTIVE_STEP, false, {root: true})
+    dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_PAYMENT_ACTIVE_STEP, true, {root: true})
+
+    router.push({path: '/commandes'})
+  },
+  [actionTypes.RETURN_TO_FINAL_OPERATION] () {
+    router.push({path: '/soap/transaction'})
   }
 }
 

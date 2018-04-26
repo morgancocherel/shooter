@@ -2,12 +2,14 @@ import * as mutationTypes from './commande-mutation-types'
 import * as actionTypes from './commande-action-types'
 import * as constShooter from '../../const'
 import { getPriceSelected, setProposalSelected, setOffreSelected } from '../../../core/commande'
+import { formatRequestConsole } from '../../../core/console/index'
 import { callService } from '../../../core/main'
 import router from '../../../router'
 
 import * as actionTypesPayment from '../paiement/payment-action-types'
 import * as actionTypesFinalisation from '../finalisation/finalisation-action-types'
 import * as actionTypesHeaderTop from '../header-top/header-top-action-types'
+import * as actionTypesConsole from '../console/console-action-types'
 
 const state = {
   dateDisplay: constShooter.commande.dateDisplay,
@@ -26,7 +28,9 @@ const state = {
   allMonths: constShooter.commande.allMonths,
   allTravelers: constShooter.commande.allTravelers,
   emailTravelerContact: constShooter.commande.emailTravelerContact,
-  travelerContact: constShooter.commande.travelerContact
+  travelerContact: constShooter.commande.travelerContact,
+  commandeButtonIsLoading: constShooter.commande.commandeButtonIsLoading,
+  hideDevisResult: constShooter.commande.hideDevisResult
 }
 
 const getters = {
@@ -46,7 +50,9 @@ const getters = {
   getAllMonths: state => state.allMonths,
   getAllTravelers: state => state.allTravelers,
   getEmailTravelerContact: state => state.emailTravelerContact,
-  getTravelerContact: state => state.travelerContact
+  getTravelerContact: state => state.travelerContact,
+  getCommandeButtonIsLoading: state => state.commandeButtonIsLoading,
+  getHideDevisResult: state => state.hideDevisResult
 }
 
 const mutations = {
@@ -97,6 +103,12 @@ const mutations = {
   },
   [mutationTypes.SET_TRAVELER_CONTACT] (state, traveler) {
     state.travelerContact = traveler
+  },
+  [mutationTypes.SET_COMMANDE_BUTTON_IS_LOADING] (state, boolean) {
+    state.commandeButtonIsLoading = boolean
+  },
+  [mutationTypes.SET_HIDE_DEVIS_RESULT] (state, boolean) {
+    state.hideDevisResult = boolean
   }
 }
 
@@ -141,6 +153,8 @@ const actions = {
     commit(mutationTypes.SET_PROPOSAL_SELECTED_DATA, data)
   },
   [actionTypes.ADD_TO_BASKET] ({commit, dispatch, rootState}) {
+    dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, true)
+
     let mainFormState = rootState.MainForm
     let method = constShooter.methods.methodPost
     let service = '/api' + constShooter.servicesMPD.serviceAVOnew
@@ -149,15 +163,22 @@ const actions = {
     let username = mainFormState.username
     let password = mainFormState.password
     let body = setOffreSelected(state.proposalSelected.voyage, state.proposalSelected.proposal.classSelected)
+    let idService = 7
 
     callService(method, service, env, contentType, body, username, password)
       .then((response) => {
         let idCommande = response.data.idCommande
         dispatch(actionTypes.EDIT_ID_COMMANDE, idCommande)
         dispatch('Finalisation/' + actionTypesFinalisation.EDIT_ID_COMMANDE, idCommande, {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+
         router.push({path: '/commandes/current/voyages'})
+        dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, false)
       })
-      .catch((error, response) => {
+      .catch((error) => {
+        let response = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, false)
         console.log(error, 'Request AVO error')
       })
   },
@@ -192,6 +213,8 @@ const actions = {
     commit(mutationTypes.SET_TRAVELER_CONTACT, traveler.target.value)
   },
   [actionTypes.CONSULT_COMMANDE_IN_PROGRESS] ({dispatch, rootState}) {
+    dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, true)
+
     let mainFormState = rootState.MainForm
     let method = constShooter.methods.methodGet
     let service = '/api' + constShooter.servicesMPD.serviceCCM.replace(/{idCommande}/i, state.idCommande)
@@ -200,6 +223,7 @@ const actions = {
     let username = mainFormState.username
     let password = mainFormState.password
     let body = null
+    let idService = 8
 
     callService(method, service, env, contentType, body, username, password)
       .then((response) => {
@@ -216,11 +240,27 @@ const actions = {
 
         dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, false, {root: true})
         dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_PAYMENT_ACTIVE_STEP, true, {root: true})
+
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+
         router.push({path: '/commandes'})
+        dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
+        let response = null
+        dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, false)
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
         console.log(error, 'Request CTO error')
       })
+  },
+  [actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING] ({commit}, boolean) {
+    commit(mutationTypes.SET_COMMANDE_BUTTON_IS_LOADING, boolean)
+  },
+  [actionTypes.EDIT_HIDE_DEVIS_RESULT] ({commit}, boolean) {
+    commit(mutationTypes.SET_HIDE_DEVIS_RESULT, boolean)
+  },
+  [actionTypes.RETURN_TO_DEVIS_FORM] () {
+    router.push({path: '/trajetsOffres'})
   }
 }
 

@@ -1,22 +1,22 @@
 <template>
   <div>
-    <sidebar></sidebar>
+    <console></console>
     <header-top></header-top>
     <main-form></main-form>
     <div class="js-booking-form" style="display: none">
       <devis-form></devis-form>
     </div>
-    <div class="ui grid commande-conatainer">
+    <div class="ui grid commande-container">
       <div class="five wide column left aligned your-travel">
         <div class="js-result">
-          <span>Votre Trajet {{ getProposalSelected.start_point.label }}</span>
-          <i class="large right arrow icon"></i>
-          <span>{{ getProposalSelected.end_point.label }}</span>
+          <span>
+            Votre trajet {{ getProposalSelected.start_point.label }} <span class="unicode">➜</span> {{ getProposalSelected.end_point.label }}
+          </span>
           <button class="mini ui button js-display-booking-form">Modifier la recherche</button>
         </div>
       </div>
-      <div class="eleven wide column"></div>
-      <div class="five wide column list-devis">
+      <div class="eleven wide column no-content-commande"></div>
+      <div class="five wide column list-devis" v-bind:class="{ hide: getHideDevisResult }">
         <div class="ui grid segment js-result js-list-devis">
           <div class="sixteen wide column middle aligned">
             <i class="caret up icon"></i> Trajets précédents
@@ -44,14 +44,14 @@
                 </div>
                 <div class="four wide column center aligned middle aligned js-proposal-no-class">
                   <h5 class="ui header">
-                    {{ prop.duration.text }} - {{ prop.voyage.itineraireAller.segments[0].libelleEquipement }}
+                    {{ prop.duration.value | durationFormat }} - {{ prop.voyage.itineraireAller.segments[0].libelleEquipement }}
                   </h5>
                 </div>
                 <div class="three wide column center aligned middle aligned js-set-price js-proposal-second-class second-class">
-                  <div class="ui label large devis-price" v-bind:class="{ active: prop.proposal.secondClass.selected }">{{ prop.proposal.secondClass.price }}</div>
+                  <div class="ui label large devis-price" v-bind:class="{ active: prop.proposal.secondClass.selected }">{{ prop.proposal.secondClass.price | priceFormat }}</div>
                 </div>
                 <div class="three wide column center aligned middle aligned js-set-price js-proposal-first-class first-class">
-                  <div class="ui label large devis-price" v-bind:class="{ active: prop.proposal.firstClass.selected }">{{ prop.proposal.firstClass.price }}</div>
+                  <div class="ui label large devis-price" v-bind:class="{ active: prop.proposal.firstClass.selected }">{{ prop.proposal.firstClass.price | priceFormat }}</div>
                 </div>
               </div>
             </a>
@@ -61,7 +61,7 @@
           </div>
         </div>
       </div>
-      <div class="eleven wide column left aligned">
+      <div class="eleven wide column left aligned devis-selected" v-bind:class="{ hide: getHideDevisResult }">
         <div class="ui accordion segment js-result js-accordion">
           <div class="title active">
             <i class="dropdown icon"></i>
@@ -85,7 +85,7 @@
                 <h5 class="ui header">{{ getProposalSelected.end_point.label }}</h5>
               </div>
               <div class="four wide column center aligned middle aligned" v-for="segment in getProposalSelected.voyage.itineraireAller.segments" :key="segment.id">
-                <span>{{ getProposalSelected.duration.text }}</span>
+                <span>{{ getProposalSelected.duration.value | durationFormat }}</span>
                 <span>{{ segment.libelleEquipement }} {{ segment.numTrain }} | 2<sup>e</sup> class</span>
               </div>
             </div>
@@ -363,7 +363,7 @@
           </div>
           <div class="ui grid">
             <div class="sixteen wide column right aligned">
-              <button @click="addToBasket"  class="ui button add-to-basket">Choisir ({{ getPriceSelected }})</button>
+              <button @click="addToBasket"  class="ui button add-to-basket" v-bind:class="{ loading: getCommandeButtonIsLoading }">Choisir ({{ getPriceSelected | priceFormat }})</button>
             </div>
           </div>
         </div>
@@ -376,108 +376,48 @@
 import {createNamespacedHelpers} from 'vuex'
 import HeaderTop from '../header-top/HeaderTop'
 import MainForm from '../main-form/MainForm'
-import Sidebar from '../console/Console'
+import Console from '../console/Console'
 import devisForm from '../devis/DevisForm'
 import $ from 'jquery'
-import * as actionsCommande from '../../store/modules/commande/commande-action-types'
-import * as actionsDevis from '../../store/modules/devis/devis-action-types'
+import * as actions from '../../store/modules/commande/commande-action-types'
+import filters from '../../mixins/filters'
 
 const {mapGetters, mapActions} = createNamespacedHelpers('Commande')
 
 export default {
   name: 'Commande',
   components: {
-    Sidebar,
+    Console,
     HeaderTop,
     MainForm,
     devisForm
   },
+  mixins: [filters],
   computed: {
     ...mapGetters([
       'getDateDisplay',
       'getProposalBrut',
       'getProposalSelected',
-      'getPriceSelected'
+      'getPriceSelected',
+      'getCommandeButtonIsLoading',
+      'getPriceFormated',
+      'getHideDevisResult'
     ])
   },
   methods: {
     ...mapActions({
-      'updateDepartureDate': actionsDevis.EDIT_DEPARTURE_DATE,
-      'updateReturnDate': actionsDevis.EDIT_RETURN_DATE,
-      'updateDepartureTime': actionsDevis.EDIT_DEPARTURE_TIME,
-      'updateReturnTime': actionsDevis.EDIT_RETURN_TIME,
-      'updateProposalSelected': actionsCommande.EDIT_PROPOSAL_SELECTED,
-      'updatePriceSelected': actionsCommande.EDIT_PRICE_SELECTED,
-      'addToBasket': actionsCommande.ADD_TO_BASKET
+      'updateHideDevisResult': actions.EDIT_HIDE_DEVIS_RESULT,
+      'updateProposalSelected': actions.EDIT_PROPOSAL_SELECTED,
+      'updatePriceSelected': actions.EDIT_PRICE_SELECTED,
+      'addToBasket': actions.ADD_TO_BASKET
     })
   },
   mounted () {
-    const today = new Date()
     let self = this
-    // Set semantic ui calendar for the departure data form
-    $(this.$el).find('#js-departure-date').calendar({
-      type: 'date',
-      minDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
-      firstDayOfWeek: 1,
-      formatter: {
-        date: function (date) {
-          if (!date) return ''
-          let day = date.getDate()
-          let month = date.getMonth() + 1
-          let year = date.getFullYear()
-          return day + '/' + month + '/' + year
-        }
-      },
-      onChange: function (date) {
-        self.updateDepartureDate(date)
-      }
-    })
-    $(this.$el).find('#js-departure-time').calendar({
-      type: 'time',
-      ampm: false,
-      minDate: new Date(today.getHours(), today.getMinutes()),
-      disableMinute: true,
-      onChange (mode) {
-        self.updateDepartureTime(mode.getHours())
-      },
-      formatter: {
-        time: function (date) {
-          return ('0' + date.getHours()).slice(-2) + 'h'
-        }
-      }
-    })
 
-    // Set semantic ui calendar for the return data from
-    $(this.$el).find('#js-return-date').calendar({
-      type: 'date',
-      minDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
-      formatter: {
-        date: function (date) {
-          if (!date) return ''
-          let day = date.getDate()
-          let month = date.getMonth() + 1
-          let year = date.getFullYear()
-          return day + '/' + month + '/' + year
-        }
-      },
-      onChange (mode) {
-        self.updateReturnDate(mode)
-      }
-    })
-    $(this.$el).find('#js-return-time').calendar({
-      type: 'time',
-      ampm: false,
-      minDate: new Date(today.getHours(), today.getMinutes()),
-      disableMinute: true,
-      onChange (mode) {
-        self.updateReturnTime(mode.getHours())
-      },
-      formatter: {
-        time: function (date) {
-          return ('0' + date.getHours()).slice(-2) + 'h'
-        }
-      }
-    })
+    // Set the hide devis reuslt parameter to false
+    self.updateHideDevisResult(false)
+
     // Set travel active on click
     function setProposalSelected (el, classSelected) {
       let data = {}
@@ -515,13 +455,28 @@ export default {
 
 <style scoped>
   /* Mutual Styles */
-  .commande-conatainer {
-    margin: 0 !important;
+  .commande-container {
+    margin: 40px 0 0 0;
+    display: inline-flex;
+  }
+
+  .your-travel,
+  .list-devis{
+    padding: 14px 20px !important;
+  }
+
+  .no-content-commande,
+  .devis-selected {
+    padding: 14px 20px !important;
   }
 
   .segment {
     border: 1px solid #DCE3E6;
     box-shadow: none;
+  }
+
+  .hide {
+    display: none;
   }
 
   /* List Devis */
@@ -530,9 +485,10 @@ export default {
   }
 
   .your-travel span {
+    text-rendering: optimizeLegibility;
     color: #13181A;
-    font-size: 20px;
     font-weight: 600;
+    font-size: 23px;
   }
 
   .your-travel i {
@@ -548,6 +504,7 @@ export default {
     background-color: #8C9DA1;
     color: #FFF;
     padding: 6px 12px;
+    vertical-align: text-bottom;
   }
 
   .your-travel button:hover,
@@ -608,6 +565,7 @@ export default {
     padding: 20px 15px;
     color: #13181A;
     background-color: transparent;
+    white-space: nowrap;
   }
 
   .devis-price.active {
