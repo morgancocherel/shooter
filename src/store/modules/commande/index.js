@@ -172,6 +172,9 @@ const actions = {
         dispatch('Finalisation/' + actionTypesFinalisation.EDIT_ID_COMMANDE, idCommande, {root: true})
         dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
+        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_DEVIS_ACTIVE_STEP, false, {root: true})
+        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, true, {root: true})
+
         router.push({path: '/commandes/current/voyages'})
         dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, false)
       })

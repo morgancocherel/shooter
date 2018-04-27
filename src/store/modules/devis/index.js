@@ -1,13 +1,13 @@
 import * as actionTypes from './devis-action-types'
 import * as mutationTypes from './devis-mutation-types'
 import * as constShooter from '../../const'
-import { callService, addData, toDisplayDate, toDateEntered } from '../../../core/main'
+import { callService } from '../../../core/main'
+import { addData, toDisplayDate, getBodyCTO, toDateEntered } from '../../../core/devis/index'
 import { formatRequestConsole } from '../../../core/console/index'
 import router from '../../../router/index'
 
 import * as actionTypesConsole from '../console/console-action-types'
 import * as actionTypesCommande from '../commande/commande-action-types'
-import * as actionTypesHeaderTop from '../header-top/header-top-action-types'
 
 const state = {
   devis: constShooter.devis.travelMode,
@@ -132,8 +132,6 @@ const actions = {
         dispatch('Commande/' + actionTypesCommande.EDIT_PRICE_SELECTED, proposals[0].proposal, {root: true})
         dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
-        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_DEVIS_ACTIVE_STEP, false, {root: true})
-        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, true, {root: true})
         router.push({path: '/trajetsOffres'})
         commit(mutationTypes.SET_DEVIS_IS_LOADING, false)
       })
@@ -152,23 +150,4 @@ export default {
   actions,
   getters,
   mutations
-}
-
-function getBodyCTO (departureDate, travelerData, originTrain, destinationTrain) {
-  const bodyCTO =
-    {
-      trajet: {
-        origin: originTrain,
-        destination: destinationTrain,
-        departureDatetime: departureDate,
-        includeTypes: 'TER'
-      },
-      voyageurs: travelerData,
-      idDemande: 1,
-      diffusion: 'HORAIRE',
-      supportsMat: [
-        constShooter.supportsMat.digitalise
-      ]
-    }
-  return bodyCTO
 }

@@ -1,6 +1,7 @@
 import * as actionTypes from './payment-action-types'
 import * as mutationTypes from './payment-mutation-types'
 import { callService } from '../../../core/main'
+import { getBodyDPC } from '../../../core/paiement/index'
 import { formatRequestConsole } from '../../../core/console/index'
 import * as constShooter from '../../const'
 import router from '../../../router'
@@ -136,13 +137,4 @@ export default {
   actions,
   getters,
   mutations
-}
-
-function getBodyDPC (email) {
-  const bodyDPC =
-    {
-      email: email,
-      urlRetourPaiement: 'http://www.test.com'
-    }
-  return bodyDPC
 }

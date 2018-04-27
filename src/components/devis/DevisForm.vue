@@ -3,13 +3,13 @@
     <div class="inline fields">
       <div class="field">
         <div class="ui radio checkbox">
-          <input name="devis" type="radio" value="AS" v-model="getDevis" @input="updateDevis">
+          <input name="devis" type="radio" value="AS" @input="updateDevis" checked>
           <label>Aller simple</label>
         </div>
       </div>
       <div class="field">
         <div class="ui radio checkbox">
-          <input name="devis" type="radio" value="AR" v-model="getDevis" @input="updateDevis">
+          <input name="devis" type="radio" value="AR" @input="updateDevis">
           <label>Aller-retour</label>
         </div>
       </div>

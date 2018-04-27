@@ -142,15 +142,14 @@ export default {
     function setMethodColor () {
       $('.js-method-request').each(function () {
         let currentMethod = $(this).children().html().toLowerCase()
-        console.log(currentMethod)
         switch (true) {
           case (currentMethod === 'post'):
             $(this).addClass('post-method')
-            $(this).closest('js-service-description-request').children().addClass('post-service-description-request')
+            $(this).closest('.js-request-container').find('.js-service-description-request').children().addClass('post-service-description-request')
             break
           case (currentMethod === 'get'):
             $(this).addClass('get-method')
-            $(this).closest('js-service-description-request').children().addClass('get-service-description-request')
+            $(this).closest('.js-request-container').find('.js-service-description-request').children().addClass('get-service-description-request')
             break
         }
       })
@@ -248,7 +247,6 @@ export default {
   }
 
   .request-data-display-container {
-    height: 400px;
     max-height: 400px;
     overflow-y: scroll;
   }
@@ -278,5 +276,10 @@ export default {
 
   .inactive-console {
     width: 0;
+  }
+
+  /* tree view data view */
+  .request-data-display .vjs__tree .vjs__tree__content {
+    border-left: 1px solid red !important;
   }
 </style>
