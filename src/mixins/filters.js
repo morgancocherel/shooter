@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export default {
   filters: {
     priceFormat (val) {
@@ -16,6 +18,9 @@ export default {
     },
     stationFormat (val) {
       return val.charAt(0).toUpperCase() + val.slice(1, val.length).toLowerCase()
+    },
+    dateFormat (val) {
+      return moment(val).locale('fr').format('dddd D MMMM')
     }
   }
 }

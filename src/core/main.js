@@ -1,6 +1,6 @@
 import Axios from 'axios'
-import store from '../store/index'
-import * as actionsConsole from '../store/modules/console/console-action-types'
+// import store from '../store/index'
+// import * as actionsConsole from '../store/modules/console/console-action-types'
 
 export function callService (method, service, env, contentType, data, username, password) {
   return new Promise((resolve, reject) => {
@@ -21,7 +21,7 @@ export function callService (method, service, env, contentType, data, username, 
       }
     })
       .then((response) => {
-        store.actions(actionsConsole.EDIT_ADD_REQUEST_TO_CONSOLE, response)
+        // store.actions(actionsConsole.EDIT_ADD_REQUEST_TO_CONSOLE, response)
         resolve(response)
       })
       .catch((error) => {

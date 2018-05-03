@@ -6,7 +6,7 @@ export function formatRequestConsole (method, service, env, body, response, idSe
   requestSent.method = method.toUpperCase()
   let serviceUsed = service.slice(4)
   requestSent.service = serviceUsed
-  requestSent.serviceDescription = constStore.serviceMPPDescription[idService]
+  requestSent.serviceDescription = constStore.serviceMPDV1Description[idService]
   requestSent.body = body
 
   return { requestSent, response }

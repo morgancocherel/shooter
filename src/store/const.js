@@ -1,5 +1,33 @@
 export const today = new Date()
 
+/* mutual const for mpd v1 and 2 */
+
+/* Classes */
+export const classes = {
+  premiere: 'PREMIERE',
+  deuxieme: 'DEUXIEME',
+  noClass: 'no class'
+}
+
+/* Content type */
+export const contentType = {
+  json: 'application/json',
+  xml: 'text/xml'
+}
+
+/* Methods */
+export const methods = {
+  methodGet: 'get',
+  methodPost: 'post'
+}
+
+/* console */
+export const console = {
+  allRequest: []
+}
+
+/* mpd-v1 */
+
 /* devis */
 export const devis = {
   travelMode: 'AS',
@@ -10,7 +38,6 @@ export const devis = {
   returnDate: null,
   returnTime: null,
   returnForm: false,
-  dateDisplay: null,
   devisIsLoading: false,
   travelerData: [
     {
@@ -19,28 +46,29 @@ export const devis = {
       age: 30,
       num: 1
     }
-  ]
-}
-
-/* commande */
-export const commande = {
+  ],
   proposalSelected: null,
   proposalBrut: null,
   priceSelected: null,
-  dateDisplay: null,
   proposalSelectedData:
     {
       proposalId: 1,
       classSelected: 'DEUXIEME'
     },
+  hideDevisResult: false,
+  devisButtonIsLoading: false
+}
+
+/* commande */
+export const commande = {
   idCommande: null,
   civility: null,
   allCivilities: [
     {text: 'M.', value: 'monsieur'},
     {text: 'Mme', value: 'madame'}
   ],
-  firsname: null,
-  lastname: null,
+  firstname: 'Morgan',
+  lastname: 'Cocherel',
   dayBirth: null,
   allMonths: [
     { text: 'Janvier' },
@@ -62,9 +90,10 @@ export const commande = {
     {text: 'Passager 1'}
   ],
   travelerContact: null,
-  emailTravelerContact: null,
+  emailTravelerContact: 'm.cocherel@icloud.com',
   commandeButtonIsLoading: false,
-  hideDevisResult: false
+  proposalSelected: null,
+  priceSelected: null
 }
 
 /* Payment */
@@ -93,9 +122,33 @@ export const supportsMat = {
   digitalise: 'DIGITALISE'
 }
 
-/* console */
-export const console = {
-  allRequest: []
+/* Service MPD-v1 */
+export const servicesMPDV1 = {
+  serviceHealthcheck: '/healthcheck',
+  serviceREF: '/references',
+  serviceCOP: '/voyages/mono',
+  serviceCOH: '/voyages',
+  serviceCTO: '/trajetsOffres',
+  serviceAVOnew: '/commandes/current/voyages',
+  serviceAVO: '/commandes/{idCommande}/voyages',
+  serviceCCM: '/commandes/{idCommande}',
+  serviceDPC: '/commandes/{idCommande}/paiements',
+  serviceRRP: '/soap/finTransaction',
+  serviceFRC: '/commandes/{idCommande}/paiements/{jetonTransaction}'
+}
+
+export const serviceMPDV1Description = {
+  1: 'Verifie si le service est up ou down',
+  2: 'REF - Récupérer les données de références d\'un canal',
+  3: 'COP - Consulter les offres par accès Produit',
+  4: 'COH - Consulter les offres TER par accès Horaire',
+  5: 'CTO - Consulter les trajest et les offres',
+  6: 'AVO - Ajouter un voyage à une nouvelle commande',
+  7: 'AVO - Ajouter un voyage à une commande',
+  8: 'CCM - Consulter une commande en cours',
+  9: 'DPC - Demander le paiement d\'une commande',
+  10: 'RRP - Recevoir le résultat du paiement',
+  11: 'FRC - Fournir le résultat du paiement'
 }
 
 /* header top */
@@ -115,9 +168,10 @@ export const mainForm = {
     { text: 'cur1 public', value: 'cur1 public' },
     { text: 'Pipeline public', value: 'Pipeline public' },
     { text: 'Pipeline mobile', value: 'Pipeline mobile' },
-    { text: 'usn1 public', value: 'usn1 public' }
+    { text: 'usn1 public', value: 'usn1 public' },
+    { text: 'usine1 mpdv2', value: 'usine1 mpdv2' }
   ],
-  environment: 'cur1 public',
+  environment: 'usine1 mpdv2',
   username: 'mpdWEB',
   password: 'mpdWEB',
   currentHealthCheck: null,
@@ -125,80 +179,17 @@ export const mainForm = {
   currentEnvVersion: null
 }
 
-/* Service MPD */
-export const servicesMPD = {
-  serviceHealthcheck: '/healthcheck',
-  serviceREF: '/references',
-  serviceCOP: '/voyages/mono',
-  serviceCOH: '/voyages',
-  serviceCTO: '/trajetsOffres',
-  serviceAVOnew: '/commandes/current/voyages',
-  serviceAVO: '/commandes/{idCommande}/voyages',
-  serviceCCM: '/commandes/{idCommande}',
-  serviceDPC: '/commandes/{idCommande}/paiements',
-  serviceRRP: '/soap/finTransaction',
-  serviceFRC: '/commandes/{idCommande}/paiements/{jetonTransaction}'
+/* mpd-v2 */
+export const proposition = {
+  listePropositions: null,
+  catalogueSTIF: 'STIF'
 }
 
-export const serviceMPPDescription = {
-  1: 'Verifie si le service est up ou down',
-  2: 'REF - Récupérer les données de références d\'un canal',
-  3: 'COP - Consulter les offres par accès Produit',
-  4: 'COH - Consulter les offres TER par accès Horaire',
-  5: 'CTO - Consulter les trajest et les offres',
-  6: 'AVO - Ajouter un voyage à une nouvelle commande',
-  7: 'AVO - Ajouter un voyage à une commande',
-  8: 'CCM - Consulter une commande en cours',
-  9: 'DPC - Demander le paiement d\'une commande',
-  10: 'RRP - Recevoir le résultat du paiement',
-  11: 'FRC - Fournir le résultat du paiement'
+/* Service MPD-v2 */
+export const servicesMPDV2 = {
+  servicePropositions: '/propositions/catalogues/{id}'
 }
 
-/* Methods */
-export const methods = {
-  methodGet: 'get',
-  methodPost: 'post'
-}
-
-/* Classes */
-export const classes = {
-  premiere: 'PREMIERE',
-  deuxieme: 'DEUXIEME',
-  noClass: 'no class'
-}
-
-/* Content type */
-export const contentType = {
-  json: 'application/json',
-  xml: 'text/xml'
-}
-
-/* COP Body */
-export const bodyCOP =
-{
-  idDemande: '000002',
-  diffusion: 'PRODUIT',
-  idProduit: 'Ticket T plus unitaire',
-  region: 'IDF',
-  sens: 'AS',
-  supportsMat: ['BILLETTIQUE'],
-  informationsContenuSupportBillettique: {
-    listContainerDto: [{
-      aid: 'A000000291A000000191',
-      calypsoSerialNumber: 'A000000291A00000',
-      freeSlotWithCounter: '15',
-      freeSlotWithoutCounter: '0',
-      listTitleDto: [{
-        contractApplicationVersionNumber: '1',
-        contractIntercodeVersionNumber: '1',
-        contractNetworkId: '250901',
-        contractProvider: '00',
-        contractTariff: '5000',
-        erasable: 'false',
-        recordNumber: '1',
-        contractCount: '1',
-        mask: 'FF'
-      }]
-    }]
-  }
+export const serviceMPDV2Description = {
+  1: 'Liste des propositions mise à disposition'
 }

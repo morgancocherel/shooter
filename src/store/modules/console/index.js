@@ -12,20 +12,16 @@ const getters = {
 
 const mutations = {
   [mutationTypes.SET_ADD_REQUEST_TO_CONSOLE] (state, data) {
-    console.log(data)
-    /*
     state.allRequest.push({
       requestSent: data.requestSent,
       responseReceived: data.response
     })
-    */
   }
 }
 
 const actions = {
   [actionTypes.EDIT_ADD_REQUEST_TO_CONSOLE] ({commit}, request) {
-    console.log(request)
-    // commit(mutationTypes.SET_ADD_REQUEST_TO_CONSOLE, request)
+    commit(mutationTypes.SET_ADD_REQUEST_TO_CONSOLE, request)
   }
 }
 

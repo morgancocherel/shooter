@@ -25,50 +25,33 @@ function proposalSelectedData (current, id, offerLength) {
 export function addData (trajetsData) {
   let id = 1
   let trajets = []
-  $.each(trajetsData, function () {
-    this.id = id
-    let current = this
-    let offerLength = this.voyage.offres.length
 
-    this.proposal = proposalSelectedData(current, id, offerLength)
+  for (let i = 0; i < trajetsData.length; i++) {
+    let current = trajetsData[i]
+    if (current.warnings === undefined && current.voyage !== undefined) {
+      current.id = id
+      let offerLength = current.voyage.offres.length
 
-    // Add data required for AVO to the proposal selected and body
-    let origineLibelle = 'Nantes'
-    let destinationLibelle = 'Rennes'
-    let typeNumTrain = 'SUM'
-    let dureeItineraire = 123
+      current.proposal = proposalSelectedData(current, id, offerLength)
 
-    this.voyage.itineraireAller.origine.libelle = origineLibelle
-    this.voyage.itineraireAller.destination.libelle = destinationLibelle
-    this.voyage.itineraireAller.dureeItineraire = dureeItineraire
-    this.voyage.itineraireAller.segments[0].typeNumTrain = typeNumTrain
-    if (this.voyage.itineraireAller.segments.length === 2) {
-      this.voyage.itineraireAller.segments[1].typeNumTrain = typeNumTrain
+      // Add data required for AVO to the proposal selected and body
+      let typeNumTrain = 'SUM'
+      let dureeItineraire = 123
+
+      current.voyage.itineraireAller.origine.libelle = current.start_point.label
+      current.voyage.itineraireAller.destination.libelle = current.end_point.label
+      current.voyage.itineraireAller.dureeItineraire = dureeItineraire
+
+      for (let j = 0; j < current.voyage.itineraireAller.segments.length; j++) {
+        current.voyage.itineraireAller.segments[j].typeNumTrain = typeNumTrain
+      }
+
+      trajets.push(current)
+      id = id + 1
     }
-
-    trajets.push(this)
-    id = id + 1
-  })
+  }
 
   return trajets
-}
-
-export function toDisplayDate (date) {
-  let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-  let year = new Date().getFullYear()
-  let dateLocaleTable = date.toLocaleDateString('fr-FR', options).replace(year, '').split(' ').map(String)
-  let dateDisplay = []
-
-  $.each(dateLocaleTable, function () {
-    if ($.isNumeric(this) && this !== '') {
-      let number = this.length === 1 ? '0' + this : this
-      dateDisplay.push(number)
-    } else {
-      dateDisplay.push(this)
-    }
-  })
-
-  return dateDisplay.join(' ')
 }
 
 export function getBodyCTO (departureDate, travelerData, originTrain, destinationTrain) {
@@ -94,4 +77,67 @@ export function toDateEntered (date, time) {
   let dateNoTime = date.toISOString().replace(/T.*/i, '')
   let datePlusTime = dateNoTime + 'T' + time + ':00:00.000Z'
   return new Date(datePlusTime)
+}
+
+export function setProposalSelected (proposalBrut, proposals, proposalSelectedData) {
+  // Remove previous proposal selected
+  $.each(proposalBrut, function () {
+    if (this.proposal.proposalSelected === true) {
+      this.proposal.proposalSelected = false
+    }
+
+    if (this.proposal.firstClass.selected === true) {
+      this.proposal.firstClass.selected = false
+    }
+
+    if (this.proposal.secondClass.selected === true) {
+      this.proposal.secondClass.selected = false
+    }
+  })
+
+  // Set up the new proposal selected
+  let proposalSelected = null
+  $.each(proposalBrut, function () {
+    if (this.id.toString() === proposals.id.toString()) {
+      this.proposal.proposalSelected = true
+
+      let previousClassSelected = proposalSelectedData.classSelected
+      let classSelected = proposals.classSelected
+      let firstClassNotNull = this.proposal.firstClass.price === '-'
+      let secondClassNotNull = this.proposal.secondClass === '-'
+
+      switch (true) {
+        case (firstClassNotNull === true):
+          this.proposal.secondClass.selected = true
+          break
+        case (secondClassNotNull === true):
+          this.proposal.firstClass.selected = true
+          break
+        case (classSelected === constShooter.classes.premiere) || (previousClassSelected === constShooter.classes.premiere && classSelected === constShooter.classes.noClass):
+          this.proposal.firstClass.selected = true
+          break
+        case (classSelected === constShooter.classes.deuxieme) || (previousClassSelected === constShooter.classes.deuxieme && classSelected === constShooter.classes.noClass):
+          this.proposal.secondClass.selected = true
+          break
+      }
+      proposalSelected = this
+    }
+  })
+
+  return proposalSelected
+}
+
+export function getPriceSelected (proposalSelected) {
+  let priceSelected = proposalSelected.firstClass.selected === true ? proposalSelected.firstClass.price : proposalSelected.secondClass.price
+  return priceSelected
+}
+
+export function setOffreSelected (voyage, classSelected) {
+  let voyageForAVO = {}
+  let offreSelected = classSelected === constShooter.classes.premiere ? voyage.offres[0] : voyage.offres[1]
+  voyageForAVO.itineraireAller = voyage.itineraireAller
+  voyageForAVO.voyageurs = voyage.voyageurs
+  voyageForAVO.offres = [ offreSelected ]
+
+  return voyageForAVO
 }
