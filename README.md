@@ -1,6 +1,6 @@
 # shooter
 
-> A Vue.js project
+> Un super shooter de démo pour le projet MPD
 
 ## Build Setup
 
