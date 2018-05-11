@@ -7,7 +7,7 @@
       <div class="five wide column left aligned your-travel">
         <div class="js-result">
           <span>
-            Votre trajet {{ getProposalSelected.start_point.label }} <span class="unicode">➜</span> {{ getProposalSelected.end_point.label }}
+            Votre trajet {{ proposalSelected.start_point.label }} <span class="unicode">➜</span> {{ proposalSelected.end_point.label }}
           </span>
           <button class="mini ui button js-display-booking-form">Modifier la recherche</button>
         </div>
@@ -20,7 +20,7 @@
           </div>
           <div class="ten wide column left aligned search-result-header">
             <i class="calendar alternate outline icon"></i>
-            <span class="search-result-header-date">{{ getProposalSelected.departure_time.value | dateFormat }}</span>
+            <span class="search-result-header-date">{{ proposalSelected.departure_time.value | dateFormat }}</span>
           </div>
           <div class="three wide column center aligned search-result-header">
             <span>2<sup>nde</sup> classe</span>
@@ -28,7 +28,7 @@
           <div class="three wide column center aligned search-result-header">
             <span>1<sup>ère</sup> classe</span>
           </div>
-          <div class="ui vertical pointing menu sixteen wide column devis-row-container" v-for="prop in getProposalBrut" :key="prop.id" :value="prop.id">
+          <div class="ui vertical pointing menu sixteen wide column devis-row-container" v-for="prop in proposalBrut" :key="prop.id" :value="prop.id">
             <a class="item" v-bind:class="{ active: prop.proposal.proposalSelected }">
               <div class="ui grid devis-row">
                 <div class="three wide column js-proposal-no-class">
@@ -67,22 +67,22 @@
           <div class="content active first-level-accordion">
             <div class="ui grid travel-accordion">
               <div class="one wide column center aligned no-padding-left"><i class="user icon"></i></div>
-              <div class="seven wide column traveler-data" v-for="voyageurs in getProposalSelected.voyage.voyageurs" :key="voyageurs.id">
+              <div class="seven wide column traveler-data" v-for="voyageurs in proposalSelected.voyage.voyageurs" :key="voyageurs.id">
                 <span>{{ voyageurs.num}} Passager</span>
                 <span>{{ voyageurs.typologie }} de {{ voyageurs.age }} ans, sans carte</span>
                 <span>Valable sur TER uniquement pour la date de voyage choisie. Billet non-échangeable et non-remboursable.</span>
               </div>
               <div class="one wide column center aligned"><i class="train icon"></i></div>
               <div class="one wide column">
-                <h5 class="ui header">{{ getProposalSelected.departure_time.text }}</h5>
-                <h5 class="ui header">{{ getProposalSelected.arrival_time.text }}</h5>
+                <h5 class="ui header">{{ proposalSelected.departure_time.text }}</h5>
+                <h5 class="ui header">{{ proposalSelected.arrival_time.text }}</h5>
               </div>
               <div class="two wide column">
-                <h5 class="ui header">{{ getProposalSelected.start_point.label }}</h5>
-                <h5 class="ui header">{{ getProposalSelected.end_point.label }}</h5>
+                <h5 class="ui header">{{ proposalSelected.start_point.label }}</h5>
+                <h5 class="ui header">{{ proposalSelected.end_point.label }}</h5>
               </div>
-              <div class="four wide column center aligned middle aligned" v-for="segment in getProposalSelected.voyage.itineraireAller.segments" :key="segment.id">
-                <span>{{ getProposalSelected.duration.value | durationFormat }}</span>
+              <div class="four wide column center aligned middle aligned" v-for="segment in proposalSelected.voyage.itineraireAller.segments" :key="segment.id">
+                <span>{{ proposalSelected.duration.value | durationFormat }}</span>
                 <span>{{ segment.libelleEquipement }} {{ segment.numTrain }} | 2<sup>e</sup> class</span>
               </div>
             </div>
@@ -101,38 +101,38 @@
               <div class="two wide column"><b>UIC code</b></div>
               <div class="four wide column"><b>Coordonnées</b></div>
               <div class="one wide column no-padding-left"><b>Départ</b></div>
-              <div class="one wide column">{{ getProposalSelected.departure_time.text }}</div>
-              <div class="four wide column">{{ getProposalSelected.departure_time.value }}</div>
-              <div class="two wide column">{{ getProposalSelected.start_point.label }}</div>
-              <div class="two wide column">{{ getProposalSelected.start_point.rr_code }}</div>
-              <div class="two wide column">{{ getProposalSelected.start_point.uic_code }}</div>
-              <div class="four wide column">[{{ getProposalSelected.start_point.coordinates.latitude }}, {{ getProposalSelected.start_point.coordinates.longitude }}]</div>
+              <div class="one wide column">{{ proposalSelected.departure_time.text }}</div>
+              <div class="four wide column">{{ proposalSelected.departure_time.value }}</div>
+              <div class="two wide column">{{ proposalSelected.start_point.label }}</div>
+              <div class="two wide column">{{ proposalSelected.start_point.rr_code }}</div>
+              <div class="two wide column">{{ proposalSelected.start_point.uic_code }}</div>
+              <div class="four wide column">[{{ proposalSelected.start_point.coordinates.latitude }}, {{ proposalSelected.start_point.coordinates.longitude }}]</div>
               <div class="one wide column no-padding-left"><b>Arrivée</b></div>
-              <div class="one wide column">{{ getProposalSelected.arrival_time.text }}</div>
-              <div class="four wide column">{{ getProposalSelected.arrival_time.value }}</div>
-              <div class="two wide column">{{ getProposalSelected.end_point.label }}</div>
-              <div class="two wide column">{{ getProposalSelected.end_point.rr_code }}</div>
-              <div class="two wide column">{{ getProposalSelected.end_point.uic_code }}</div>
-              <div class="four wide column">[{{ getProposalSelected.end_point.coordinates.latitude }}, {{ getProposalSelected.end_point.coordinates.longitude }}]</div>
+              <div class="one wide column">{{ proposalSelected.arrival_time.text }}</div>
+              <div class="four wide column">{{ proposalSelected.arrival_time.value }}</div>
+              <div class="two wide column">{{ proposalSelected.end_point.label }}</div>
+              <div class="two wide column">{{ proposalSelected.end_point.rr_code }}</div>
+              <div class="two wide column">{{ proposalSelected.end_point.uic_code }}</div>
+              <div class="four wide column">[{{ proposalSelected.end_point.coordinates.latitude }}, {{ proposalSelected.end_point.coordinates.longitude }}]</div>
               <div class="sixteen wide column"></div>
               <div class="two wide column no-padding-left"><b>Durée texte</b></div>
-              <div class="four wide column">{{ getProposalSelected.duration.text }}</div>
+              <div class="four wide column">{{ proposalSelected.duration.text }}</div>
               <div class="three wide column"><b>Durée valeur</b></div>
-              <div class="four wide column">{{ getProposalSelected.duration.value }}</div>
+              <div class="four wide column">{{ proposalSelected.duration.value }}</div>
             </div>
             <div class="ui grid first-level-accordion ">
               <div class="three wide column no-padding-left"><b>Authorities ids</b></div>
-              <div class="two wide column">{{ getProposalSelected.authorities_ids[0] }}</div>
+              <div class="two wide column">{{ proposalSelected.authorities_ids[0] }}</div>
               <div class="three wide column"><b>Carbon footprint</b></div>
-              <div class="two wide column">{{ getProposalSelected.carbon_footprint }}</div>
+              <div class="two wide column">{{ proposalSelected.carbon_footprint }}</div>
               <div class="three wide column"><b>Feasible</b></div>
-              <div class="three wide column left aligned">{{ getProposalSelected.feasible }}</div>
+              <div class="three wide column left aligned">{{ proposalSelected.feasible }}</div>
               <div class="three wide column no-padding-left"><b>Most bike</b></div>
-              <div class="two wide column">{{ getProposalSelected.most_bike }}</div>
+              <div class="two wide column">{{ proposalSelected.most_bike }}</div>
               <div class="three wide column"><b>Most walk</b></div>
-              <div class="two wide column">{{ getProposalSelected.most_walk }}</div>
+              <div class="two wide column">{{ proposalSelected.most_walk }}</div>
               <div class="three wide column"><b>Type</b></div>
-              <div class="three wide column left aligned">{{ getProposalSelected.type }}</div>
+              <div class="three wide column left aligned">{{ proposalSelected.type }}</div>
             </div>
           </div>
           <div class="title">
@@ -140,7 +140,7 @@
             <h3 class="ui header">Legs</h3>
           </div>
           <div class="content">
-            <div class="ui grid first-level-accordion legs-accordion-stations-data" v-for="leg in getProposalSelected.legs" :key="leg.id">
+            <div class="ui grid first-level-accordion legs-accordion-stations-data" v-for="leg in proposalSelected.legs" :key="leg.id">
               <div class="one wide column no-padding-left"></div>
               <div class="one wide column"><b>Texte</b></div>
               <div class="four wide column"><b>Valeur</b></div>
@@ -188,21 +188,21 @@
               <div class="content">
                 <div class="ui grid second-level-accordion">
                   <div class="three wide column no-padding-left"><b>Date Départ</b></div>
-                  <div class="five wide column">{{ getProposalSelected.voyage.itineraireAller.dateDepart }}</div>
+                  <div class="five wide column">{{ proposalSelected.voyage.itineraireAller.dateDepart }}</div>
                   <div class="three wide column"><b>Id Itinéraire</b></div>
-                  <div class="five wide column">{{ getProposalSelected.voyage.itineraireAller.idItineraire }}</div>
+                  <div class="five wide column">{{ proposalSelected.voyage.itineraireAller.idItineraire }}</div>
                   <div class="three wide column no-padding-left"><b>Date Arrivée</b></div>
-                  <div class="five wide column">{{ getProposalSelected.voyage.itineraireAller.dateArrivee }}</div>
+                  <div class="five wide column">{{ proposalSelected.voyage.itineraireAller.dateArrivee }}</div>
                   <div class="three wide column"><b>Id Itinéraire sens</b></div>
-                  <div class="five wide column">{{ getProposalSelected.voyage.itineraireAller.idItineraireSens }}</div>
+                  <div class="five wide column">{{ proposalSelected.voyage.itineraireAller.idItineraireSens }}</div>
                   <div class="three wide column"></div>
                   <div class="five wide column"><b>UIC</b></div>
                   <div class="eight wide column"></div>
                   <div class="three wide column no-padding-left"><b>Origine</b></div>
-                  <div class="five wide column">{{ getProposalSelected.voyage.itineraireAller.origine.uic }}</div>
+                  <div class="five wide column">{{ proposalSelected.voyage.itineraireAller.origine.uic }}</div>
                   <div class="eight wide column"></div>
                   <div class="three wide column no-padding-left"><b>Destination</b></div>
-                  <div class="five wide column">{{ getProposalSelected.voyage.itineraireAller.destination.uic }}</div>
+                  <div class="five wide column">{{ proposalSelected.voyage.itineraireAller.destination.uic }}</div>
                   <div class="eight wide column"></div>
                 </div>
                 <div class="accordion sub-accordion">
@@ -211,7 +211,7 @@
                     <h4 class="ui header">Segments</h4>
                   </div>
                   <div class="content">
-                    <div class="ui grid second-level-accordion" v-for="segment in getProposalSelected.voyage.itineraireAller.segments" :key="segment.id">
+                    <div class="ui grid second-level-accordion" v-for="segment in proposalSelected.voyage.itineraireAller.segments" :key="segment.id">
                       <div class="three wide column no-padding-left"><b>Date Départ</b></div>
                       <div class="four wide column">{{ segment.dateDepart }}</div>
                       <div class="three wide column"><b>Numéro train</b></div>
@@ -242,7 +242,7 @@
                 <h4 class="ui header">Offres</h4>
               </div>
               <div class="content">
-                <div class="ui grid second-level-accordion offers-accordion-data" v-for="offre in getProposalSelected.voyage.offres" :key="offre.id">
+                <div class="ui grid second-level-accordion offers-accordion-data" v-for="offre in proposalSelected.voyage.offres" :key="offre.id">
                   <div class="four wide column no-padding-left"><b>Id</b></div>
                   <div class="four wide column">{{ offre.id }}</div>
                   <div class="three wide column"><b>Classe</b></div>
@@ -349,18 +349,18 @@
               <div class="content">
                 <div class="ui grid second-level-accordion">
                   <div class="three wide column no-padding-left"><b>Age</b></div>
-                  <div class="two wide column">{{ getProposalSelected.voyage.voyageurs[0].age }}</div>
+                  <div class="two wide column">{{ proposalSelected.voyage.voyageurs[0].age }}</div>
                   <div class="three wide column"><b>Numéro</b></div>
-                  <div class="two wide column">{{ getProposalSelected.voyage.voyageurs[0].num }}</div>
+                  <div class="two wide column">{{ proposalSelected.voyage.voyageurs[0].num }}</div>
                   <div class="three wide column"><b>Typologie</b></div>
-                  <div class="two wide column">{{ getProposalSelected.voyage.voyageurs[0].typologie }}</div>
+                  <div class="two wide column">{{ proposalSelected.voyage.voyageurs[0].typologie }}</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="ui grid">
             <div class="sixteen wide column right aligned">
-              <button @click="addToBasket"  class="ui button add-to-basket" v-bind:class="{ loading: getDevisButtonIsLoading }">Choisir ({{ getPriceSelected | priceFormat }})</button>
+              <button @click="addToBasket"  class="ui button add-to-basket" v-bind:class="{ loading: devisButtonIsLoading }">Choisir ({{ priceSelected | priceFormat }})</button>
             </div>
           </div>
         </div>
@@ -373,20 +373,22 @@
 import {createNamespacedHelpers} from 'vuex'
 import $ from 'jquery'
 import * as actions from '../../../store/modules/mpd-v1/devis/devis-action-types'
+import DevisForm from '../devis/DevisForm'
 import filters from '../../../mixins/filters'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('mpdV1/Devis')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Devis')
 
 export default {
   name: 'Devis',
   mixins: [filters],
+  components: { DevisForm },
   computed: {
-    ...mapGetters([
-      'getProposalBrut',
-      'getProposalSelected',
-      'getPriceSelected',
-      'getDevisButtonIsLoading',
-      'getPriceFormated'
+    ...mapState([
+      'proposalBrut',
+      'proposalSelected',
+      'priceSelected',
+      'devisButtonIsLoading',
+      'priceFormated'
     ])
   },
   methods: {

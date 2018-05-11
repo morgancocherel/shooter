@@ -2,7 +2,7 @@
   <div class="ui grid container final-transaction-container">
     <div class="sixteen wide column left aligned final-transaction-title">
       <h3 class="ui header">Confirmation de votre voyage</h3>
-      <p>Un email de confirmation a été ennvoyé à {{ getEmailTravelerContact }} contenant l'ensemble des informations de votre trajet.</p>
+      <p>Un email de confirmation a été ennvoyé à {{ emailTravelerContact }} contenant l'ensemble des informations de votre trajet.</p>
     </div>
     <div class="sixteen wide column left aligned">
       <div class="ui accordion segment js-accordion">
@@ -13,16 +13,16 @@
         <div class="content active first-level-accordion">
           <div class="ui grid">
             <div class="two wide column"><strong>Id commande</strong></div>
-            <div class="two wide column">{{ getFinalData.idCommande }}</div>
+            <div class="two wide column">{{ finalData.idCommande }}</div>
             <div class="two wide column"><strong>Statut</strong></div>
-            <div class="two wide column">{{ getFinalData.statut }}</div>
+            <div class="two wide column">{{ finalData.statut }}</div>
             <div class="two wide column"><strong>Montant</strong></div>
-            <div class="six wide column left aligned">{{ getFinalData.montant }}</div>
+            <div class="six wide column left aligned">{{ finalData.montant }}</div>
 
             <div class="two wide column"><strong>Référence</strong></div>
-            <div class="two wide column">{{ getFinalData.reference }}</div>
+            <div class="two wide column">{{ finalData.reference }}</div>
             <div class="two wide column"><strong>Nom référence</strong></div>
-            <div class="ten wide column left aligned">{{ getFinalData.nomReference }}</div>
+            <div class="ten wide column left aligned">{{ finalData.nomReference }}</div>
           </div>
 
           <div class="title">
@@ -30,7 +30,7 @@
             <h4 class="ui header">Voyage</h4>
           </div>
           <div class="content">
-            <div class="ui grid second-level-accordion" v-for="voyage in getFinalData.voyages" :key="voyage.id">
+            <div class="ui grid second-level-accordion" v-for="voyage in finalData.voyages" :key="voyage.id">
               <div class="two wide column"><strong>Libelle</strong></div>
               <div class="two wide column left aligned">{{ voyage.libelle }}</div>
               <div class="two wide column"><strong>Id</strong></div>
@@ -47,7 +47,7 @@
             <h4 class="ui header">Itinéraire Aller</h4>
           </div>
           <div class="content">
-            <div class="ui grid second-level-accordion" v-for="voyage in getFinalData.voyages" :key="voyage.id">
+            <div class="ui grid second-level-accordion" v-for="voyage in finalData.voyages" :key="voyage.id">
               <div class="three wide column no-padding-left"><b>Date Départ</b></div>
               <div class="five wide column">{{ voyage.itineraireAller.dateDepart }}</div>
               <div class="three wide column"><b>Id Itinéraire</b></div>
@@ -72,7 +72,7 @@
                 <h4 class="ui header">Segments</h4>
               </div>
               <div class="content">
-                <div class="ui grid second-level-accordion" v-for="segment in getFinalData.voyages[0].itineraireAller.segments" :key="segment.id">
+                <div class="ui grid second-level-accordion" v-for="segment in finalData.voyages[0].itineraireAller.segments" :key="segment.id">
                   <div class="three wide column no-padding-left"><b>Date Départ</b></div>
                   <div class="four wide column">{{ segment.dateDepart }}</div>
                   <div class="three wide column"><b>Numéro train</b></div>
@@ -103,7 +103,7 @@
             <h4 class="ui header">Offres</h4>
           </div>
           <div class="content">
-            <div class="ui grid second-level-accordion" v-for="offre in getFinalData.voyages[0].offres" :key="offre.id">
+            <div class="ui grid second-level-accordion" v-for="offre in finalData.voyages[0].offres" :key="offre.id">
               <div class="four wide column"><b>Id</b></div>
               <div class="four wide column">{{ offre.id }}</div>
               <div class="three wide column"><b>Classe</b></div>
@@ -131,14 +131,14 @@
 import {createNamespacedHelpers} from 'vuex'
 import $ from 'jquery'
 
-const { mapGetters } = createNamespacedHelpers('mpdV1/Finalisation')
+const { mapState } = createNamespacedHelpers('mpdV1/Finalisation')
 
 export default {
   name: 'Finalisation',
   computed: {
-    ...mapGetters([
-      'getFinalData',
-      'getEmailTravelerContact'
+    ...mapState([
+      'finalData',
+      'emailTravelerContact'
     ])
   },
   mounted () {

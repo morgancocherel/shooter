@@ -7,22 +7,22 @@
     <div class="sixteen wide column">
       <div class="ui grid segment main-segment">
         <div class="one wide column center aligned left aligned no-padding-left no-padding-top-bottom"><i class="user icon"></i></div>
-        <div class="seven wide column left aligned traveler-data no-padding-top-bottom" v-for="voyageurs in getProposalSelected.voyage.voyageurs" :key="voyageurs.id">
+        <div class="seven wide column left aligned traveler-data no-padding-top-bottom" v-for="voyageurs in proposalSelected.voyage.voyageurs" :key="voyageurs.id">
           <span>{{ voyageurs.num}} Passager</span>
           <span>{{ voyageurs.typologie }} de {{ voyageurs.age }} ans, sans carte</span>
           <span>Valable sur TER uniquement pour la date de voyage choisie. Billet non-échangeable et non-remboursable.</span>
         </div>
         <div class="one wide column center aligned no-padding-top-bottom"><i class="train icon"></i></div>
         <div class="one wide column no-padding-top-bottom">
-          <h5 class="ui header">{{ getProposalSelected.departure_time.text }}</h5>
-          <h5 class="ui header">{{ getProposalSelected.arrival_time.text }}</h5>
+          <h5 class="ui header">{{ proposalSelected.departure_time.text }}</h5>
+          <h5 class="ui header">{{ proposalSelected.arrival_time.text }}</h5>
         </div>
         <div class="two wide column no-padding-top-bottom">
-          <h5 class="ui header">{{ getProposalSelected.start_point.label }}</h5>
-          <h5 class="ui header">{{ getProposalSelected.end_point.label }}</h5>
+          <h5 class="ui header">{{ proposalSelected.start_point.label }}</h5>
+          <h5 class="ui header">{{ proposalSelected.end_point.label }}</h5>
         </div>
-        <div class="four wide column center aligned middle aligned no-padding-top-bottom no-pading-right" v-for="segment in getProposalSelected.voyage.itineraireAller.segments" :key="segment.id">
-          <span>{{ getProposalSelected.duration.value | durationFormat }}</span>
+        <div class="four wide column center aligned middle aligned no-padding-top-bottom no-pading-right" v-for="segment in proposalSelected.voyage.itineraireAller.segments" :key="segment.id">
+          <span>{{ proposalSelected.duration.value | durationFormat }}</span>
           <span>{{ segment.libelleEquipement }} {{ segment.numTrain }} | 2<sup>e</sup> class</span>
         </div>
       </div>
@@ -44,10 +44,10 @@
           <span><strong>Passager 1</strong></span>
         </div>
         <div class="eight wide column left aligned">
-          <span>{{ getFirstname }} {{ getLastname }}</span>
+          <span>{{ firstname }} {{ lastname }}</span>
         </div>
         <div class="six wide column left aligned">
-          <span>{{ getEmailTravelerContact }}</span>
+          <span>{{ emailTravelerContact }}</span>
         </div>
       </div>
     </div>
@@ -60,11 +60,11 @@
         <div class="content first-level-accordion">
           <div class="ui grid">
             <div class="three wide column"><strong>Jeton transaction</strong></div>
-            <div class="three wide column"><span>{{ getJetonTransaction }}</span></div>
+            <div class="three wide column"><span>{{ jetonTransaction }}</span></div>
             <div class="three wide column"><strong>Duree validation</strong></div>
-            <div class="seven wide column left aligned"><span>{{ getDureeValiditeJeton }}</span></div>
+            <div class="seven wide column left aligned"><span>{{ dureeValiditeJeton }}</span></div>
             <div class="three wide column"><strong>Url ihm paiement</strong></div>
-            <div class="thirteen wide column left aligned"><span>{{ getUrlIhmPaiement }}</span></div>
+            <div class="thirteen wide column left aligned"><span>{{ urlIhmPaiement }}</span></div>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@
       <button class="ui button submit-button back-button" @click="returnToPayment">Annuler transaction</button>
     </div>
     <div class="eight wide column right aligned">
-      <button @click="submitTransaction"  class="ui button submit-button submit-finalisation" v-bind:class="{ loading: getFinalisationButtonIsLoading }">Continuer</button>
+      <button @click="submitTransaction"  class="ui button submit-button submit-finalisation" v-bind:class="{ loading: finalisationButtonIsLoading }">Continuer</button>
     </div>
   </div>
 </template>
@@ -84,20 +84,20 @@ import $ from 'jquery'
 import * as actions from '../../../store/modules/mpd-v1/finalisation/finalisation-action-types'
 import filters from '../../../mixins/filters'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('mpdV1/Finalisation')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Finalisation')
 
 export default {
   name: 'Finalisation',
   computed: {
-    ...mapGetters([
-      'getEmailTravelerContact',
-      'getFirstname',
-      'getLastname',
-      'getProposalSelected',
-      'getJetonTransaction',
-      'getDureeValiditeJeton',
-      'getUrlIhmPaiement',
-      'getFinalisationButtonIsLoading'
+    ...mapState([
+      'emailTravelerContact',
+      'firstname',
+      'lastname',
+      'proposalSelected',
+      'jetonTransaction',
+      'dureeValiditeJeton',
+      'urlIhmPaiement',
+      'finalisationButtonIsLoading'
     ])
   },
   mixins: [filters],

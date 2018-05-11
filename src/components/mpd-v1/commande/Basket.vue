@@ -6,12 +6,12 @@
           <div class="sncf_logo"></div>
         </div>
         <div class="thirteen wide column left aligned basket-information-container">
-          <p>Aller simple de <strong>{{ getProposalSelected.start_point.label | stationFormat }} à {{ getProposalSelected.end_point.label | stationFormat }}</strong> </p>
-          <p>Pour un <strong>{{ getProposalSelected.voyage.voyageurs[0].typologie }}</strong> </p>
-          <p><strong>{{ getProposalSelected.departure_time.text }} - {{ getProposalSelected.arrival_time.text }} </strong> le {{ getProposalSelected.departure_time.value | dateFormat }}</p>
+          <p>Aller simple de <strong>{{ proposalSelected.start_point.label | stationFormat }} à {{ proposalSelected.end_point.label | stationFormat }}</strong> </p>
+          <p>Pour un <strong>{{ proposalSelected.voyage.voyageurs[0].typologie }}</strong> </p>
+          <p><strong>{{ proposalSelected.departure_time.text }} - {{ proposalSelected.arrival_time.text }} </strong> le {{ proposalSelected.departure_time.value | dateFormat }}</p>
         </div>
         <div class="two wide column right aligned middle aligned">
-          <span><strong>{{ getPriceSelected | priceFormat}}</strong></span>
+          <span><strong>{{ priceSelected | priceFormat}}</strong></span>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
         <span class="traveler-name-information">Le nom figurera sur les billets</span>
       </div>
       <div class="ten wide column left aligned basket-information-container reduce-padding-bottom">
-        <p>Passger 1 - <strong>{{ getProposalSelected.voyage.voyageurs[0].typologie }}</strong></p>
+        <p>Passger 1 - <strong>{{ proposalSelected.voyage.voyageurs[0].typologie }}</strong></p>
       </div>
       <div class="six wide column left aligned basket-information-containe reduce-padding-bottom">
         <label class="birth-traveler">Date de naissance</label>
@@ -31,29 +31,29 @@
       <div class="two wide column no-padding-top">
         <select class="ui dropdown fluid" title="civility" @input="updateCivility">
           <option disabled selected>Civilité</option>
-          <option v-for="civ in getAllCivilities" :key="civ.id" :value="civ.value">{{ civ.text }}</option>
+          <option v-for="civ in allCivilities" :key="civ.id" :value="civ.value">{{ civ.text }}</option>
         </select>
       </div>
       <div class="four wide column no-padding-top">
-        <input class="fluid" placeholder="Prénom" type="text" title="firstname" :value="getFirstname"
+        <input class="fluid" placeholder="Prénom" type="text" title="firstname" :value="firstname"
                @input="updateFirstname"/>
       </div>
       <div class="four wide column no-padding-top">
-        <input class="fluid" placeholder="Nom" type="text" title="lastname" :value="getLastname"
+        <input class="fluid" placeholder="Nom" type="text" title="lastname" :value="lastname"
                @input="updateLastname"/>
       </div>
       <div class="two wide column no-padding-top">
-        <input class="fluid" placeholder="JJ" type="text" title="dayBirth" :value="getDayBirth"
+        <input class="fluid" placeholder="JJ" type="text" title="dayBirth" :value="dayBirth"
                @input="updateDayBirth"/>
       </div>
       <div class="two wide column no-padding-top">
         <select class="ui dropdown fluid" title="monthBirth" @input="updateMonthBirth">
           <option disabled selected>Mois</option>
-          <option v-for="mo in getAllMonths" :key="mo.id" :value="mo.text">{{ mo.text }}</option>
+          <option v-for="mo in allMonths" :key="mo.id" :value="mo.text">{{ mo.text }}</option>
         </select>
       </div>
       <div class="two wide column no-padding-top">
-        <input class="fluid" placeholder="AAAA" type="text" title="yearBirth" :value="getYearBirth"
+        <input class="fluid" placeholder="AAAA" type="text" title="yearBirth" :value="yearBirth"
                @input="updateYearBirth"/>
       </div>
     </div>
@@ -67,11 +67,11 @@
         <div class="three wide column no-padding-top">
           <select class="ui dropdown fluid" title="travelerContact" @input="updateTravelerContact">
             <option disabled selected>Choisir</option>
-            <option v-for="traveler in getAllTravelers" :key="traveler.id" :value="traveler.text">{{ traveler.text }}</option>
+            <option v-for="traveler in allTravelers" :key="traveler.id" :value="traveler.text">{{ traveler.text }}</option>
           </select>
         </div>
         <div class="eight wide column no-padding-top">
-          <input class="fluid" placeholder="Email" type="text" title="emailTravelerContact" :value="getEmailTravelerContact"
+          <input class="fluid" placeholder="Email" type="text" title="emailTravelerContact" :value="emailTravelerContact"
                  @input="updateEmailTravelerContact"/>
         </div>
       </div>
@@ -80,7 +80,7 @@
       <button class="ui button submit-button back-button" @click="returnToTrajetsOffres">Retour</button>
     </div>
     <div class="eight wide column right aligned">
-      <button @click="consultCommandeInProgress"  class="ui button submit-button submit-basket" v-bind:class="{ loading: getCommandeButtonIsLoading }">Réserver ({{ getPriceSelected | priceFormat }})</button>
+      <button @click="consultCommandeInProgress"  class="ui button submit-button submit-basket" v-bind:class="{ loading: commandeButtonIsLoading }">Réserver ({{ priceSelected | priceFormat }})</button>
     </div>
   </div>
 </template>
@@ -90,26 +90,26 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v1/commande/commande-action-types'
 import filters from '../../../mixins/filters'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('mpdV1/Commande')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Commande')
 
 export default {
   name: 'Commande',
   mixins: [filters],
   computed: {
-    ...mapGetters([
-      'getProposalSelected',
-      'getPriceSelected',
-      'getAllCivilities',
-      'getFirstname',
-      'getLastname',
-      'getDayBirth',
-      'getMonthBirth',
-      'getYearBirth',
-      'getAllMonths',
-      'getAllTravelers',
-      'getEmailTravelerContact',
-      'getTravelerContact',
-      'getCommandeButtonIsLoading'
+    ...mapState([
+      'proposalSelected',
+      'priceSelected',
+      'allCivilities',
+      'firstname',
+      'lastname',
+      'dayBirth',
+      'monthBirth',
+      'yearBirth',
+      'allMonths',
+      'allTravelers',
+      'emailTravelerContact',
+      'travelerContact',
+      'commandeButtonIsLoading'
     ])
   },
   methods: {

@@ -141,8 +141,9 @@ const actions = {
     let travelerData = state.travelerData
     let body = getBodyCTO(departureDate, travelerData, originTrain, destinationTrain)
     let idService = 5
+    let versionMPD = constShooter.versionMPD.mpdv1
 
-    callService(method, service, env, contentType, body, username, password)
+    callService(method, service, env, contentType, body, username, password, versionMPD)
       .then((response) => {
         let proposals = addData(response.data.trajets)
         dispatch(actionTypes.EDIT_PROPOSAL_BRUT, proposals)
@@ -202,8 +203,9 @@ const actions = {
     let password = mainFormState.password
     let body = setOffreSelected(state.proposalSelected.voyage, state.proposalSelected.proposal.classSelected)
     let idService = 7
+    let versionMPD = constShooter.versionMPD.mpdv1
 
-    callService(method, service, env, contentType, body, username, password)
+    callService(method, service, env, contentType, body, username, password, versionMPD)
       .then((response) => {
         let idCommande = response.data.idCommande
         dispatch('mpdV1/Commande/' + actionTypesCommande.EDIT_ID_COMMANDE, idCommande, {root: true})

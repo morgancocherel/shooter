@@ -13,7 +13,6 @@ import * as actionTypesConsole from '../../console/console-action-types'
 const state = {
   firstname: constShooter.commande.firsname,
   lastname: constShooter.commande.lastname,
-  dateDisplay: constShooter.commande.dateDisplay,
   proposalSelected: constShooter.commande.proposalSelected,
   priceSelected: constShooter.commande.priceSelected,
   emailTravelerContact: constShooter.commande.emailTravelerContact,
@@ -24,7 +23,6 @@ const state = {
 const getters = {
   getFirstname: state => state.firstname,
   getLastname: state => state.lastname,
-  getDateDisplay: state => state.dateDisplay,
   getProposalSelected: state => state.proposalSelected,
   getPriceSelected: state => state.priceSelected,
   getEmailTravelerContact: state => state.emailTravelerContact,
@@ -38,9 +36,6 @@ const mutations = {
   },
   [mutationTypes.SET_LASTANME] (state, lastname) {
     state.lastname = lastname
-  },
-  [mutationTypes.SET_DATE_DISPLAY] (state, date) {
-    state.dateDisplay = date
   },
   [mutationTypes.SET_PROPOSAL_SELECTED] (state, proposal) {
     state.proposalSelected = proposal
@@ -107,9 +102,6 @@ const actions = {
   },
   [actionTypes.EDIT_LASTANME] ({commit}, lastname) {
     commit(mutationTypes.SET_LASTANME, lastname)
-  },
-  [actionTypes.EDIT_DATE_DISPLAY] ({commit}, date) {
-    commit(mutationTypes.SET_DATE_DISPLAY, date)
   },
   [actionTypes.EDIT_PROPOSAL_SELECTED] ({commit}, proposal) {
     commit(mutationTypes.SET_PROPOSAL_SELECTED, proposal)

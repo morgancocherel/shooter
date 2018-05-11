@@ -26,3 +26,29 @@ export function getBodyProposition () {
     }
   return bodyProposition
 }
+
+export function removeFalseProposal (data) {
+  let availableProposals = []
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].proposable) {
+      availableProposals.push(data[i])
+    }
+  }
+  return availableProposals
+}
+
+export function getBodyCreateCommande (idProposition, quantite, totalAffiche) {
+  const body =
+    {
+      'items':
+        [
+          {
+            'idProposition': idProposition,
+            'quantite': quantite,
+            'totalAffiche': totalAffiche
+          }
+        ]
+
+    }
+  return body
+}

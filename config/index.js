@@ -11,7 +11,7 @@ const platforms = {
   'Pipeline public': 'https://featurempdbuild4488frcmnfct.public.t-mpd.vs.cloud.socrate.vsct.fr',
   'Pipeline mobile': 'https://featurempdbuild4488frcmnfct.mobile.t-mpd.vs.cloud.socrate.vsct.fr',
   'usn1 public': 'https://usine1.drd-mpd.socrate.vsct.fr',
-  'usine1 mpdv2': 'https://usine1.api.mpd.socrate.vsct.fr'
+  'usine5 mpdv2': 'https://usine5.api.mpd.socrate.vsct.fr'
 }
 
 module.exports = {
@@ -29,7 +29,9 @@ module.exports = {
         changeOrigin: true,
         logLevel: 'debug',
         router: function (req) {
-          console.log(req, platforms[req.headers.platform])
+          if (req.headers.versionMPD = 'mpdv2') {
+            req.url = req.url.slice(4, req.url.length)
+          }
           return platforms[req.headers.platform]
         }
       }

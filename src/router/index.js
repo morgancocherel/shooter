@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
+import MPDV1Home from '@/components/mpd-v1/Home'
+import MPDV2Home from '@/components/mpd-v2/Home'
 import mpdV1 from '@/components/mpd-v1/mpdV1'
 import Devis from '@/components/mpd-v1/devis/DevisForm'
 import TrajetsOffres from '@/components/mpd-v1/devis/TrajetOffre'
@@ -11,6 +13,9 @@ import FinalPayment from '@/components/mpd-v1/finalisation/FinalPayment'
 import FinalCommande from '@/components/mpd-v1/finalisation/FinalCommande'
 import mpdV2 from '@/components/mpd-v2/mpdV2'
 import Proposition from '@/components/mpd-v2/proposition/Proposition'
+import PropositionSelected from '@/components/mpd-v2/proposition/PropositionSelected'
+import Commande from '@/components/mpd-v2/commande/Commande'
+import FinalCommandeMPDV2 from '@/components/mpd-v2/commande/FinalCommande'
 
 /*eslint-disable */
 import '../plugins/jquery'
@@ -25,6 +30,16 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path: '/mpdV1/home',
+      name: 'MPDV1Home',
+      component: MPDV1Home
+    },
+    {
+      path: '/mpdV2/home',
+      name: 'MPDV2Home',
+      component: MPDV2Home
     },
     {
       path: '/mpdV1',
@@ -78,6 +93,21 @@ export default new Router({
           name: 'Proposition',
           component: Proposition
         },
+        {
+          path: 'proposition',
+          name: 'PropositionSelected',
+          component: PropositionSelected
+        },
+        {
+          path: 'commandes',
+          name: 'Commande',
+          component: Commande
+        },
+        {
+          path: 'commandes/finCommande',
+          name: 'FinalCommandeMPDV2',
+          component: FinalCommandeMPDV2
+        }
       ]
     },
   ]

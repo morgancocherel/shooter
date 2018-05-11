@@ -17,24 +17,24 @@
     <div class="fields">
       <div class="ten wide field train-input">
         <div class="origin-train">
-          <input placeholder="Départ : gare, adresse, lieu" type="text" :value="getOriginTrain"
+          <input placeholder="Départ : gare, adresse, lieu" type="text" :value="originTrain"
                  @input="updateOriginTrain">
         </div>
         <div class="destination-train">
-          <input placeholder="Arrivée : gare, adresse, lieu" type="text" :value="getDestinationTrain"
+          <input placeholder="Arrivée : gare, adresse, lieu" type="text" :value="destinationTrain"
                  @input="updateDestinationTrain">
         </div>
       </div>
       <div class="three wide field date-input">
         <div class="ui calendar" id="js-departure-date">
           <div class="ui input left icon departure-date">
-            <input type="text" placeholder="Départ" :value="getDepartureDate" @input="updateDepartureDate">
+            <input type="text" placeholder="Départ" :value="departureDate" @input="updateDepartureDate">
             <i class="calendar icon departure-date-icon"></i>
           </div>
         </div>
         <div class="ui calendar" id="js-return-date">
           <div class="ui input left icon">
-            <input type="text" placeholder="Retour" :value="getReturnDate" @input="updateReturnDate">
+            <input type="text" placeholder="Retour" :value="returnDate" @input="updateReturnDate">
             <i class="calendar icon"></i>
           </div>
         </div>
@@ -43,18 +43,18 @@
         <div class="ui calendar" id="js-departure-time">
           <div class="ui input left icon departure-time">
             <i class="time icon"></i>
-            <input type="text" placeholder="Aller" :value="getDepartureTime" @input="updateDepartureTime">
+            <input type="text" placeholder="Aller" :value="departureTime" @input="updateDepartureTime">
           </div>
         </div>
         <div class="ui calendar" id="js-return-time">
           <div class="ui input left icon">
             <i class="time icon"></i>
-            <input type="text" placeholder="Retour" :value="getReturnTime" @input="updateReturnTime">
+            <input type="text" placeholder="Retour" :value="returnTime" @input="updateReturnTime">
           </div>
         </div>
       </div>
     </div>
-    <button @click="submitDevisForm" class="ui button submit-devis-form js-submit-devis-form" v-bind:class="{ loading: getDevisButtonIsLoading }">Rechercher</button>
+    <button @click="submitDevisForm" class="ui button submit-devis-form js-submit-devis-form" v-bind:class="{ loading: devisButtonIsLoading }">Rechercher</button>
   </div>
 </template>
 
@@ -64,20 +64,20 @@ import * as actions from '../../../store/modules/mpd-v1/devis/devis-action-types
 
 import $ from 'jquery'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('mpdV1/Devis')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Devis')
 
 export default {
   name: 'Devis',
   computed: {
-    ...mapGetters([
-      'getDevis',
-      'getOriginTrain',
-      'getDepartureDate',
-      'getDepartureTime',
-      'getDestinationTrain',
-      'getReturnDate',
-      'getReturnTime',
-      'getDevisButtonIsLoading'
+    ...mapState([
+      'devis',
+      'originTrain',
+      'departureDate',
+      'departureTime',
+      'destinationTrain',
+      'returnDate',
+      'returnTime',
+      'devisButtonIsLoading'
     ])
   },
   methods: {

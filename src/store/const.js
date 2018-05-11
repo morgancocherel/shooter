@@ -26,6 +26,12 @@ export const console = {
   allRequest: []
 }
 
+/* versions MPD */
+export const versionMPD = {
+  mpdv1: 'mpdv1',
+  mpdv2: 'mpdv2'
+}
+
 /* mpd-v1 */
 
 /* devis */
@@ -169,9 +175,9 @@ export const mainForm = {
     { text: 'Pipeline public', value: 'Pipeline public' },
     { text: 'Pipeline mobile', value: 'Pipeline mobile' },
     { text: 'usn1 public', value: 'usn1 public' },
-    { text: 'usine1 mpdv2', value: 'usine1 mpdv2' }
+    { text: 'usine5 mpdv2', value: 'usine5 mpdv2' }
   ],
-  environment: 'usine1 mpdv2',
+  environment: 'usine5 mpdv2',
   username: 'mpdWEB',
   password: 'mpdWEB',
   currentHealthCheck: null,
@@ -180,16 +186,37 @@ export const mainForm = {
 }
 
 /* mpd-v2 */
-export const proposition = {
-  listePropositions: null,
-  catalogueSTIF: 'STIF'
-}
 
 /* Service MPD-v2 */
 export const servicesMPDV2 = {
-  servicePropositions: '/propositions/catalogues/{id}'
+  servicePropositions: '/propositions/catalogues/{id}',
+  servicePropositionSelected: '/propositions/{idProposition}',
+  serviceCreateCommande: '/commandes',
+  serviceFinalCommande: '/commandes/{idCommande}'
 }
 
 export const serviceMPDV2Description = {
-  1: 'Liste des propositions mise à disposition'
+  1: 'Liste des propositions mise à disposition',
+  2: 'Détail de la proposition selectionnée',
+  3: 'Création d\'une nouvelle commande',
+  4: 'Consultation d\'une commande existante'
+}
+
+/* proposition */
+export const proposition = {
+  listePropositions: null,
+  catalogueSTIF: 'STIF',
+  idProposition: null,
+  quantite: null,
+  totalAffiche: null,
+  proposalSelected: null
+}
+
+/* commande */
+export const commandeMPDV2 = {
+  idCommande: null,
+  finalCommandeData: null,
+  quantite: null,
+  totalAffiche: null,
+  idProposition: null
 }

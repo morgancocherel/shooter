@@ -3,15 +3,15 @@
     <div class="sixteen wide column left aligned">
       <h3 class="ui header">Résultat du paiement</h3>
       <p class="sub-travel-information-reminder">
-        Un email récapitulatif de confirmation sera envoyé à <strong>{{ getFirstname }} {{ getLastname }}</strong>
-        à l'adresse suivante: <strong>{{ getEmailTravelerContact }}</strong>
+        Un email récapitulatif de confirmation sera envoyé à <strong>{{ firstname }} {{ lastname }}</strong>
+        à l'adresse suivante: <strong>{{ emailTravelerContact }}</strong>
       </p>
     </div>
     <div class="eight wide column left aligned">
       <button class="ui button submit-button back-button" @click="returnToFinalOperation">Annuler la commande</button>
     </div>
     <div class="eight wide column right aligned">
-      <button @click="submitFinalisation"  class="ui button submit-button submit-finalisation" v-bind:class="{ loading: getFinalisationButtonIsLoading }">Terminer</button>
+      <button @click="submitFinalisation"  class="ui button submit-button submit-finalisation" v-bind:class="{ loading: finalisationButtonIsLoading }">Terminer</button>
     </div>
   </div>
 </template>
@@ -20,16 +20,16 @@
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v1/finalisation/finalisation-action-types'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('mpdV1/Finalisation')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Finalisation')
 
 export default {
   name: 'Finalisation',
   computed: {
-    ...mapGetters([
-      'getFinalisationButtonIsLoading',
-      'getEmailTravelerContact',
-      'getFirstname',
-      'getLastname'
+    ...mapState([
+      'finalisationButtonIsLoading',
+      'emailTravelerContact',
+      'firstname',
+      'lastname'
     ])
   },
   methods: {

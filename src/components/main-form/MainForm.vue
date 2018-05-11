@@ -6,29 +6,29 @@
       </div>
       <div class="eight wide column left aligned">
         <label>Identifiant</label>
-        <input class="fluid input-username" placeholder="Identifiant" type="text" title="username" :value="getUsername"
+        <input class="fluid input-username" placeholder="Identifiant" type="text" title="username" :value="username"
                @input="updateUsername"/>
       </div>
       <div class="eight wide column left aligned">
         <label>Mot de passe</label>
-        <input class="fluid input-password" placeholder="Mot de passe" type="password" title="password" :value="getPassword"
+        <input class="fluid input-password" placeholder="Mot de passe" type="password" title="password" :value="password"
                @input="updatePassword"/>
       </div>
       <div class="ten wide column left aligned">
         <label>Environnement</label>
         <select class="ui dropdown fluid env-select" title="environment" @input="updateEnv">
-          <option v-for="env in getAllEnvironments" :key="env.id" :value="env.value">{{ env.text }}</option>
+          <option v-for="env in allEnvironments" :key="env.id" :value="env.value">{{ env.text }}</option>
         </select>
       </div>
       <div class="six wide column center aligned middle aligned current-health-check-container">
         <label>Version</label>
-        <div v-show="getCurrentHealthCheck" class="health-check-icon-text">
+        <div v-show="currentHealthCheck" class="health-check-icon-text">
           <div class="content up-down-env">
             <i class="check large icon grey"></i>
-            <h5 class="ui header current-health-check-text">Up - {{ getCurrentEnvVersion }}</h5>
+            <h5 class="ui header current-health-check-text">Up - {{ currentEnvVersion }}</h5>
           </div>
         </div>
-        <div v-show="!getCurrentHealthCheck" class="health-check-icon-text">
+        <div v-show="!currentHealthCheck" class="health-check-icon-text">
           <div class="content up-down-env">
             <i class="exclamation large icon grey"></i>
             <h5 class="ui header current-health-check-text">Down</h5>
@@ -43,18 +43,18 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../store/modules/main-form/main-form-action-types'
 import $ from 'jquery'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('MainForm')
+const {mapState, mapActions} = createNamespacedHelpers('MainForm')
 
 export default {
   name: 'MainForm',
   computed: {
-    ...mapGetters([
-      'getAllEnvironments',
-      'getEnvironment',
-      'getCurrentHealthCheck',
-      'getCurrentEnvVersion',
-      'getUsername',
-      'getPassword'
+    ...mapState([
+      'allEnvironments',
+      'environment',
+      'currentHealthCheck',
+      'currentEnvVersion',
+      'username',
+      'password'
     ])
   },
   methods: {

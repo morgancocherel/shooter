@@ -1,0 +1,95 @@
+<template>
+  <div class="ui container grid proposition-selected-container">
+    <div class="sixteen wide column center aligned">
+      <h1 class="ui header">Proposition séléctionnée</h1>
+    </div>
+    <div class="sixteen wide column">
+      <div class="ui segment">
+        <div class="ui grid">
+          <div class="two wide column left aligned"></div>
+          <div class="three wide column left aligned"><strong>Id</strong></div>
+          <div class="three wide column left aligned"><strong>Libelle</strong></div>
+          <div class="three wide column left aligned"><strong>Prix</strong></div>
+          <div class="five wide column left aligned"><strong>Type</strong></div>
+
+          <div class="two wide column left aligned"><strong>Produit</strong></div>
+          <div class="three wide column left aligned">{{ proposalSelected.produit.id }}</div>
+          <div class="three wide column left aligned">{{ proposalSelected.produit.libelle }}</div>
+          <div class="three wide column left aligned">{{ proposalSelected.produit.prix }}</div>
+          <div class="five wide column left aligned margin-bottom">{{ proposalSelected.produit.type }}</div>
+
+          <div class="two wide column left aligned"><strong>Id</strong></div>
+          <div class="five wide column left aligned">{{ proposalSelected.id }}</div>
+          <div class="two wide column left aligned"><strong>Proposal</strong></div>
+          <div class="two wide column left aligned">{{ proposalSelected.proposable }}</div>
+          <div class="three wide column left aligned"><strong>Quantité max proposal</strong></div>
+          <div class="two wide column left aligned">{{ proposalSelected.quantiteMaxProposable }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="eight wide column left aligned">
+      <router-link class="ui button submit-button back-button" to="propositions/catalogues">Retour</router-link>
+    </div>
+    <div class="eight wide column right aligned">
+      <button class="ui button submit-button submit-create-order" @click="createNewCommande">Créer la commande</button>
+    </div>
+  </div>
+</template>
+
+<script>
+import {createNamespacedHelpers} from 'vuex'
+import * as actions from '../../../store/modules/mpd-v2/proposition/proposition-action-types'
+
+const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Proposition')
+
+export default {
+  name: 'Proposition',
+  computed: {
+    ...mapState(['proposalSelected'])
+  },
+  methods: {
+    ...mapActions({'createNewCommande': actions.CREATE_NEW_COMMANDE})
+  }
+}
+</script>
+
+<style scoped>
+  .proposition-selected-container {
+    margin: 40px 0 0 0;
+    display: inline-flex;
+  }
+
+  .margin-bottom {
+    margin-bottom: 20px;
+  }
+
+  /* navigation buttons */
+  .submit-button {
+    color: #FFF;
+    padding: 12px 22px;
+    border-radius: 0.3125em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .submit-create-order {
+    background-color: #01C3A7;
+  }
+
+  .submit-create-order:hover,
+  .submit-create-order:focus {
+    background-color: #01aa91;
+    border-color: #01aa91;
+    color: #FFF;
+  }
+
+  .back-button {
+    background-color: #8C9DA1;
+    color: #FFF;
+  }
+
+  .back-button:hover {
+    background-color: #7e9196;
+    color: #FFF;
+  }
+</style>

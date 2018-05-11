@@ -7,7 +7,7 @@
       <div class="sixteen wide column left aligned">
         <h3 class="ui header centered">Requêtes en cours</h3>
       </div>
-      <div class="ui stackable celled grid request-container js-request-container" v-for="req in getAllRequest" :key="req.id">
+      <div class="ui stackable celled grid request-container js-request-container" v-for="req in allRequest" :key="req.id">
         <div class="one wide column middle aligned center aligned">
           <div><i class="caret right icon js-open-close-request-icon"></i></div>
         </div>
@@ -58,7 +58,7 @@ import {createNamespacedHelpers} from 'vuex'
 import $ from 'jquery'
 import VueJsonPretty from 'vue-json-pretty'
 
-const {mapGetters} = createNamespacedHelpers('Console')
+const {mapState} = createNamespacedHelpers('Console')
 
 export default {
   name: 'Console',
@@ -66,7 +66,7 @@ export default {
     VueJsonPretty
   },
   computed: {
-    ...mapGetters(['getAllRequest'])
+    ...mapState(['allRequest'])
   },
   mounted () {
     // Open request on click on the icon

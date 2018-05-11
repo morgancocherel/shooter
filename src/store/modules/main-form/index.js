@@ -61,12 +61,13 @@ const actions = {
     let method = constShooter.methods.methodGet
     let service = '/api' + constShooter.servicesMPDV1.serviceHealthcheck
     let env = state.environment
-    let username = null
-    let password = null
+    let username = state.username
+    let password = state.password
     let body = null
     let contentType = constShooter.contentType.json
+    let versionMPD = null
 
-    callService(method, service, env, contentType, body, username, password)
+    callService(method, service, env, contentType, body, username, password, versionMPD)
       .then((response) => {
         let version = response.data.version
         let status = response.data.status === 200

@@ -4,19 +4,19 @@
       <div class="ui header item no-border shooter-mpd" @click="goHome">Shooter MPD</div>
     </div>
     <div class="menu" style="margin: 0 auto;">
-      <a class="item step-container js-step" v-bind:class="{ active: getDevisActiveStep }">
+      <a class="item step-container js-step" v-bind:class="{ active: devisActiveStep }">
         <i class="search icon"></i>
         <span class="active">Devis</span>
       </a>
-      <a class="item step-container js-step" v-bind:class="{ active: getCommandeActiveStep }">
+      <a class="item step-container js-step" v-bind:class="{ active: commandeActiveStep }">
         <i class="shopping basket icon"></i>
         <span>Commande</span>
       </a>
-      <a class="item step-container js-step" v-bind:class="{ active: getPaymentActiveStep }">
+      <a class="item step-container js-step" v-bind:class="{ active: paymentActiveStep }">
         <i class="credit card icon"></i>
         <span>Paiement</span>
       </a>
-      <a class="item step-container" v-bind:class="{ active: getFinalisationActiveStep }">
+      <a class="item step-container" v-bind:class="{ active: finalisationActiveStep }">
         <i class="align justify icon"></i>
         <span>Finalisation</span>
       </a>
@@ -35,16 +35,16 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../store/modules/header-top/header-top-action-types'
 import $ from 'jquery'
 
-const { mapGetters, mapActions } = createNamespacedHelpers('HeaderTop')
+const { mapState, mapActions } = createNamespacedHelpers('HeaderTop')
 
 export default {
   name: 'HeaderTop',
   computed: {
-    ...mapGetters([
-      'getDevisActiveStep',
-      'getCommandeActiveStep',
-      'getPaymentActiveStep',
-      'getFinalisationActiveStep'
+    ...mapState([
+      'devisActiveStep',
+      'commandeActiveStep',
+      'paymentActiveStep',
+      'finalisationActiveStep'
     ])
   },
   methods: {
@@ -78,7 +78,7 @@ export default {
 
 <style scoped>
   .ui.fixed.menu {
-    background-color: #21314D;
+    background-color: #0033a0;
     height: 60px;
     z-index: 2;
   }

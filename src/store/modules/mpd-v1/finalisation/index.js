@@ -142,7 +142,6 @@ const actions = {
     let idService = 11
 
     let body = getBodyFRC(state.operationDistributionId, state.lastname, state.firstname, dateBirth)
-    console.log(state.operationDistributionId, state.lastname, state.firstname, dateBirth, method, service, env, contentType, body, username, password)
     callService(method, service, env, contentType, body, username, password)
       .then((response) => {
         dispatch(actionTypes.EDIT_FINAL_DATA, response.data.commande)

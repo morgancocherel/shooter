@@ -8,15 +8,15 @@
     <div class="sixteen wide column">
       <div class="ui grid segment main-segment traveler-information-container">
         <div class="two wide column">
-          <p>{{ getDateDisplay }}</p>
+          <p>{{ proposalSelected.departure_time.value | dateFormat }}</p>
         </div>
         <div class="one wide column">
-          <h5 class="ui header">{{ getProposalSelected.departure_time.text }}</h5>
-          <h5 class="ui header">{{ getProposalSelected.arrival_time.text }}</h5>
+          <h5 class="ui header">{{ proposalSelected.departure_time.text }}</h5>
+          <h5 class="ui header">{{ proposalSelected.arrival_time.text }}</h5>
         </div>
         <div class="eleven wide column left aligned">
-          <h5 class="ui header">{{ getProposalSelected.start_point.label }}</h5>
-          <h5 class="ui header">{{ getProposalSelected.end_point.label }}</h5>
+          <h5 class="ui header">{{ proposalSelected.start_point.label }}</h5>
+          <h5 class="ui header">{{ proposalSelected.end_point.label }}</h5>
         </div>
         <div class="two wide column right aligned middle aligned">
           <span><strong>{{ getPriceSelected | priceFormat }}</strong></span>
@@ -24,16 +24,16 @@
         <div class="sixteen wide column ticket-information-container">
           <div class="ui grid segment sub-segment">
             <div class="one wide column left aligned no-padding-top-bottom no-padding-left">
-              <span>{{ getProposalSelected.departure_time.text }}</span>
-              <span>{{ getProposalSelected.arrival_time.text }}</span>
+              <span>{{ proposalSelected.departure_time.text }}</span>
+              <span>{{ proposalSelected.arrival_time.text }}</span>
             </div>
             <div class="four wide column left aligned start-end-point-ticket no-padding-top-bottom">
-              <span>{{ getProposalSelected.start_point.label }}</span>
-              <span>{{ getProposalSelected.end_point.label }}</span>
+              <span>{{ proposalSelected.start_point.label }}</span>
+              <span>{{ proposalSelected.end_point.label }}</span>
             </div>
             <div class="three wide column center aligned middle aligned no-padding-top-bottom">
               <div class="sncf_logo"></div>
-              <span>{{ getProposalSelected.voyage.itineraireAller.segments[0].libelleEquipement }} {{ getProposalSelected.voyage.itineraireAller.segments[0].numTrain }}</span>
+              <span>{{ proposalSelected.voyage.itineraireAller.segments[0].libelleEquipement }} {{ proposalSelected.voyage.itineraireAller.segments[0].numTrain }}</span>
             </div>
             <div class="two wide column center aligned middle aligned no-padding-top-bottom">
               <span>2<sup>nde</sup></span>
@@ -42,7 +42,7 @@
               <span>Placement libre</span>
             </div>
             <div class="three wide column center aligned middle aligned no-padding-top-bottom no-pading-right">
-              <span>{{ getFirstname }} {{ getLastname }}</span>
+              <span>{{ firstname }} {{ lastname }}</span>
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@
       <button class="ui button submit-button back-button" @click="returnToBasket">Retour</button>
     </div>
     <div class="eight wide column right aligned">
-      <button @click="submitPayment"  class="ui button submit-button submit-payment" v-bind:class="{loading : getPaymentButtonIsLoading}">Payer {{ getPriceSelected | priceFormat}}</button>
+      <button @click="submitPayment"  class="ui button submit-button submit-payment" v-bind:class="{loading : paymentButtonIsLoading}">Payer {{ priceSelected | priceFormat}}</button>
     </div>
   </div>
 </template>
@@ -62,20 +62,19 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v1/paiement/payment-action-types'
 import filters from '../../../mixins/filters'
 
-const {mapGetters, mapActions} = createNamespacedHelpers('mpdV1/Payment')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Payment')
 
 export default {
   name: 'Payment',
   mixins: [filters],
   computed: {
-    ...mapGetters([
-      'getFirstname',
-      'getLastname',
-      'getEmailTravelerContact',
-      'getDateDisplay',
-      'getProposalSelected',
-      'getPriceSelected',
-      'getPaymentButtonIsLoading'
+    ...mapState([
+      'firstname',
+      'lastname',
+      'emailTravelerContact',
+      'proposalSelected',
+      'priceSelected',
+      'paymentButtonIsLoading'
     ])
   },
   methods: {
