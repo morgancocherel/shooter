@@ -76,10 +76,10 @@ const actions = {
         commit(mutationTypes.SET_CURRENT_ENV_VERSION, version)
         commit(mutationTypes.SET_CURRENT_HEALTHCHECK, status)
       })
-      .catch((response) => {
-        let status = response.data.status === 200
+      .catch(() => {
+        // let status = response.data.status === 200
         // timeout(commit(mutationTypes.SET_LOADING_HEALTH_CHECK, false))
-        commit(mutationTypes.SET_CURRENT_HEALTHCHECK, status)
+        commit(mutationTypes.SET_CURRENT_HEALTHCHECK, 'error')
       })
   }
 }

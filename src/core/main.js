@@ -22,7 +22,6 @@ export function callService (method, service, env, contentType, data, username, 
       }
     })
       .then((response) => {
-        // store.actions(actionsConsole.EDIT_ADD_REQUEST_TO_CONSOLE, response)
         resolve(response)
       })
       .catch((error) => {

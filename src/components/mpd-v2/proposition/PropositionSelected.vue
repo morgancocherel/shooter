@@ -1,49 +1,56 @@
 <template>
-  <div class="ui container grid proposition-selected-container">
-    <div class="sixteen wide column center aligned">
-      <h1 class="ui header">Proposition séléctionnée</h1>
-    </div>
-    <div class="sixteen wide column">
-      <div class="ui segment">
-        <div class="ui grid">
-          <div class="two wide column left aligned"></div>
-          <div class="three wide column left aligned"><strong>Id</strong></div>
-          <div class="three wide column left aligned"><strong>Libelle</strong></div>
-          <div class="three wide column left aligned"><strong>Prix</strong></div>
-          <div class="five wide column left aligned"><strong>Type</strong></div>
+  <div class="ui grid">
+    <div class="eleven wide column proposition-selected-container js-site-content">
+      <div class="ui grid">
+        <div class="sixteen wide column center aligned">
+          <h1 class="ui header">Proposition séléctionnée</h1>
+        </div>
+        <div class="sixteen wide column">
+          <div class="ui segment">
+            <div class="ui grid">
+              <div class="two wide column left aligned"></div>
+              <div class="three wide column left aligned"><strong>Id</strong></div>
+              <div class="three wide column left aligned"><strong>Libelle</strong></div>
+              <div class="three wide column left aligned"><strong>Prix</strong></div>
+              <div class="five wide column left aligned"><strong>Type</strong></div>
 
-          <div class="two wide column left aligned"><strong>Produit</strong></div>
-          <div class="three wide column left aligned">{{ proposalSelected.produit.id }}</div>
-          <div class="three wide column left aligned">{{ proposalSelected.produit.libelle }}</div>
-          <div class="three wide column left aligned">{{ proposalSelected.produit.prix }}</div>
-          <div class="five wide column left aligned margin-bottom">{{ proposalSelected.produit.type }}</div>
+              <div class="two wide column left aligned"><strong>Produit</strong></div>
+              <div class="three wide column left aligned">{{ proposalSelected.produit.id }}</div>
+              <div class="three wide column left aligned">{{ proposalSelected.produit.libelle }}</div>
+              <div class="three wide column left aligned">{{ proposalSelected.produit.prix }}</div>
+              <div class="five wide column left aligned margin-bottom">{{ proposalSelected.produit.type }}</div>
 
-          <div class="two wide column left aligned"><strong>Id</strong></div>
-          <div class="five wide column left aligned">{{ proposalSelected.id }}</div>
-          <div class="two wide column left aligned"><strong>Proposal</strong></div>
-          <div class="two wide column left aligned">{{ proposalSelected.proposable }}</div>
-          <div class="three wide column left aligned"><strong>Quantité max proposal</strong></div>
-          <div class="two wide column left aligned">{{ proposalSelected.quantiteMaxProposable }}</div>
+              <div class="two wide column left aligned"><strong>Id</strong></div>
+              <div class="five wide column left aligned">{{ proposalSelected.id }}</div>
+              <div class="two wide column left aligned"><strong>Proposal</strong></div>
+              <div class="two wide column left aligned">{{ proposalSelected.proposable }}</div>
+              <div class="three wide column left aligned"><strong>Quantité max proposal</strong></div>
+              <div class="two wide column left aligned">{{ proposalSelected.quantiteMaxProposable }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="eight wide column left aligned">
+          <router-link class="ui button submit-button back-button" to="propositions/catalogues">Retour</router-link>
+        </div>
+        <div class="eight wide column right aligned">
+          <button class="ui button submit-button submit-create-order" @click="createNewCommande">Créer la commande</button>
         </div>
       </div>
     </div>
-    <div class="eight wide column left aligned">
-      <router-link class="ui button submit-button back-button" to="propositions/catalogues">Retour</router-link>
-    </div>
-    <div class="eight wide column right aligned">
-      <button class="ui button submit-button submit-create-order" @click="createNewCommande">Créer la commande</button>
-    </div>
+    <console></console>
   </div>
 </template>
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/proposition/proposition-action-types'
+import Console from '../../console/Console'
 
 const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Proposition')
 
 export default {
   name: 'Proposition',
+  components: { Console },
   computed: {
     ...mapState(['proposalSelected'])
   },
@@ -55,12 +62,8 @@ export default {
 
 <style scoped>
   .proposition-selected-container {
-    margin: 40px 0 0 0;
-    display: inline-flex;
-  }
-
-  .margin-bottom {
-    margin-bottom: 20px;
+    padding-top: 0 !important;
+    margin-top: 40px;
   }
 
   /* navigation buttons */

@@ -1,54 +1,58 @@
 <template>
   <div class="ui grid">
-    <div class="ten wide column">
-      <div class="sixteen wide column center aligned">
-        <h1 class="ui header">Propositions STIF</h1>
-      </div>
-      <div class="sixteen wide column">
-        <div class="ui grid">
-          <div class="five wide column center aligned middle aligned" v-for="prop in listePropositions" :key="prop.id">
-            <div class="ui card js-card">
-              <div class="content left aligned" :quantiteMaxProposable="prop.quantiteMaxProposable">
-                <h4 class="ui header">{{ prop.produit.libelle }}</h4>
-                <div class="description">
-                  <div><p>{{ prop.produit.id }}</p></div>
-                  <div v-if="prop.produit.type === 'ABONNEMENT'">
-                    <span>zones</span><p>{{ prop.combinaisonZones.libelle }}</p>
-                    <span>Durée de validité</span><p>{{ diff(prop.utilisation.dateFin, prop.utilisation.dateDebut) }}</p>
+    <div class="eleven wide column proposition-container js-site-content">
+      <div class="ui grid">
+        <div class="sixteen wide column center aligned">
+          <h1 class="ui header">Propositions STIF</h1>
+        </div>
+        <div class="sixteen wide column">
+          <div class="ui grid">
+            <div class="five wide column center aligned middle aligned" v-for="prop in listePropositions" :key="prop.id">
+              <div class="ui card js-card">
+                <div class="content left aligned" :quantiteMaxProposable="prop.quantiteMaxProposable">
+                  <h4 class="ui header">{{ prop.produit.libelle }}</h4>
+                  <div class="description">
+                    <div><p>{{ prop.produit.id }}</p></div>
+                    <div v-if="prop.produit.type === 'ABONNEMENT'">
+                      <span>zones</span><p>{{ prop.combinaisonZones.libelle }}</p>
+                      <span>Durée de validité</span><p>{{ diff(prop.utilisation.dateFin, prop.utilisation.dateDebut) }}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="extra content js-bottom-card-container" :idprop="prop.id" :prixprop="prop.produit.prix">
+                <div class="extra content js-bottom-card-container" :idprop="prop.id" :prixprop="prop.produit.prix">
           <span class="left floated js-ticket-amount-container">
             <i class="minus icon" @click="minusTicket"></i>
             <span class="js-amount-ticket">0</span>
             <i class="plus icon" @click="plusTicket"></i>
           </span>
-                <span class="right floated submit-proposition-selected" @click="submitPropositionSelected">
-            Ajouter
+                  <span class="right floated submit-proposition-selected" @click="submitPropositionSelected">
+            Acheter
           </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="sixteen wide column center aligned">
-        <router-link class="ui button submit-button back-button" to="/">Retour</router-link>
+        <div class="sixteen wide column center aligned navigation-container">
+          <router-link class="ui button submit-button back-button" to="/">Retour</router-link>
+        </div>
       </div>
     </div>
-    <div class="six wide column" style="background-color: red;"></div>
+    <console></console>
   </div>
 </template>
 
 <script>
 // import $ from 'jquery'
 import moment from 'moment'
+import Console from '../../console/Console'
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/proposition/proposition-action-types'
 const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Proposition')
 
 export default {
   name: 'Proposition',
+  components: { Console },
   computed: {
     ...mapState(['listePropositions'])
   },
@@ -96,6 +100,15 @@ export default {
 </script>
 
 <style scoped>
+  .proposition-container {
+    padding-top: 0 !important;
+    margin-top: 40px;
+  }
+
+  h1.ui.header {
+    margin-bottom: 1rem;
+  }
+
   /* navigation buttons */
   .submit-button {
     color: #FFF;
@@ -113,6 +126,10 @@ export default {
   .back-button:hover {
     background-color: #7e9196;
     color: #FFF;
+  }
+
+  .navigation-container {
+    padding: 2rem 0;
   }
 
   /* card ticket */

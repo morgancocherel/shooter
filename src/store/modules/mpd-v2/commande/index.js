@@ -4,6 +4,9 @@ import * as constShooter from '../../../const'
 import {callService} from '../../../../core/main'
 import router from '../../../../router'
 
+import * as actionTypesConsole from '../../console/console-action-types'
+import {formatRequestConsole} from '../../../../core/console'
+
 const state = {
   idCommande: constShooter.commandeMPDV2.idCommande,
   finalCommandeData: constShooter.commandeMPDV2.finalCommandeData,
@@ -48,23 +51,25 @@ const actions = {
     // Data required for create commande request
     let method = constShooter.methods.methodGet
     let service = '/api' + constShooter.servicesMPDV2.serviceFinalCommande.replace(/{idCommande}/i, state.idCommande)
+    let serviceDisplay = constShooter.servicesMPDV2.serviceFinalCommande
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = null
     let password = null
     let body = null
     let versionMPD = constShooter.versionMPD.mpdv2
-    // let idService = 1
+    let idService = 4
 
     callService(method, service, env, contentType, body, username, password, versionMPD)
       .then((response) => {
         dispatch(actionTypes.EDIT_FINAL_COMMANDE_DATA, response.data)
         router.push({name: 'FinalCommandeMPDV2'})
-        // dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService, versionMPD), {root: true})
       })
       .catch((error) => {
-        // let response = null
-        // dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        let response = {}
+        response.data = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService), {root: true})
         console.log(error, 'Request Commande error')
       })
   },

@@ -23,7 +23,8 @@ export const methods = {
 
 /* console */
 export const console = {
-  allRequest: []
+  allRequest: [],
+  id: 1
 }
 
 /* versions MPD */
@@ -197,7 +198,7 @@ export const servicesMPDV2 = {
 
 export const serviceMPDV2Description = {
   1: 'Liste des propositions mise à disposition',
-  2: 'Détail de la proposition selectionnée',
+  2: 'Proposition mise à disposition selectionnée',
   3: 'Création d\'une nouvelle commande',
   4: 'Consultation d\'une commande existante'
 }

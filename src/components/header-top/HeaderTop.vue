@@ -53,11 +53,6 @@ export default {
     })
   },
   mounted () {
-    function toggleClassConsoleSidebar () {
-      $('.js-console-content').toggleClass('inactive-console')
-      $('.js-console-content').toggleClass('active-console')
-    }
-
     function toggleClassMainFormSidebar () {
       $('.js-main-form-content').toggleClass('inactive-main-form')
       $('.js-main-form-content').toggleClass('active-main-form')
@@ -65,7 +60,21 @@ export default {
 
     // open close console sidebar
     $('.js-console').click(function () {
-      toggleClassConsoleSidebar()
+      function showConsole () {
+        let classNameToInsert = $('.js-site-content').attr('class').replace('sixteen', 'eleven')
+        $('.js-site-content').attr('class', classNameToInsert)
+        $('.js-console-content').addClass('active')
+      }
+
+      function hideConsole () {
+        let classNameToInsert = $('.js-site-content').attr('class').replace('eleven', 'sixteen')
+        $('.js-site-content').attr('class', classNameToInsert)
+        $('.js-console-content').removeClass('active')
+      }
+
+      $('.js-console-content').slideToggle(function () {
+        $('.js-console-content').attr('class').includes('active') ? hideConsole() : showConsole()
+      })
     })
 
     // open close main form (username, password and environment form) sidebar
@@ -78,7 +87,7 @@ export default {
 
 <style scoped>
   .ui.fixed.menu {
-    background-color: #0033a0;
+    background-color: #21314D;
     height: 60px;
     z-index: 2;
   }

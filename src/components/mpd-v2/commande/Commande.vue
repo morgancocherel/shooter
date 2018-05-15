@@ -1,33 +1,40 @@
 <template>
-  <div class="ui container grid order-in-progress-container">
-    <div class="sixteen wide column center aligned">
-      <h1 class="ui header">Commande en cours</h1>
-    </div>
-    <div class="sixteen wide column">
-      <div class="ui segment">
-        <div class="ui grid">
-          <div class="two wide column left aligned"><strong>Id commande</strong></div>
-          <div class="fourteen wide column left aligned">{{ idCommande }}</div>
+  <div class="ui grid">
+    <div class="eleven wide column order-in-progress-container js-site-content">
+      <div class="ui grid">
+        <div class="sixteen wide column center aligned">
+          <h1 class="ui header">Commande en cours</h1>
+        </div>
+        <div class="sixteen wide column">
+          <div class="ui segment">
+            <div class="ui grid">
+              <div class="two wide column left aligned"><strong>Id commande</strong></div>
+              <div class="fourteen wide column left aligned">{{ idCommande }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="eight wide column left aligned">
+          <router-link class="ui button submit-button back-button" to="proposition">Retour</router-link>
+        </div>
+        <div class="eight wide column right aligned">
+          <button class="ui button submit-button submit-consult-order" @click="submitCommande">Terminer</button>
         </div>
       </div>
     </div>
-    <div class="eight wide column left aligned">
-      <router-link class="ui button submit-button back-button" to="proposition">Retour</router-link>
-    </div>
-    <div class="eight wide column right aligned">
-      <button class="ui button submit-button submit-consult-order" @click="submitCommande">Terminer</button>
-    </div>
+    <console></console>
   </div>
 </template>
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/commande/commande-action-types'
+import Console from '../../console/Console'
 
 const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Commande')
 
 export default {
   name: 'Commande',
+  components: {Console},
   computed: {
     ...mapState([ 'idCommande' ])
   },
@@ -39,8 +46,8 @@ export default {
 
 <style scoped>
   .order-in-progress-container {
-    margin: 40px 0 0 0;
-    display: inline-flex;
+    padding-top: 0 !important;
+    margin-top: 40px;
   }
 
   /* navigation buttons */

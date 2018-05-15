@@ -3,9 +3,11 @@ import * as actionTypes from './proposition-action-types'
 import * as constShooter from '../../../const'
 import {callService} from '../../../../core/main'
 import {getBodyProposition, removeFalseProposal, getBodyCreateCommande} from '../../../../core/mpd-v2/proposition'
+import { formatRequestConsole } from '../../../../core/console'
 import router from '../../../../router'
 
 import * as actionTypesCommande from '../commande/commande-action-types'
+import * as actionTypesConsole from '../../console/console-action-types'
 
 const state = {
   listePropositions: constShooter.proposition.listePropositions,
@@ -48,22 +50,24 @@ const actions = {
     // Data required for proposition request
     let method = constShooter.methods.methodPost
     let service = '/api' + constShooter.servicesMPDV2.servicePropositions.replace(/{id}/i, constShooter.proposition.catalogueSTIF)
+    let serviceDisplay = constShooter.servicesMPDV2.servicePropositions
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = null
     let password = null
     let body = getBodyProposition()
     let versionMPD = constShooter.versionMPD.mpdv2
-    // let idService = 1
+    let idService = 1
 
     callService(method, service, env, contentType, body, username, password, versionMPD)
       .then((response) => {
         dispatch(actionTypes.EDIT_LISTE_PROPOSITIONS, removeFalseProposal(response.data.propositions))
-        // dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService, versionMPD), {root: true})
       })
       .catch((error) => {
-        // let response = null
-        // dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        let response = {}
+        response.data = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService, versionMPD), {root: true})
         console.log(error, 'Request Proposition error')
       })
   },
@@ -83,23 +87,25 @@ const actions = {
     // Data required for proposition request
     let method = constShooter.methods.methodGet
     let service = '/api' + constShooter.servicesMPDV2.servicePropositionSelected.replace(/{idProposition}/i, state.idProposition)
+    let serviceDisplay = constShooter.servicesMPDV2.servicePropositionSelected
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = null
     let password = null
     let body = null
     let versionMPD = constShooter.versionMPD.mpdv2
-    // let idService = 1
+    let idService = 2
 
     callService(method, service, env, contentType, body, username, password, versionMPD)
       .then((response) => {
         dispatch(actionTypes.EDIT_PROPOSITION_SELECTED, response.data)
         router.push({name: 'PropositionSelected'})
-        // dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService, versionMPD), {root: true})
       })
       .catch((error) => {
-        // let response = null
-        // dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        let response = {}
+        response.data = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService, versionMPD), {root: true})
         console.log(error, 'Request Proposition selected error')
       })
   },
@@ -112,23 +118,25 @@ const actions = {
     // Data required for create commande request
     let method = constShooter.methods.methodPost
     let service = '/api' + constShooter.servicesMPDV2.serviceCreateCommande
+    let serviceDisplay = constShooter.servicesMPDV2.serviceCreateCommande
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = null
     let password = null
     let body = getBodyCreateCommande(state.idProposition, state.quantite, state.totalAffiche)
     let versionMPD = constShooter.versionMPD.mpdv2
-    // let idService = 1
+    let idService = 3
 
     callService(method, service, env, contentType, body, username, password, versionMPD)
       .then((response) => {
         dispatch('mpdV2/Commande/' + actionTypesCommande.EDIT_ID_COMMANDE, response.data.idCommande, {root: true})
         router.push({name: 'Commande'})
-        // dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService), {root: true})
       })
       .catch((error) => {
-        // let response = null
-        // dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        let response = {}
+        response.data = null
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService), {root: true})
         console.log(error, 'Request Create commande error')
       })
   },

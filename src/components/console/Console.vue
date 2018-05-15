@@ -1,285 +1,381 @@
 <template>
-  <div class="console-content js-console-content inactive-console">
-    <div class="ui internally celled grid">
-      <div class="sixteen wide column right aligned">
-        <button type="button" tabindex="11" title="close" class="close-console js-close-console"></button>
-      </div>
-      <div class="sixteen wide column left aligned">
-        <h3 class="ui header centered">Requêtes en cours</h3>
-      </div>
-      <div class="ui stackable celled grid request-container js-request-container" v-for="req in allRequest" :key="req.id">
-        <div class="one wide column middle aligned center aligned">
-          <div><i class="caret right icon js-open-close-request-icon"></i></div>
-        </div>
-        <div class="two wide column middle aligned center aligned method-request js-method-request">
-          <span>{{ req.requestSent.method }}</span>
-        </div>
-        <div class="eleven wide column middle aligned right aligned service-description-request js-service-description-request">
-          <span>{{ req.requestSent.serviceDescription }}</span>
-        </div>
-        <div class="two wide column middle aligned center aligned status-request">
-          <span>{{ req.responseReceived.status}}</span>
-        </div>
-        <div class="sixteen wide column data-request js-data-request" style="display: none;">
-          <div class="ui pointing menu js-item">
-            <a class="item js-input active">
-              Input
-            </a>
-            <a class="item js-output">
-              Output
-            </a>
-          </div>
-          <div class="ui segment">
-            <div class="ui secondary pointing menu js-item">
-              <a class="item js-formated-data active">
-                Formaté
-              </a>
-              <a class="item js-json">
-                JSON
-              </a>
-            </div>
-            <div class="ui segment request-data-display-container">
-              <p class="js-request-data-display request-data-display">
-                <tree-view :data="req.requestSent" :options="{maxDepth: 3}" class="js-input-formated-data active-data-view"></tree-view>
-                <vue-json-pretty :data="req.requestSent" :options="{maxDepth: 3}" class="js-input-json inactive-data-view"></vue-json-pretty>
-                <tree-view :data="req.responseReceived" :options="{maxDepth: 3}" class="js-output-formated-data inactive-data-view"></tree-view>
-                <vue-json-pretty :data="req.responseReceived" :options="{maxDepth: 3}" class="js-output-json inactive-data-view"></vue-json-pretty>
-              </p>
-            </div>
+  <div class="five wide column console-container js-console-content active">
+    <div class="main-all-request-container" v-for="req in allRequest" :key="req.id">
+      <div class="ui grid all-request-container js-all-request-container">
+        <div class="one wide column center aligned plus-icon-container">
+          <div class="plus-icon js-plus-icon">
+            <div class="line1 js-line1"></div>
+            <div class="line2"></div>
           </div>
         </div>
+        <div class="fourteen wide column request-console-container js-request-console-container">
+          <div class="ui grid method-service-container">
+            <div class="two wide column method-request">
+              <h5 class="ui header js-method-request" :method="req.requestSent.method">{{ req.requestSent.method }}</h5>
+            </div>
+            <div class="twelve wide column left aligned service-request">
+              <span>{{ req.requestSent.service }}</span>
+            </div>
+            <div class="two wide column right aligned expand-icon-request">
+              <i class="angle down icon"></i>
+            </div>
+          </div>
+          <div class="ui grid request-response-data-container js-request-response-data-container" :active="req.active">
+            <div class="sixteen wide column left aligned no-padding-left request-title js-request-title">
+              <h4 class="ui header">Requête</h4>
+            </div>
+            <div class="sixteen wide column left aligned no-padding-left no-padding-right response-received-data js-request-sent-data">
+              <div class="ui grid">
+                <div class="sixteen wide column right aligned buttons-json">
+                  <a class="js-input-json-view">Json</a>
+                  <a class="js-input-formated-view">Formaté</a>
+                </div>
+                <div class="sixteen wide column input-content-json">
+                  <p class="js-body" :body="req.requestSent.body">
+                    <vue-json-pretty :data="req.requestSent.body" :options="{maxDepth: 3}" class="js-input-json-data input-json-data active"></vue-json-pretty>
+                    <tree-view :data="req.requestSent.body" :options="{maxDepth: 10}" class="js-input-formated-data input-formated-data"></tree-view>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="sixteen wide column left aligned no-padding-left response-title js-response-title">
+              <h4 class="ui header">Réponse</h4>
+            </div>
+            <div class="sixteen wide column left aligned no-padding-left response-status">
+              <h5 class="ui header left aligned status-message-request">
+                <i class="circle icon js-status" :status="req.responseReceived.status"></i>{{ req.responseReceived.status }} {{ req.requestSent.serviceDescription }}
+              </h5>
+            </div>
+            <div class="sixteen wide column left aligned no-padding-left no-padding-right response-received-data js-response-received-data">
+              <div class="ui grid">
+                <div class="sixteen wide column right aligned buttons-json">
+                  <a class="js-output-json-view">Json</a>
+                  <a class="js-output-formated-view">Formaté</a>
+                </div>
+                <div class="sixteen wide column output-content-json">
+                  <p class="js-body" :body="req.responseReceived.data">
+                    <vue-json-pretty :data="req.responseReceived.data" :options="{maxDepth: 3}" class="js-output-json-data output-json-data active"></vue-json-pretty>
+                    <tree-view :data="req.responseReceived.data" :options="{maxDepth: 10}" class="js-output-formated-data output-formated-data"></tree-view>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="one wide column no-content-container"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {createNamespacedHelpers} from 'vuex'
 import $ from 'jquery'
 import VueJsonPretty from 'vue-json-pretty'
-
-const {mapState} = createNamespacedHelpers('Console')
+import {createNamespacedHelpers} from 'vuex'
+const { mapState } = createNamespacedHelpers('Console')
 
 export default {
   name: 'Console',
+  computed: {
+    ...mapState(['allRequest', 'active'])
+  },
   components: {
     VueJsonPretty
   },
-  computed: {
-    ...mapState(['allRequest'])
-  },
-  mounted () {
-    // Open request on click on the icon
-    $('.js-open-close-request-icon').click(function () {
-      $(this).closest('.js-request-container').find('.js-data-request').slideToggle()
-      $(this).toggleClass('rotate')
-    })
-
-    // Display the right data on click with the format selected
-    $('.js-input').add('.js-output').add('.js-formated-data').add('.js-json').click(function () {
-      let currentMenuSelected = $(this).hasClass('active')
-      let classNameSelected = 'js-' + this.className.split('js-')[1].replace(/active.*/i, '')
-      console.log(currentMenuSelected, classNameSelected)
-
-      // Set active the menu selected
-      if (currentMenuSelected === false) {
-        if (classNameSelected === 'js-input' || classNameSelected === 'js-output') {
-          $('.js-input').add('.js-output').removeClass('active')
-          $('.' + classNameSelected).addClass('active')
-        } else {
-          $('.js-formated-data').add('.js-json').removeClass('active')
-          $('.' + classNameSelected).addClass('active')
-        }
-      }
-
-      // Append the data with the format selected
-      let menuSelectedTable = []
-      let newDataView = null
-      $('.js-item').children().each(function () {
-        if ($(this).hasClass('active')) {
-          menuSelectedTable.push($.trim(this.className.split('js-')[1].replace(/active.*/i, '')))
-        }
-        let menuSelectedString = menuSelectedTable.join(' ')
-
-        switch (true) {
-          case (menuSelectedString === 'input formated-data'):
-            newDataView = 'js-input-formated-data'
-            break
-          case (menuSelectedString === 'input json'):
-            newDataView = 'js-input-json'
-            break
-          case (menuSelectedString === 'output formated-data'):
-            newDataView = 'js-output-formated-data'
-            break
-          case (menuSelectedString === 'output json'):
-            newDataView = 'js-output-json'
-            break
-        }
-      })
-
-      // Hide previous menu data view selected
-      $('.js-request-data-display').children().each(function () {
-        if ($(this).hasClass('active-data-view')) {
-          $(this).removeClass('active-data-view')
-          $(this).addClass('inactive-data-view')
-        }
-      })
-
-      // Set the new menu data view selected
-      $('.' + newDataView).addClass('active-data-view')
-      $('.' + newDataView).removeClass('inactive-data-view')
-    })
-
-    // Close console
-    $('.js-close-console').click(function () {
-      $('.js-console-content').toggleClass('inactive-console')
-      $('.js-console-content').toggleClass('active-console')
-    })
-
-    // Set the right background color for method request
-    setMethodColor()
-
-    function setMethodColor () {
+  methods: {
+    setColor: function () {
       $('.js-method-request').each(function () {
-        let currentMethod = $(this).children().html().toLowerCase()
-        switch (true) {
-          case (currentMethod === 'post'):
-            $(this).addClass('post-method')
-            $(this).closest('.js-request-container').find('.js-service-description-request').children().addClass('post-service-description-request')
-            break
-          case (currentMethod === 'get'):
-            $(this).addClass('get-method')
-            $(this).closest('.js-request-container').find('.js-service-description-request').children().addClass('get-service-description-request')
-            break
+        let methodType = $(this).attr('method') === 'post' ? 'post' : 'get'
+        $(this).addClass('method-' + methodType)
+      })
+
+      $('.js-status').each(function () {
+        let statusType = $(this).attr('status') === '200' || $(this).attr('status') === '201' ? 'green' : 'red'
+        $(this).addClass('status-' + statusType)
+      })
+    },
+    verifyBodyNotNull: function () {
+      $('.js-body').each(function () {
+        let bodyStatus = $(this).attr('body') === undefined
+        if (bodyStatus) {
+          let currentRequest = $(this).closest('.js-request-response-data-container')
+          currentRequest.find('.js-request-title').hide()
+          currentRequest.find('.js-request-sent-data').hide()
+          currentRequest.find('.js-response-title').addClass('reduce-padding-top')
+        }
+      })
+    },
+    verifyActiveRequest: function () {
+      $('.js-request-response-data-container').each(function () {
+        let status = $(this).attr('active')
+        let currentPlusIcon = $(this).closest('.js-all-request-container').find('.js-line1')
+        if (status) {
+          $(this).addClass('active')
+        } else {
+          $(this).removeClass('active')
+          currentPlusIcon.addClass('active')
         }
       })
     }
+  },
+  updated () {
+    this.setColor()
+    this.verifyBodyNotNull()
+    this.verifyActiveRequest()
+
+    $('.js-plus-icon').click(function () {
+      // Toggle active attr and class
+      let currentRequest = $(this).closest('.js-all-request-container').find('.js-request-response-data-container')
+      let currentPlusIcon = $(this).closest('.js-all-request-container').find('.js-line1')
+      let currentRequestStatus = currentRequest.attr('active')
+      currentRequestStatus ? currentRequest.attr('active', false) : currentRequest.attr('active', true)
+      currentRequest.toggleClass('active')
+      currentPlusIcon.toggleClass('active')
+    })
+
+    // Remove dotted line from vue json pretty
+    $('.vjs__tree__content').css('border-left', 'none')
+
+    // Display the right json view on click
+    $('.js-input-json-view').add('.js-input-formated-view').click(function () {
+      let formatedViewStatus = $(this).closest('.js-request-sent-data').find('.js-input-formated-data').hasClass('active')
+      let jsonViewStatus = $(this).closest('.js-request-sent-data').find('.js-input-json-data').hasClass('active')
+      let currentView = $(this).attr('class')
+      if (formatedViewStatus && currentView !== 'js-input-formated-view') {
+        $(this).closest('.js-request-sent-data').find('.js-input-json-data').addClass('active')
+        $(this).closest('.js-request-sent-data').find('.js-input-formated-data').removeClass('active')
+      }
+      if (jsonViewStatus && currentView !== 'js-input-json-view') {
+        $(this).closest('.js-request-sent-data').find('.js-input-formated-data').addClass('active')
+        $(this).closest('.js-request-sent-data').find('.js-input-json-data').removeClass('active')
+      }
+    })
+
+    $('.js-output-json-view').add('.js-output-formated-view').click(function () {
+      let formatedViewStatus = $(this).closest('.js-response-received-data').find('.js-output-formated-data').hasClass('active')
+      let jsonViewStatus = $(this).closest('.js-response-received-data').find('.js-output-json-data').hasClass('active')
+      let currentView = $(this).attr('class')
+      if (formatedViewStatus && currentView !== 'js-output-formated-view') {
+        $(this).closest('.js-response-received-data').find('.js-output-json-data').addClass('active')
+        $(this).closest('.js-response-received-data').find('.js-output-formated-data').removeClass('active')
+      }
+      if (jsonViewStatus && currentView !== 'js-output-json-view') {
+        $(this).closest('.js-response-received-data').find('.js-output-formated-data').addClass('active')
+        $(this).closest('.js-response-received-data').find('.js-output-json-data').removeClass('active')
+      }
+    })
   }
 }
-
 </script>
 
 <style scoped>
-  .console-content {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    background-color: #FFF;
-    overflow-x: hidden;
-    margin-top: 60px;
-    transition: 0.5s;
+  /* console view */
+  .console-container {
+    background-color: #263238;
+    color: #FFF;
+    min-height: 100vh;
+    padding: 0 !important;
   }
 
-  @media screen and (max-height: 450px) {
-    .console-content { padding-top: 15px; }
+  .plus-icon-container,
+  .no-content-container {
+    padding: 0 !important;
   }
 
-  .request-container {
-    margin-top: 0 !important;
-    padding: 0;
+  .request-console-container {
+    padding: 0 !important;
   }
 
-  .service-description-request span {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .all-request-container {
+    margin: 40px 0;
   }
 
-  span {
-    font-size: 13px;
+  .main-all-request-container {
+    border-bottom: 1px solid rgba(127, 127, 127, 0.25);
   }
 
-  /* row request */
-  i.caret.right.icon {
-    cursor: pointer;
+  .method-service-container {
+    padding: 10px 5px 10px 20px !important;
+    background-color: #222d32;
     margin: 0;
   }
 
-  .rotate{
-    -ms-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
-  }
-
-  .method-request {
-    border-radius: 2px;
-    color: #FFF;
-    font-weight: 600;
-  }
-
-  .post-method {
-    background-color: #10A54A;
-  }
-
-  .get-method {
-    background-color: #0f6ab4;
-  }
-
-  .get-service-description-request {
-    color: #0f6ab4;
-  }
-
-  .post-service-description-request {
-    color: #10A54A;
-  }
-
-  .service-request,
-  .status-request {
-    color: #13181A;
-  }
-
-  .service-description-request {
-    white-space: nowrap;
-  }
-
-  /* Data request */
-  .data-request {
-    border-top: 1px solid #DCE3E6;
-  }
-
-  .request-data-display {
-    text-align: left;
-  }
-
-  .request-data-display-container {
-    max-height: 400px;
-    overflow-y: scroll;
-  }
-
-  .request-data-display .inactive-data-view {
+  .request-response-data-container {
+    margin: 0 !important;
     display: none !important;
   }
 
-  button.close-console:hover {
-    opacity: 1;
+  .console-container .request-console-container:first-child {
+    margin: 0;
+  }
+
+  .method-request,
+  .service-request,
+  .expand-icon-request {
+    padding: 0 !important;
+  }
+
+  .method-request h5 {
+    font-size: 0.929em;
+    font-weight: 400;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    color: #FFF;
+  }
+
+  .method-post {
+    background-color: #248fb2;
+  }
+
+  .method-get {
+    background-color: #6bbd5b;
+  }
+
+  .service-request span {
+    margin-left: 10px;
+    font-size: 15px;
+    color: #FFF;
+  }
+
+  .request-title h4,
+  .response-title h4 {
+    text-transform: uppercase;
+    font-size: 0.929em !important;
+    color: #9fb4be;
+    font-weight: normal;
+  }
+
+  .status-message-request {
+    margin: 2px 0;
+    padding: 2px 8px 3px 8px !important;
+    background-color: #FFF;
+    font-size: 0.929em;
+    border-radius: 2px;
+    font-weight: 300;
+    color: #263238;
+    font-weight: 300;
+    display: inline;
+    float: left;
+  }
+
+  .status-message-request i {
+    font-size: 5px !important;
+    margin-right: 5px !important;
+    display: inline-table !important;
+  }
+
+  .status-green {
+    color: #00aa13;
+  }
+
+  .status-red {
+    color: #e53935;
+  }
+
+  .no-padding-left {
+    padding-left: 0 !important;
+  }
+
+  .no-padding-right {
+    padding-right: 0 !important;
+  }
+
+  .request-title {
+    padding: 20px 0 10px 0 !important;
+  }
+
+  .response-received-data,
+  .request-sent-data {
+    background-color: #222d32;
+    padding: 0 !important;
+    max-height: 600px;
+    overflow-x: hidden;
+  }
+
+  .response-received-data .ui.grid,
+  .request-sent-data .ui.grid {
+    margin: 0;
+    padding: 0 20px 20px 20px;
+  }
+
+  .output-content-json,
+  .input-content-json {
+    padding: 0 !important;
+  }
+
+  .buttons-json {
+    padding: 10px 0 0 0 !important;
+  }
+
+  .buttons-json a {
+    color: #FFF;
     cursor: pointer;
+    padding: 2px 10px;
   }
 
-  button.close-console {
-    width: 30px;
-    height: 30px;
-    border: none;
-    background: url('../../assets/closeIcon.svg') no-repeat center center transparent;
-    background-size: 20px 20px;
-    opacity: 0.5;
+  .buttons-json a:hover {
+    background-color: #455b66;
   }
 
-  /* active - inacive sidebar*/
-  .active-console {
-    width: 600px;
+  .buttons-json a:first-child {
+    padding-right: 10px;
   }
 
-  .inactive-console {
-    width: 0;
+  .response-title {
+    padding: 40px 0 10px 0 !important;
   }
 
-  /* tree view data view */
-  .request-data-display .vjs__tree .vjs__tree__content {
-    border-left: 1px solid red !important;
+  .response-status {
+    padding: 5px 0 15px 0 !important;
+  }
+
+  .response-received-data {
+    padding: 0 !important;
+  }
+
+  .output-json-data,
+  .output-formated-data,
+  .input-json-data,
+  .input-formated-data {
+    display: none;
+  }
+
+  .reduce-padding-top {
+    padding-top: 20px !important;
+  }
+
+  /* plus icon */
+  .line1 {
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background: #fff;
+    display: none !important;
+  }
+
+  .line2 {
+    position: absolute;
+    width: 10px;
+    height: 2px;
+    background: #fff;
+  }
+
+  .plus-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px !important;
+  }
+
+  .plus-icon {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+  }
+
+  .active {
+    display: block !important;
   }
 </style>
