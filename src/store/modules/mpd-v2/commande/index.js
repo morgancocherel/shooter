@@ -6,13 +6,15 @@ import router from '../../../../router'
 
 import * as actionTypesConsole from '../../console/console-action-types'
 import {formatRequestConsole} from '../../../../core/console'
+import * as actionTypesHeaderTop from '../../header-top/header-top-action-types'
 
 const state = {
   idCommande: constShooter.commandeMPDV2.idCommande,
   finalCommandeData: constShooter.commandeMPDV2.finalCommandeData,
   quantite: constShooter.commandeMPDV2.quantite,
   totalAffiche: constShooter.commandeMPDV2.totalAffiche,
-  idProposition: constShooter.commandeMPDV2.idProposition
+  idProposition: constShooter.commandeMPDV2.idProposition,
+  commandeIsLoading: constShooter.commandeMPDV2.commandeIsLoading
 }
 
 const getters = {
@@ -20,7 +22,8 @@ const getters = {
   getFinalCommandeData: state => state.finalCommandeData,
   getTotalAffiche: state => state.totalAffiche,
   getQuantite: state => state.quantite,
-  getIdProposition: state => state.idProposition
+  getIdProposition: state => state.idProposition,
+  getCommandeIsLoading: state => state.commandeIsLoading
 }
 
 const mutations = {
@@ -38,6 +41,9 @@ const mutations = {
   },
   [mutationTypes.SET_ID_PROPOSITION] (state, id) {
     state.idProposition = id
+  },
+  [mutationTypes.SET_COMMANDE_IS_LOADING] (state, boolean) {
+    state.commandeIsLoading = boolean
   }
 }
 
@@ -46,12 +52,13 @@ const actions = {
     commit(mutationTypes.SET_ID_COMMANDE, id)
   },
   [actionTypes.SUBMIT_COMMANDE] ({dispatch, rootState}) {
+    dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, true)
+
     let mainFormState = rootState.MainForm
 
     // Data required for create commande request
     let method = constShooter.methods.methodGet
     let service = '/api' + constShooter.servicesMPDV2.serviceFinalCommande.replace(/{idCommande}/i, state.idCommande)
-    let serviceDisplay = constShooter.servicesMPDV2.serviceFinalCommande
     let env = mainFormState.environment
     let contentType = constShooter.contentType.json
     let username = null
@@ -64,13 +71,15 @@ const actions = {
       .then((response) => {
         dispatch(actionTypes.EDIT_FINAL_COMMANDE_DATA, response.data)
         router.push({name: 'FinalCommandeMPDV2'})
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService, versionMPD), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionMPD), {root: true})
+        dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, false)
       })
       .catch((error) => {
         let response = {}
         response.data = null
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, serviceDisplay, env, body, response, idService), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
         console.log(error, 'Request Commande error')
+        dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, false)
       })
   },
   [actionTypes.EDIT_FINAL_COMMANDE_DATA] ({commit}, data) {
@@ -84,6 +93,15 @@ const actions = {
   },
   [actionTypes.EDIT_ID_PROPOSITION] ({commit}, id) {
     commit(mutationTypes.SET_ID_PROPOSITION, id)
+  },
+  [actionTypes.RETURN_TO_PROPOSITION_SELECTED] ({dispatch}) {
+    dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, false, {root: true})
+    dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_DEVIS_ACTIVE_STEP, true, {root: true})
+
+    router.push({name: 'PropositionSelected'})
+  },
+  [actionTypes.EDIT_COMMANDE_IS_LOADING] ({commit}, boolean) {
+    commit(mutationTypes.SET_COMMANDE_IS_LOADING, boolean)
   }
 }
 

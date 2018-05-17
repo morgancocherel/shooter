@@ -33,6 +33,13 @@ export const versionMPD = {
   mpdv2: 'mpdv2'
 }
 
+export const error = {
+  message: null,
+  responseDataError: {
+    data: null
+  }
+}
+
 /* mpd-v1 */
 
 /* devis */
@@ -210,7 +217,9 @@ export const proposition = {
   idProposition: null,
   quantite: null,
   totalAffiche: null,
-  proposalSelected: null
+  proposalSelected: null,
+  returnToProposition: false,
+  propositionIsLoading: false
 }
 
 /* commande */
@@ -219,5 +228,6 @@ export const commandeMPDV2 = {
   finalCommandeData: null,
   quantite: null,
   totalAffiche: null,
-  idProposition: null
+  idProposition: null,
+  commandeIsLoading: null
 }

@@ -1,6 +1,13 @@
 <template>
   <div class="ui grid">
     <div class="eleven wide column proposition-selected-container js-site-content">
+      <div class="ui negative message error-message" v-bind:class="{ active: message !== null }">
+        <i class="close icon" @click="closeMessage"></i>
+        <div class="header">
+          Une erreur s'est produite lors de la création de commande
+        </div>
+        <p>{{ message }}</p>
+      </div>
       <div class="ui grid">
         <div class="sixteen wide column center aligned">
           <h1 class="ui header">Proposition séléctionnée</h1>
@@ -30,10 +37,10 @@
           </div>
         </div>
         <div class="eight wide column left aligned">
-          <router-link class="ui button submit-button back-button" to="propositions/catalogues">Retour</router-link>
+          <button class="ui button submit-button back-button" @click="returnToProposition">Retour</button>
         </div>
         <div class="eight wide column right aligned">
-          <button class="ui button submit-button submit-create-order" @click="createNewCommande">Créer la commande</button>
+          <button class="ui button submit-button submit-create-order" @click="createNewCommande" v-bind:class="{ loading: propositionIsLoading }">Créer la commande</button>
         </div>
       </div>
     </div>
@@ -52,10 +59,20 @@ export default {
   name: 'Proposition',
   components: { Console },
   computed: {
-    ...mapState(['proposalSelected'])
+    ...mapState([
+      'proposalSelected',
+      'message',
+      'propositionIsLoading'
+    ])
   },
   methods: {
-    ...mapActions({'createNewCommande': actions.CREATE_NEW_COMMANDE})
+    ...mapActions({
+      'createNewCommande': actions.CREATE_NEW_COMMANDE,
+      'returnToProposition': actions.RETURN_TO_PROPOSITION
+    }),
+    closeMessage: function (event) {
+      event.target.parentElement.classList.remove('active')
+    }
   }
 }
 </script>
@@ -94,5 +111,15 @@ export default {
   .back-button:hover {
     background-color: #7e9196;
     color: #FFF;
+  }
+
+  /* Error message */
+  .error-message {
+    display: none;
+    margin-bottom: 40px;
+  }
+
+  .active {
+    display: block;
   }
 </style>

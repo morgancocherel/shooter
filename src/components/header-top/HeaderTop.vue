@@ -61,18 +61,18 @@ export default {
     // open close console sidebar
     $('.js-console').click(function () {
       function showConsole () {
+        $('.js-console-content').addClass('active')
         let classNameToInsert = $('.js-site-content').attr('class').replace('sixteen', 'eleven')
         $('.js-site-content').attr('class', classNameToInsert)
-        $('.js-console-content').addClass('active')
       }
 
       function hideConsole () {
+        $('.js-console-content').removeClass('active')
         let classNameToInsert = $('.js-site-content').attr('class').replace('eleven', 'sixteen')
         $('.js-site-content').attr('class', classNameToInsert)
-        $('.js-console-content').removeClass('active')
       }
 
-      $('.js-console-content').slideToggle(function () {
+      $('.js-console-content').slideToggle(20, function () {
         $('.js-console-content').attr('class').includes('active') ? hideConsole() : showConsole()
       })
     })

@@ -1,34 +1,40 @@
 <template>
-  <div class="ui grid">
+  <div class="ui grid" :returnToProposition="returnToProposition">
     <div class="eleven wide column proposition-container js-site-content">
       <div class="ui grid">
         <div class="sixteen wide column center aligned">
           <h1 class="ui header">Propositions STIF</h1>
         </div>
-        <div class="sixteen wide column">
-          <div class="ui grid">
-            <div class="five wide column center aligned middle aligned" v-for="prop in listePropositions" :key="prop.id">
-              <div class="ui card js-card">
-                <div class="content left aligned" :quantiteMaxProposable="prop.quantiteMaxProposable">
-                  <h4 class="ui header">{{ prop.produit.libelle }}</h4>
-                  <div class="description">
-                    <div><p>{{ prop.produit.id }}</p></div>
-                    <div v-if="prop.produit.type === 'ABONNEMENT'">
-                      <span>zones</span><p>{{ prop.combinaisonZones.libelle }}</p>
-                      <span>Durée de validité</span><p>{{ diff(prop.utilisation.dateFin, prop.utilisation.dateDebut) }}</p>
+        <div class="sixteen wide column left aligned" v-bind:class="{ loading: propositionIsLoading }">
+          <div class="ui cards">
+            <div class="card js-card" v-for="prop in listePropositions" :key="prop.id">
+              <div class="content">
+                <div class="right floated">{{ prop.produit.prix | priceFormat2 }}</div>
+                <h4 class="ui header card-libelle">{{ prop.produit.libelle }}</h4>
+                <span class="card-id">{{ prop.produit.id }}</span>
+                <div class="description card-information" v-if="prop.produit.type === 'ABONNEMENT'">
+                  <div class="ui grid">
+                    <div class="six wide column left aligned zone">
+                      <span>Zones</span>
+                      <p>{{ prop.combinaisonZones.libelle }}</p>
+                    </div>
+                    <div class="ten wide column left aligned duration-available">
+                      <span>Durée de validité</span>
+                      <p>{{ diff(prop.utilisation.dateFin, prop.utilisation.dateDebut) }}</p>
                     </div>
                   </div>
                 </div>
-                <div class="extra content js-bottom-card-container" :idprop="prop.id" :prixprop="prop.produit.prix">
-          <span class="left floated js-ticket-amount-container">
-            <i class="minus icon" @click="minusTicket"></i>
-            <span class="js-amount-ticket">0</span>
-            <i class="plus icon" @click="plusTicket"></i>
-          </span>
-                  <span class="right floated submit-proposition-selected" @click="submitPropositionSelected">
-            Acheter
-          </span>
+              </div>
+              <div class="extra content js-bottom-card-container" data-offset="-140">
+                <div class="left floated js-ticket-amount-container" :quantitemaxproposable="prop.quantiteMaxProposable">
+                  <i class="minus icon" @click="minusTicket"></i>
+                  <span class="js-amount-ticket">0</span>
+                  <i class="plus icon" @click="plusTicket"></i>
                 </div>
+                <span class="right floated submit-proposition-selected js-submit-proposition-selected"
+                      :idprop="prop.id" :prixprop="prop.produit.prix" @click="submitPropositionSelected">
+                  Acheter
+                </span>
               </div>
             </div>
           </div>
@@ -43,18 +49,25 @@
 </template>
 
 <script>
-// import $ from 'jquery'
 import moment from 'moment'
 import Console from '../../console/Console'
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/proposition/proposition-action-types'
+import filters from '../../../mixins/filters'
+
 const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Proposition')
 
 export default {
   name: 'Proposition',
-  components: { Console },
+  components: {Console},
+  mixins: [filters],
   computed: {
-    ...mapState(['listePropositions'])
+    ...mapState([
+      'listePropositions',
+      'returnToProposition',
+      'propositionIsLoading',
+      'propositionSelectedIsLoading'
+    ])
   },
   methods: {
     ...mapActions({
@@ -62,39 +75,42 @@ export default {
       'submitPropositionSelectedWithData': actions.SUBMIT_PROPOSITION_SELECTED
     }),
     plusTicket: function (event) {
-      let currentAmountElement = event.explicitOriginalTarget.closest('.js-ticket-amount-container').children[1]
-      let currentAmount = currentAmountElement.innerHTML
-      let maxTicket = event.explicitOriginalTarget.closest('.js-card').children[0].getAttribute('quantiteMaxProposable')
+      let currentAmountElement = event.target.parentElement
+      let currentAmount = currentAmountElement.getElementsByClassName('js-amount-ticket')[0].innerHTML
+      let maxTicket = event.target.parentElement.getAttribute('quantitemaxproposable')
       if (currentAmount < maxTicket) {
         let newNumber = Number(currentAmount) + 1
-        currentAmountElement.innerHTML = newNumber
-        event.explicitOriginalTarget.closest('.js-bottom-card-container').setAttribute('amountpropselected', newNumber)
+        currentAmountElement.getElementsByClassName('js-amount-ticket')[0].innerHTML = newNumber
+        currentAmountElement.parentElement.setAttribute('amountpropselected', newNumber)
       }
     },
     minusTicket: function (event) {
-      let currentAmountElement = event.explicitOriginalTarget.closest('.js-ticket-amount-container').children[1]
-      let currentAmount = currentAmountElement.innerHTML
+      let currentAmountElement = event.target.parentElement
+      let currentAmount = currentAmountElement.getElementsByClassName('js-amount-ticket')[0].innerHTML
       if (currentAmount > 0) {
         let newNumber = Number(currentAmount) - 1
-        currentAmountElement.innerHTML = newNumber
-        event.explicitOriginalTarget.closest('.js-bottom-card-container').setAttribute('amountpropselected', newNumber)
+        currentAmountElement.getElementsByClassName('js-amount-ticket')[0].innerHTML = newNumber
+        currentAmountElement.parentElement.setAttribute('amountpropselected', newNumber)
       }
     },
     diff: function (fin, debut) {
       return moment.utc(moment(debut, 'YYYY-MM-DDTHH:mm:ss').diff(moment(fin, 'YYYY-MM-DDTHH:mm:ss'))).locale('fr').format('D[ jour(s)], M[ mois ]')
     },
     submitPropositionSelected: function (event) {
-      let el = event.originalTarget.closest('.js-bottom-card-container')
+      event.target.closest('.js-card').classList.add('loading')
+      let el = event.target
       let toSend = {}
       toSend.idProposition = el.getAttribute('idprop')
       toSend.price = el.getAttribute('prixprop')
-      toSend.amount = el.getAttribute('amountpropselected')
+      toSend.amount = el.parentElement.getAttribute('amountpropselected')
       toSend.priceCalculated = toSend.amount * toSend.price
       this.submitPropositionSelectedWithData(toSend)
     }
   },
   mounted () {
-    this.submitProposition()
+    if (!this.returnToProposition) {
+      this.submitProposition()
+    }
   }
 }
 </script>
@@ -107,6 +123,38 @@ export default {
 
   h1.ui.header {
     margin-bottom: 1rem;
+  }
+
+  .card {
+    width: 370px !important;
+  }
+
+  .card-libelle {
+    color: #323E42;
+    font-weight: bolder;
+    font-size: 15px !important;
+    margin: 0 0 3px 0;
+  }
+
+  .card-id {
+    color: #647479;
+    font-size: 13px !important;
+  }
+
+  .card-information {
+    margin-top: 30px;
+  }
+
+  .card-information p {
+    color: #8C9DA1;
+    font-size: 13px !important;
+    display: inherit;
+  }
+
+  .card-information span {
+    color: #323E42;
+    font-size: 13px !important;
+    display: inherit;
   }
 
   /* navigation buttons */
@@ -148,13 +196,41 @@ export default {
     color: #01aa91;
   }
 
-  .description p {
-    font-size: 12px;
-    color: #8C8A8C;
-  }
-
   .ui.card {
     width: 100%;
     height: 200px;
+  }
+
+  /* loading */
+  .loading::after {
+    position: absolute;
+    content: '';
+    top: 50%;
+    left: 50%;
+    margin: -1.5em 0 0 -1.5em;
+    width: 3em;
+    height: 3em;
+    -webkit-animation: form-spin .6s linear;
+    animation: form-spin .6s linear;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    border-radius: 500rem;
+    border-color: #767676 rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.1);
+    border-style: solid;
+    border-width: .2em;
+    -webkit-box-shadow: 0 0 0 1px transparent;
+    box-shadow: 0 0 0 1px transparent;
+    visibility: visible;
+    z-index: 101;
+  }
+  .loading::before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
   }
 </style>

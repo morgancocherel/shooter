@@ -14,10 +14,10 @@
           </div>
         </div>
         <div class="eight wide column left aligned">
-          <router-link class="ui button submit-button back-button" to="proposition">Retour</router-link>
+          <button class="ui button submit-button back-button" @click="returnToPropositionSelected">Retour</button>
         </div>
         <div class="eight wide column right aligned">
-          <button class="ui button submit-button submit-consult-order" @click="submitCommande">Terminer</button>
+          <button class="ui button submit-button submit-consult-order" @click="submitCommande" v-bind:class="{ loading: commandeIsLoading }">Terminer</button>
         </div>
       </div>
     </div>
@@ -36,10 +36,16 @@ export default {
   name: 'Commande',
   components: {Console},
   computed: {
-    ...mapState([ 'idCommande' ])
+    ...mapState([
+      'idCommande',
+      'commandeIsLoading'
+    ])
   },
   methods: {
-    ...mapActions({ 'submitCommande': actions.SUBMIT_COMMANDE })
+    ...mapActions({
+      'submitCommande': actions.SUBMIT_COMMANDE,
+      'returnToPropositionSelected': actions.RETURN_TO_PROPOSITION_SELECTED
+    })
   }
 }
 </script>

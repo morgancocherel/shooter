@@ -21,6 +21,9 @@ export default {
     },
     dateFormat (val) {
       return moment(val).locale('fr').format('dddd D MMMM')
+    },
+    priceFormat2 (val) {
+      return (val / 100).toFixed(2) + '€'
     }
   }
 }

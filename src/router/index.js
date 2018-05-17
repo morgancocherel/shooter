@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import MPDV1Home from '@/components/mpd-v1/Home'
-import MPDV2Home from '@/components/mpd-v2/Home'
 import mpdV1 from '@/components/mpd-v1/mpdV1'
 import Devis from '@/components/mpd-v1/devis/DevisForm'
 import TrajetsOffres from '@/components/mpd-v1/devis/TrajetOffre'
@@ -30,16 +28,6 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
-    },
-    {
-      path: '/mpdV1/home',
-      name: 'MPDV1Home',
-      component: MPDV1Home
-    },
-    {
-      path: '/mpdV2/home',
-      name: 'MPDV2Home',
-      component: MPDV2Home
     },
     {
       path: '/mpdV1',

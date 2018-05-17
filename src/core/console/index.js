@@ -1,10 +1,10 @@
 import * as constStore from '../../store/const'
 
-export function formatRequestConsole (method, serviceDisplay, env, body, response, idService, versionMPD) {
+export function formatRequestConsole (method, service, env, body, response, idService, versionMPD) {
   let requestSent = {}
 
   requestSent.method = method
-  requestSent.service = serviceDisplay
+  requestSent.service = service.slice(4)
   requestSent.serviceDescription = versionMPD === 'mpdv1' ? constStore.serviceMPDV1Description[idService] : constStore.serviceMPDV2Description[idService]
   requestSent.body = body
 

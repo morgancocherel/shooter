@@ -3,7 +3,7 @@
     <div class="main-all-request-container" v-for="req in allRequest" :key="req.id">
       <div class="ui grid all-request-container js-all-request-container">
         <div class="one wide column center aligned plus-icon-container">
-          <div class="plus-icon js-plus-icon">
+          <div class="plus-icon" @click="plusIcon">
             <div class="line1 js-line1"></div>
             <div class="line2"></div>
           </div>
@@ -17,24 +17,24 @@
               <span>{{ req.requestSent.service }}</span>
             </div>
             <div class="two wide column right aligned expand-icon-request">
-              <i class="angle down icon"></i>
+              <svg _ngcontent-c10="" xml:space="preserve" class="expand-icon" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0">
+                <polygon _ngcontent-c10="" fill="white" points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon>
+              </svg>
             </div>
           </div>
           <div class="ui grid request-response-data-container js-request-response-data-container" :active="req.active">
-            <div class="sixteen wide column left aligned no-padding-left request-title js-request-title">
+            <div class="sixteen wide column left aligned no-padding-left request-title js-request-title" v-bind:class="{ active: req.requestSent.body !== null }">
               <h4 class="ui header">Requête</h4>
             </div>
-            <div class="sixteen wide column left aligned no-padding-left no-padding-right response-received-data js-request-sent-data">
-              <div class="ui grid">
+            <div class="sixteen wide column left aligned no-padding-left no-padding-right request-sent-data js-scroll-bar" v-bind:class="{ active: req.requestSent.body !== null }">
+              <div class="ui grid js-request-sent-data">
                 <div class="sixteen wide column right aligned buttons-json">
-                  <a class="js-input-json-view">Json</a>
-                  <a class="js-input-formated-view">Formaté</a>
+                  <a @click="inputChangeViewData" class="js-input-json-view">Json</a>
+                  <a @click="inputChangeViewData" class="js-input-formated-view">Formaté</a>
                 </div>
                 <div class="sixteen wide column input-content-json">
-                  <p class="js-body" :body="req.requestSent.body">
                     <vue-json-pretty :data="req.requestSent.body" :options="{maxDepth: 3}" class="js-input-json-data input-json-data active"></vue-json-pretty>
                     <tree-view :data="req.requestSent.body" :options="{maxDepth: 10}" class="js-input-formated-data input-formated-data"></tree-view>
-                  </p>
                 </div>
               </div>
             </div>
@@ -43,20 +43,19 @@
             </div>
             <div class="sixteen wide column left aligned no-padding-left response-status">
               <h5 class="ui header left aligned status-message-request">
-                <i class="circle icon js-status" :status="req.responseReceived.status"></i>{{ req.responseReceived.status }} {{ req.requestSent.serviceDescription }}
+                <i class="circle icon js-status" :status="req.responseReceived.status"></i>
+                {{ req.responseReceived.status }} {{ req.requestSent.serviceDescription }}
               </h5>
             </div>
-            <div class="sixteen wide column left aligned no-padding-left no-padding-right response-received-data js-response-received-data">
-              <div class="ui grid">
+            <div class="sixteen wide column left aligned no-padding-left no-padding-right response-received-data js-scroll-bar">
+              <div class="ui grid js-response-received-data">
                 <div class="sixteen wide column right aligned buttons-json">
-                  <a class="js-output-json-view">Json</a>
-                  <a class="js-output-formated-view">Formaté</a>
+                  <a @click="outputChangeViewData" class="js-output-json-view">Json</a>
+                  <a @click="outputChangeViewData" class="js-ouput-formated-view">Formaté</a>
                 </div>
                 <div class="sixteen wide column output-content-json">
-                  <p class="js-body" :body="req.responseReceived.data">
                     <vue-json-pretty :data="req.responseReceived.data" :options="{maxDepth: 3}" class="js-output-json-data output-json-data active"></vue-json-pretty>
                     <tree-view :data="req.responseReceived.data" :options="{maxDepth: 10}" class="js-output-formated-data output-formated-data"></tree-view>
-                  </p>
                 </div>
               </div>
             </div>
@@ -72,7 +71,7 @@
 import $ from 'jquery'
 import VueJsonPretty from 'vue-json-pretty'
 import {createNamespacedHelpers} from 'vuex'
-const { mapState } = createNamespacedHelpers('Console')
+const {mapState} = createNamespacedHelpers('Console')
 
 export default {
   name: 'Console',
@@ -94,17 +93,6 @@ export default {
         $(this).addClass('status-' + statusType)
       })
     },
-    verifyBodyNotNull: function () {
-      $('.js-body').each(function () {
-        let bodyStatus = $(this).attr('body') === undefined
-        if (bodyStatus) {
-          let currentRequest = $(this).closest('.js-request-response-data-container')
-          currentRequest.find('.js-request-title').hide()
-          currentRequest.find('.js-request-sent-data').hide()
-          currentRequest.find('.js-response-title').addClass('reduce-padding-top')
-        }
-      })
-    },
     verifyActiveRequest: function () {
       $('.js-request-response-data-container').each(function () {
         let status = $(this).attr('active')
@@ -116,54 +104,78 @@ export default {
           currentPlusIcon.addClass('active')
         }
       })
+    },
+    inputChangeViewData: function (event) {
+      let jsonDataEl = event.target.closest('.js-request-sent-data').getElementsByClassName('js-input-json-data')[0]
+      let formatedDataEl = event.target.closest('.js-request-sent-data').getElementsByClassName('js-input-formated-data')[0]
+
+      let jsonDataElClass = jsonDataEl.className
+      let formatedDataElClass = formatedDataEl.className
+      let formatedViewStatus = formatedDataElClass.includes('active')
+      let jsonViewStatus = jsonDataElClass.includes('active')
+
+      let currentView = event.target._prevClass
+
+      if (formatedViewStatus && currentView !== 'js-input-formated-view') {
+        jsonDataEl.classList.add('active')
+        formatedDataEl.classList.remove('active')
+      }
+      if (jsonViewStatus && currentView !== 'js-input-json-view') {
+        jsonDataEl.classList.remove('active')
+        formatedDataEl.classList.add('active')
+      }
+    },
+    outputChangeViewData: function (event) {
+      let jsonDataEl = event.target.closest('.js-response-received-data').getElementsByClassName('js-output-json-data')[0]
+      let formatedDataEl = event.target.closest('.js-response-received-data').getElementsByClassName('js-output-formated-data')[0]
+
+      let jsonDataElClass = jsonDataEl.className
+      let formatedDataElClass = formatedDataEl.className
+      let formatedViewStatus = formatedDataElClass.includes('active')
+      let jsonViewStatus = jsonDataElClass.includes('active')
+
+      let currentView = event.target._prevClass
+
+      if (formatedViewStatus && currentView !== 'js-output-formated-view') {
+        jsonDataEl.classList.add('active')
+        formatedDataEl.classList.remove('active')
+      }
+      if (jsonViewStatus && currentView !== 'js-output-json-view') {
+        jsonDataEl.classList.remove('active')
+        formatedDataEl.classList.add('active')
+      }
+    },
+    plusIcon: function (event) {
+      let currentRequest = event.target.closest('.js-all-request-container').getElementsByClassName('js-request-response-data-container')[0]
+      let currentPlusIcon = event.target.closest('.js-all-request-container').getElementsByClassName('js-line1')[0]
+      currentRequest.getAttribute('active') ? currentRequest.setAttribute('active', false) : currentRequest.setAttribute('active', true)
+      currentRequest.classList.toggle('active')
+      currentPlusIcon.classList.toggle('active')
+
+      this.checkHeightViewData()
+    },
+    checkHeightViewData: function () {
+      $('.js-response-received-data').height() > 600 ? $('.js-response-received-data').css('padding', '0 0 20px 20px') : $('.js-response-received-data').css('padding', '0 20px 20px 20px')
+      $('.js-request-sent-data').height() > 600 ? $('.js-request-sent-data').css('padding', '0 0 20px 20px') : $('.js-request-sent-data').css('padding', '0 20px 20px 20px')
     }
   },
   updated () {
     this.setColor()
-    this.verifyBodyNotNull()
     this.verifyActiveRequest()
-
-    $('.js-plus-icon').click(function () {
-      // Toggle active attr and class
-      let currentRequest = $(this).closest('.js-all-request-container').find('.js-request-response-data-container')
-      let currentPlusIcon = $(this).closest('.js-all-request-container').find('.js-line1')
-      let currentRequestStatus = currentRequest.attr('active')
-      currentRequestStatus ? currentRequest.attr('active', false) : currentRequest.attr('active', true)
-      currentRequest.toggleClass('active')
-      currentPlusIcon.toggleClass('active')
-    })
+    this.checkHeightViewData()
 
     // Remove dotted line from vue json pretty
     $('.vjs__tree__content').css('border-left', 'none')
 
-    // Display the right json view on click
-    $('.js-input-json-view').add('.js-input-formated-view').click(function () {
-      let formatedViewStatus = $(this).closest('.js-request-sent-data').find('.js-input-formated-data').hasClass('active')
-      let jsonViewStatus = $(this).closest('.js-request-sent-data').find('.js-input-json-data').hasClass('active')
-      let currentView = $(this).attr('class')
-      if (formatedViewStatus && currentView !== 'js-input-formated-view') {
-        $(this).closest('.js-request-sent-data').find('.js-input-json-data').addClass('active')
-        $(this).closest('.js-request-sent-data').find('.js-input-formated-data').removeClass('active')
-      }
-      if (jsonViewStatus && currentView !== 'js-input-json-view') {
-        $(this).closest('.js-request-sent-data').find('.js-input-formated-data').addClass('active')
-        $(this).closest('.js-request-sent-data').find('.js-input-json-data').removeClass('active')
-      }
-    })
+    $('.js-scroll-bar').mCustomScrollbar()
+  },
+  mounted () {
+    this.setColor()
+    this.verifyActiveRequest()
+    this.checkHeightViewData()
 
-    $('.js-output-json-view').add('.js-output-formated-view').click(function () {
-      let formatedViewStatus = $(this).closest('.js-response-received-data').find('.js-output-formated-data').hasClass('active')
-      let jsonViewStatus = $(this).closest('.js-response-received-data').find('.js-output-json-data').hasClass('active')
-      let currentView = $(this).attr('class')
-      if (formatedViewStatus && currentView !== 'js-output-formated-view') {
-        $(this).closest('.js-response-received-data').find('.js-output-json-data').addClass('active')
-        $(this).closest('.js-response-received-data').find('.js-output-formated-data').removeClass('active')
-      }
-      if (jsonViewStatus && currentView !== 'js-output-json-view') {
-        $(this).closest('.js-response-received-data').find('.js-output-formated-data').addClass('active')
-        $(this).closest('.js-response-received-data').find('.js-output-json-data').removeClass('active')
-      }
-    })
+    // Remove dotted line from vue json pretty
+    $('.vjs__tree__content').css('border-left', 'none')
   }
 }
 </script>
@@ -175,6 +187,7 @@ export default {
     color: #FFF;
     min-height: 100vh;
     padding: 0 !important;
+    -webkit-transition-duration: 3s;
   }
 
   .plus-icon-container,
@@ -187,11 +200,15 @@ export default {
   }
 
   .all-request-container {
-    margin: 40px 0;
+    margin: 30px 0;
   }
 
   .main-all-request-container {
     border-bottom: 1px solid rgba(127, 127, 127, 0.25);
+  }
+
+  .main-all-request-container:last-child {
+    border-bottom: none;
   }
 
   .method-service-container {
@@ -233,7 +250,7 @@ export default {
 
   .service-request span {
     margin-left: 10px;
-    font-size: 15px;
+    font-size: 14px;
     color: #FFF;
   }
 
@@ -282,6 +299,11 @@ export default {
 
   .request-title {
     padding: 20px 0 10px 0 !important;
+    display: none !important;
+  }
+
+  .request-sent-data {
+    display: none !important;
   }
 
   .response-received-data,
@@ -295,6 +317,9 @@ export default {
   .response-received-data .ui.grid,
   .request-sent-data .ui.grid {
     margin: 0;
+  }
+
+  .response-received-data .ui.grid {
     padding: 0 20px 20px 20px;
   }
 
@@ -378,4 +403,12 @@ export default {
   .active {
     display: block !important;
   }
+
+  .expand-icon[_ngcontent-c10] {
+    height: 20px;
+    width: 20px;
+    right: 5px;
+    position: absolute;
+  }
+
 </style>
