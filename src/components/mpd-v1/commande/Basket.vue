@@ -155,7 +155,6 @@ export default {
 
   .basket-information-container p {
     display: block;
-    color: #323E42;
     font-size: 17px;
     margin-bottom: 0;
   }

@@ -74,17 +74,17 @@ const actions = {
     let username = null
     let password = null
     let body = getBodyProposition()
-    let versionMPD = constShooter.versionMPD.mpdv2
+    let versionmpd = constShooter.versionmpd.mpdv2
     let idService = 1
 
-    callService(method, service, env, contentType, body, username, password, versionMPD)
+    callService(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         dispatch(actionTypes.EDIT_LISTE_PROPOSITIONS, removeFalseProposal(response.data.propositions))
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionMPD), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
         dispatch(actionTypes.EDIT_PROPOSITION_IS_LOADING, false)
       })
       .catch((error) => {
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, state.responseDataError, idService, versionMPD), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, state.responseDataError, idService, versionmpd), {root: true})
         console.log(error, 'Request Proposition error')
         dispatch(actionTypes.EDIT_PROPOSITION_IS_LOADING, false)
       })
@@ -110,17 +110,17 @@ const actions = {
     let username = null
     let password = null
     let body = null
-    let versionMPD = constShooter.versionMPD.mpdv2
+    let versionmpd = constShooter.versionmpd.mpdv2
     let idService = 2
 
-    callService(method, service, env, contentType, body, username, password, versionMPD)
+    callService(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         dispatch(actionTypes.EDIT_PROPOSITION_SELECTED, response.data)
         router.push({name: 'PropositionSelected'})
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionMPD), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
       })
       .catch((error) => {
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, state.responseDataError, idService, versionMPD), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, state.responseDataError, idService, versionmpd), {root: true})
         console.log(error, 'Request Proposition selected error')
       })
   },
@@ -140,10 +140,10 @@ const actions = {
     let username = null
     let password = null
     let body = getBodyCreateCommande(state.idProposition, state.quantite, state.totalAffiche)
-    let versionMPD = constShooter.versionMPD.mpdv2
+    let versionmpd = constShooter.versionmpd.mpdv2
     let idService = 3
 
-    callService(method, service, env, contentType, body, username, password, versionMPD)
+    callService(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         dispatch('mpdV2/Commande/' + actionTypesCommande.EDIT_ID_COMMANDE, response.data.idCommande, {root: true})
         router.push({name: 'Commande'})

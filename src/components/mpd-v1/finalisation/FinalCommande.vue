@@ -124,6 +124,9 @@
         </div>
       </div>
     </div>
+    <div class="sixteen wide column">
+      <router-link class="ui button submit-button back-button" to="/">Retour à la page d'accueil</router-link>
+    </div>
   </div>
 </template>
 
@@ -161,7 +164,6 @@ export default {
   }
 
   .final-transaction-title p {
-    color: #323E42;
     font-size: 17px;
   }
 
@@ -193,5 +195,19 @@ export default {
 
   .no-padding-left {
     padding-left: 0;
+  }
+
+  /* navigation buttons */
+  .submit-button {
+    color: #FFF;
+    padding: 12px 22px;
+    border-radius: 0.3125em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .back-button {
+    background-color: #8C9DA1;
+    color: #FFF;
   }
 </style>

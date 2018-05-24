@@ -2,7 +2,7 @@ import * as actionTypes from './devis-action-types'
 import * as mutationTypes from './devis-mutation-types'
 import * as constShooter from '../../../const'
 import { callService } from '../../../../core/main'
-import { addData, getBodyCTO, toDateEntered, getPriceSelected, setOffreSelected, setProposalSelected } from '../../../../core/devis/index'
+import { addData, getBodyCTO, toDateEntered, getPriceSelected, setOffreSelected, setProposalSelected, setTravelerData } from '../../../../core/devis/index'
 import { formatRequestConsole } from '../../../../core/console/index'
 import router from '../../../../router/index'
 
@@ -21,11 +21,16 @@ const state = {
   returnTime: constShooter.devis.returnTime,
   returnForm: constShooter.devis.returnForm,
   devisButtonIsLoading: constShooter.devis.devisButtonIsLoading,
-  travelerData: constShooter.devis.travelerData,
+  listTraveler: constShooter.devis.listTraveler,
   proposalSelected: constShooter.devis.priceSelected,
   proposalBrut: constShooter.devis.proposalBrut,
   priceSelected: constShooter.devis.priceSelected,
-  proposalSelectedData: constShooter.devis.proposalSelectedData
+  proposalSelectedData: constShooter.devis.proposalSelectedData,
+  listStation: constShooter.devis.listStation,
+  listPassengerType: constShooter.devis.listPassengerType,
+  subscriptionCard: constShooter.devis.subscriptionCard,
+  listTime: constShooter.devis.listTime,
+  currentNum: constShooter.devis.currentNum
 }
 
 const getters = {
@@ -38,11 +43,13 @@ const getters = {
   getReturnTime: state => state.returnTime,
   getReturnForm: state => state.returnForm,
   getDevisButtonIsLoading: state => state.devisButtonIsLoading,
-  getTravelerData: state => state.travelerData,
+  getListTraveler: state => state.listTraveler,
   getProposalBrut: state => state.proposalBrut,
   getProposalSelected: state => state.proposalSelected,
   getPriceSelected: state => state.priceSelected,
-  getProposalSelectedData: state => state.proposalSelectedData
+  getProposalSelectedData: state => state.proposalSelectedData,
+  getListStation: state => state.listStation,
+  getCurrentNum: state => state.currentNum
 }
 
 const mutations = {
@@ -73,9 +80,6 @@ const mutations = {
   [mutationTypes.SET_DEVIS_IS_LOADING] (state, boolean) {
     state.devisIsLoading = boolean
   },
-  [mutationTypes.SET_TRAVELER_DATA] (state, data) {
-    state.travelerData = data
-  },
   [mutationTypes.SET_PROPOSAL_BRUT] (state, proposal) {
     state.proposalBrut = proposal
   },
@@ -93,6 +97,19 @@ const mutations = {
   },
   [mutationTypes.SET_DEVIS_BUTTON_IS_LOADING] (state, boolean) {
     state.devisButtonIsLoading = boolean
+  },
+  [mutationTypes.SET_LIST_TRAVELER] (state) {
+    let newPassenger =
+    {
+      num: state.currentNum,
+      typologie: 'Adulte',
+      age: 30,
+      droit: 'Sana carte de réduction'
+    }
+    state.listTraveler.push(newPassenger)
+  },
+  [mutationTypes.SET_CURRENT_NUM] (state, num) {
+    state.currentNum = num
   }
 }
 
@@ -103,7 +120,7 @@ const actions = {
     commit(mutationTypes.SET_DEVIS, value)
   },
   [actionTypes.EDIT_ORIGIN_TRAIN] ({commit, dispatch}, originTrain) {
-    commit(mutationTypes.SET_ORIGIN_TRAIN, originTrain.target.value)
+    commit(mutationTypes.SET_ORIGIN_TRAIN, originTrain)
   },
   [actionTypes.EDIT_DEPARTURE_DATE] ({commit, dispatch}, departureDate) {
     commit(mutationTypes.SET_DEPARTURE_DATE, departureDate)
@@ -112,7 +129,7 @@ const actions = {
     commit(mutationTypes.SET_DEPARTURE_TIME, departureTime)
   },
   [actionTypes.EDIT_DESTINATION_TRAIN] ({commit, dispatch}, destinationTrain) {
-    commit(mutationTypes.SET_DESTINATION_TRAIN, destinationTrain.target.value)
+    commit(mutationTypes.SET_DESTINATION_TRAIN, destinationTrain)
   },
   [actionTypes.EDIT_RETURN_DATE] ({commit, dispatch}, returnTime) {
     commit(mutationTypes.SET_RETURN_DATE, returnTime)
@@ -138,25 +155,25 @@ const actions = {
     let departureDate = toDateEntered(state.departureDate, state.departureTime)
     let originTrain = state.originTrain
     let destinationTrain = state.destinationTrain
-    let travelerData = state.travelerData
+    let travelerData = setTravelerData(state.listTraveler)
     let body = getBodyCTO(departureDate, travelerData, originTrain, destinationTrain)
     let idService = 5
-    let versionMPD = constShooter.versionMPD.mpdv1
+    let versionmpd = constShooter.versionmpd.mpdv1
 
-    callService(method, service, env, contentType, body, username, password, versionMPD)
+    callService(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         let proposals = addData(response.data.trajets)
         dispatch(actionTypes.EDIT_PROPOSAL_BRUT, proposals)
         dispatch(actionTypes.EDIT_DEFAULT_PROPOSAL_SELECTED, proposals[0])
         dispatch(actionTypes.EDIT_PRICE_SELECTED, proposals[0].proposal)
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
 
         router.push({name: 'TrajetsOffres'})
         commit(mutationTypes.SET_DEVIS_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
         let response = null
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
         console.log(error, 'Request CTO error')
         commit(mutationTypes.SET_DEVIS_BUTTON_IS_LOADING, false)
       })
@@ -203,9 +220,9 @@ const actions = {
     let password = mainFormState.password
     let body = setOffreSelected(state.proposalSelected.voyage, state.proposalSelected.proposal.classSelected)
     let idService = 7
-    let versionMPD = constShooter.versionMPD.mpdv1
+    let versionmpd = constShooter.versionmpd.mpdv1
 
-    callService(method, service, env, contentType, body, username, password, versionMPD)
+    callService(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         let idCommande = response.data.idCommande
         dispatch('mpdV1/Commande/' + actionTypesCommande.EDIT_ID_COMMANDE, idCommande, {root: true})
@@ -229,6 +246,14 @@ const actions = {
   },
   [actionTypes.EDIT_DEVIS_BUTTON_IS_LOADING] ({commit}, boolean) {
     commit(mutationTypes.SET_DEVIS_BUTTON_IS_LOADING, boolean)
+  },
+  [actionTypes.EDIT_LIST_TRAVELER] ({commit, dispatch}) {
+    console.log('rrr')
+    // dispatch(actionTypes.EDIT_CURRENT_NUM, state.currentNum + 1)
+    // commit(mutationTypes.SET_LIST_TRAVELER)
+  },
+  [actionTypes.EDIT_CURRENT_NUM] ({commit}, num) {
+    commit(mutationTypes.SET_CURRENT_NUM, num)
   }
 }
 

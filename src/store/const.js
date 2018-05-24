@@ -28,7 +28,7 @@ export const console = {
 }
 
 /* versions MPD */
-export const versionMPD = {
+export const versionmpd = {
   mpdv1: 'mpdv1',
   mpdv2: 'mpdv2'
 }
@@ -45,22 +45,23 @@ export const error = {
 /* devis */
 export const devis = {
   travelMode: 'AS',
-  originTrain: 'FRUIP',
-  departureDate: today,
-  departureTime: today.getHours(),
-  destinationTrain: 'FRRNS',
+  originTrain: null,
+  departureDate: null,
+  departureTime: null,
+  destinationTrain: null,
   returnDate: null,
   returnTime: null,
   returnForm: false,
   devisIsLoading: false,
-  travelerData: [
+  listTraveler: [
     {
-      id: 1,
+      num: 1,
       typologie: 'Adulte',
       age: 30,
-      num: 1
+      droit: 'Sana carte de réduction'
     }
   ],
+  currentNum: 1,
   proposalSelected: null,
   proposalBrut: null,
   priceSelected: null,
@@ -70,7 +71,38 @@ export const devis = {
       classSelected: 'DEUXIEME'
     },
   hideDevisResult: false,
-  devisButtonIsLoading: false
+  devisButtonIsLoading: false,
+  listStation: [
+    'Nantes',
+    'Rennes',
+    'Quimper',
+    'Brest',
+    'Saint-Malo',
+    'Angers',
+    'Ancenis'
+  ],
+  listPassengerType: [
+    'Adulte (26-59)',
+    'Jeune (0-25)',
+    'Senior (60+)'
+  ],
+  subscriptionCard: [
+    'Sans carte de réduction',
+    'Carte Week-end',
+    'Carte jeune',
+    'TGVmax'
+  ],
+  listTime: [
+    { text: '6h', value: '6' },
+    { text: '8h', value: '8' },
+    { text: '10h', value: '10' },
+    { text: '12h', value: '12' },
+    { text: '14h', value: '14' },
+    { text: '16h', value: '16' },
+    { text: '18h', value: '18' },
+    { text: '20h', value: '20' },
+    { text: '22h', value: '22' }
+  ]
 }
 
 /* commande */
@@ -104,7 +136,7 @@ export const commande = {
     {text: 'Passager 1'}
   ],
   travelerContact: null,
-  emailTravelerContact: 'm.cocherel@icloud.com',
+  emailTravelerContact: null,
   commandeButtonIsLoading: false,
   proposalSelected: null,
   priceSelected: null
@@ -176,16 +208,16 @@ export const headerTop = {
 /* main-form */
 export const mainForm = {
   allEnvironments: [
-    { text: 'integ1 public', value: 'integ1 public' },
-    { text: 'cur1 mobile', value: 'cur1 mobile' },
-    { text: 'cur1 private', value: 'cur1 private' },
-    { text: 'cur1 public', value: 'cur1 public' },
-    { text: 'Pipeline public', value: 'Pipeline public' },
-    { text: 'Pipeline mobile', value: 'Pipeline mobile' },
-    { text: 'usn1 public', value: 'usn1 public' },
-    { text: 'usine5 mpdv2', value: 'usine5 mpdv2' }
+    'integ1 public',
+    'cur1 mobile',
+    'cur1 private',
+    'cur1 public',
+    'Pipeline public',
+    'Pipeline mobile',
+    'usn1 public',
+    'usine5 mpdv2'
   ],
-  environment: 'usine5 mpdv2',
+  environment: 'integ1 public',
   username: 'mpdWEB',
   password: 'mpdWEB',
   currentHealthCheck: null,

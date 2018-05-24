@@ -1,5 +1,5 @@
 <template>
-  <div class="ui grid" :returnToProposition="returnToProposition">
+  <div class="ui grid main-container" :returnToProposition="returnToProposition">
     <div class="eleven wide column proposition-container js-site-content">
       <div class="ui grid">
         <div class="sixteen wide column center aligned">
@@ -41,6 +41,7 @@
         </div>
         <div class="sixteen wide column center aligned navigation-container">
           <router-link class="ui button submit-button back-button" to="/">Retour</router-link>
+          <button class="ui button submit-button submit-proposition" @click="submitProposition">Relancer</button>
         </div>
       </div>
     </div>
@@ -116,6 +117,10 @@ export default {
 </script>
 
 <style scoped>
+  .main-container {
+    margin: 0;
+  }
+
   .proposition-container {
     padding-top: 0 !important;
     margin-top: 40px;
@@ -130,7 +135,6 @@ export default {
   }
 
   .card-libelle {
-    color: #323E42;
     font-weight: bolder;
     font-size: 15px !important;
     margin: 0 0 3px 0;
@@ -152,7 +156,6 @@ export default {
   }
 
   .card-information span {
-    color: #323E42;
     font-size: 13px !important;
     display: inherit;
   }
@@ -178,6 +181,17 @@ export default {
 
   .navigation-container {
     padding: 2rem 0;
+  }
+
+  .submit-proposition {
+    background-color: #01C3A7;
+  }
+
+  .submit-proposition:hover,
+  .submit-proposition:focus {
+    background-color: #01aa91;
+    border-color: #01aa91;
+    color: #FFF;
   }
 
   /* card ticket */

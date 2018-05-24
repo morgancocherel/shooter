@@ -52,20 +52,6 @@
                     <div class="accordion sub-accordion">
                       <div class="title">
                         <i class="dropdown icon"></i>
-                        <h4 class="ui header">Combinaisons Zones</h4>
-                      </div>
-                      <div class="content">
-                        <div class="ui grid second-level-accordion">
-                          <div class="two wide column left aligned"><strong>Id</strong></div>
-                          <div class="two wide column left aligned">{{ item.proposition.combinaisonZones.id }}</div>
-                          <div class="two wide column left aligned"><strong>Libelle</strong></div>
-                          <div class="ten wide column left aligned">{{ item.proposition.combinaisonZones.libelle }}</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="accordion sub-accordion">
-                      <div class="title">
-                        <i class="dropdown icon"></i>
                         <h4 class="ui header">Produit</h4>
                       </div>
                       <div class="content">
@@ -79,20 +65,6 @@
                           <div class="two wide column left aligned">{{ item.proposition.produit.prix }}</div>
                           <div class="two wide column left aligned"><strong>Type</strong></div>
                           <div class="ten wide column left aligned">{{ item.proposition.produit.type }}</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="accordion sub-accordion">
-                      <div class="title">
-                        <i class="dropdown icon"></i>
-                        <h4 class="ui header">Utilisation</h4>
-                      </div>
-                      <div class="content">
-                        <div class="ui grid second-level-accordion">
-                          <div class="two wide column left aligned"><strong>Date début</strong></div>
-                          <div class="three wide column left aligned">{{ item.proposition.utilisation.dateDebut }}</div>
-                          <div class="two wide column left aligned"><strong>Date fin</strong></div>
-                          <div class="nine wide column left aligned">{{ item.proposition.utilisation.dateFin }}</div>
                         </div>
                       </div>
                     </div>
@@ -174,7 +146,6 @@ export default {
 
   strong {
     font-weight: bolder;
-    color: #323E42;
   }
 
   .first-level-accordion {

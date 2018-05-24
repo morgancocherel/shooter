@@ -46,6 +46,7 @@ const mutations = {
 
 const actions = {
   [actionTypes.EDIT_ENV] ({commit, dispatch}, environment) {
+    console.log(environment.target)
     let env = environment.target.value
     commit(mutationTypes.SET_ENV, env)
     dispatch(actionTypes.SEND_HEALTH_CHECK, env)
@@ -61,13 +62,13 @@ const actions = {
     let method = constShooter.methods.methodGet
     let service = '/api' + constShooter.servicesMPDV1.serviceHealthcheck
     let env = state.environment
-    let username = state.username
-    let password = state.password
+    let username = null
+    let password = null
     let body = null
     let contentType = constShooter.contentType.json
-    let versionMPD = null
+    let versionmpd = null
 
-    callService(method, service, env, contentType, body, username, password, versionMPD)
+    callService(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         let version = response.data.version
         let status = response.data.status === 200

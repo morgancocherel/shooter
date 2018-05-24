@@ -1,9 +1,9 @@
 <template>
-  <div class="ui fixed inverted menu">
+  <div class="ui fixed inverted menu header-top">
     <div class="left menu">
       <div class="ui header item no-border shooter-mpd" @click="goHome">Shooter MPD</div>
     </div>
-    <div class="menu" style="margin: 0 auto;">
+    <div class="menu">
       <a class="item step-container js-step" v-bind:class="{ active: devisActiveStep }">
         <i class="search icon"></i>
         <span class="active">Devis</span>
@@ -86,21 +86,29 @@ export default {
 </script>
 
 <style scoped>
-  .ui.fixed.menu {
-    background-color: #21314D;
+  .header-top {
+    background-color: #21314D !important;
     height: 60px;
     z-index: 2;
+  }
+
+  .header-top .left.menu {
+    display: contents !important;
+  }
+
+  .header-top .menu {
+    height: 60px;
   }
 
   .item {
     padding: 12px 20px !important;
   }
 
-  .ui.inverted.menu a.item:hover {
-    background-color: transparent;
+  .header-top .active.item {
+    background-color: transparent !important;
   }
 
-  .ui.menu {
+  .header-top a.item:hover {
     background-color: transparent;
   }
 
@@ -176,7 +184,7 @@ export default {
     color: #FFF;
   }
 
-  .ui.inverted.menu .active.item {
+  .header-top .active.item {
     background: transparent;
   }
 
@@ -184,16 +192,5 @@ export default {
   .right.menu a.item.no-border:hover{
     background-color: rgba(255, 255, 255, 0.15);
     color: #FFF;
-  }
-
-  /* active - inactive sidebars */
-  .active-console,
-  .active-main-form {
-    width: 600px;
-  }
-
-  .active-console,
-  .active-main-form {
-    width: 0;
   }
 </style>

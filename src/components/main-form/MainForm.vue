@@ -17,7 +17,7 @@
       <div class="ten wide column left aligned">
         <label>Environnement</label>
         <select class="ui dropdown fluid env-select" title="environment" @input="updateEnv">
-          <option v-for="env in allEnvironments" :key="env.id" :value="env.value">{{ env.text }}</option>
+          <option v-for="env in allEnvironments" :value="env" :key="env">{{ env }}</option>
         </select>
       </div>
       <div class="six wide column center aligned middle aligned current-health-check-container">
@@ -66,7 +66,7 @@ export default {
     })
   },
   mounted () {
-    this.sendHealthCheck()
+    // this.sendHealthCheck()
 
     $('.js-close-sidebar').click(function () {
       $('.js-main-form-content').toggleClass('inactive-main-form')

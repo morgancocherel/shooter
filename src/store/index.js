@@ -5,7 +5,6 @@ import mpdV2 from './modules/mpd-v2'
 import MainForm from './modules/main-form/index'
 import Console from './modules/console/index'
 import HeaderTop from './modules/header-top/index'
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({

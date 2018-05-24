@@ -55,19 +55,27 @@ export function addData (trajetsData) {
 }
 
 export function getBodyCTO (departureDate, travelerData, originTrain, destinationTrain) {
+  console.log(departureDate, travelerData, originTrain, destinationTrain)
   const bodyCTO =
     {
-      trajet: {
-        origin: originTrain,
-        destination: destinationTrain,
-        departureDatetime: departureDate,
-        includeTypes: 'TER'
+      'trajet': {
+        'origin': 'FRNTE',
+        'destination': 'FRRNS',
+        'departureDatetime': departureDate,
+        'includeTypes': 'TER'
       },
-      voyageurs: travelerData,
-      idDemande: 1,
-      diffusion: 'HORAIRE',
-      supportsMat: [
-        constShooter.supportsMat.digitalise
+      'voyageurs': [
+        {
+          'typologie': 'Adulte',
+          'age': 30,
+          'num': 1
+        }
+      ],
+      'idDemande': '1',
+      'diffusion': 'HORAIRE',
+
+      'supportsMat': [
+        'DIGITALISE'
       ]
     }
   return bodyCTO
@@ -140,4 +148,10 @@ export function setOffreSelected (voyage, classSelected) {
   voyageForAVO.offres = [ offreSelected ]
 
   return voyageForAVO
+}
+
+export function setTravelerData (list) {
+  for (let element in list) {
+    console.log(element)
+  }
 }

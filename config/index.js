@@ -29,7 +29,7 @@ module.exports = {
         changeOrigin: true,
         logLevel: 'debug',
         router: function (req) {
-          if (req.headers.versionMPD = 'mpdv2') {
+          if (req.headers.versionmpd === 'mpdv2') {
             req.url = req.url.slice(4, req.url.length)
           }
           return platforms[req.headers.platform]

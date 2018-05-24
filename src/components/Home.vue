@@ -102,7 +102,6 @@ export default {
   .box-title {
     font-size: 50px !important;
     font-weight: 300;
-    color: #323E42;
   }
 
   .box-icon {

@@ -574,7 +574,6 @@ export default {
 
   strong {
     font-weight: bolder;
-    color: #323E42;
   }
 
   .traveler-data span {

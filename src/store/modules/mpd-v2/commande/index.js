@@ -64,14 +64,14 @@ const actions = {
     let username = null
     let password = null
     let body = null
-    let versionMPD = constShooter.versionMPD.mpdv2
+    let versionmpd = constShooter.versionmpd.mpdv2
     let idService = 4
 
-    callService(method, service, env, contentType, body, username, password, versionMPD)
+    callService(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         dispatch(actionTypes.EDIT_FINAL_COMMANDE_DATA, response.data)
         router.push({name: 'FinalCommandeMPDV2'})
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionMPD), {root: true})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
         dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, false)
       })
       .catch((error) => {

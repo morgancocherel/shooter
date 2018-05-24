@@ -2,8 +2,8 @@
   <div class="ui grid container payment-container">
     <div class="sixteen wide column left aligned summary-traveler-information">
       <h3 class="ui header check-your-ticket">Vérifiez votre billet avant le paiement</h3>
-      <p class="traveler-information">L'email de confirmation sera envoyé à <strong>{{ getFirstname }} {{ getLastname }}</strong> à l'adresse
-        <strong>{{ getEmailTravelerContact }}</strong> juste après le paiement.</p>
+      <p class="traveler-information">L'email de confirmation sera envoyé à <strong>{{ firstname }} {{ lastname }}</strong> à l'adresse
+        <strong>{{ emailTravelerContact }}</strong> juste après le paiement.</p>
     </div>
     <div class="sixteen wide column">
       <div class="ui grid segment main-segment traveler-information-container">
@@ -19,7 +19,7 @@
           <h5 class="ui header">{{ proposalSelected.end_point.label }}</h5>
         </div>
         <div class="two wide column right aligned middle aligned">
-          <span><strong>{{ getPriceSelected | priceFormat }}</strong></span>
+          <span><strong>{{ priceSelected | priceFormat }}</strong></span>
         </div>
         <div class="sixteen wide column ticket-information-container">
           <div class="ui grid segment sub-segment">
@@ -133,7 +133,6 @@ export default {
   }
 
   .traveler-information {
-    color: #323E42;
     font-size: 17px;
   }
 
@@ -149,7 +148,6 @@ export default {
 
   .sub-segment span{
     font-size: 13px;
-    color: #323E42;
   }
 
   /* Navigation buttons */

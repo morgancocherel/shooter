@@ -146,7 +146,6 @@ export default {
   }
 
   .sub-travel-information-reminder {
-    color: #323E42;
     font-size: 17px;
   }
 
