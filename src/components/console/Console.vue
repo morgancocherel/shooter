@@ -1,5 +1,8 @@
 <template>
   <div class="five wide column console-container js-console-content active">
+    <div class="clear-all-request">
+      <a @click="clearAllRequest">Tout effacer</a>
+    </div>
     <div class="main-all-request-container" v-for="req in allRequest" :key="req.id">
       <div class="ui grid all-request-container js-all-request-container">
         <div class="one wide column center aligned plus-icon-container">
@@ -13,13 +16,8 @@
             <div class="two wide column method-request">
               <h5 class="ui header js-method-request" :method="req.requestSent.method">{{ req.requestSent.method }}</h5>
             </div>
-            <div class="twelve wide column left aligned service-request">
+            <div class="fourteen wide column left aligned service-request">
               <span>{{ req.requestSent.service }}</span>
-            </div>
-            <div class="two wide column right aligned expand-icon-request">
-              <svg _ngcontent-c10="" xml:space="preserve" class="expand-icon" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0">
-                <polygon _ngcontent-c10="" fill="white" points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon>
-              </svg>
             </div>
           </div>
           <div class="ui grid request-response-data-container js-request-response-data-container" :active="req.active">
@@ -71,7 +69,9 @@
 import $ from 'jquery'
 import VueJsonPretty from 'vue-json-pretty'
 import {createNamespacedHelpers} from 'vuex'
-const {mapState} = createNamespacedHelpers('Console')
+import * as actions from '../../store/modules/console/console-action-types'
+
+const {mapState, mapActions} = createNamespacedHelpers('Console')
 
 export default {
   name: 'Console',
@@ -82,6 +82,9 @@ export default {
     VueJsonPretty
   },
   methods: {
+    ...mapActions({
+      'clearAllRequest': actions.CLEAR_ALL_REQUEST
+    }),
     setColor: function () {
       $('.js-method-request').each(function () {
         let methodType = $(this).attr('method') === 'post' ? 'post' : 'get'
@@ -172,7 +175,7 @@ export default {
   mounted () {
     this.setColor()
     this.verifyActiveRequest()
-    this.checkHeightViewData()
+    // this.checkHeightViewData()
 
     // Remove dotted line from vue json pretty
     $('.vjs__tree__content').css('border-left', 'none')
@@ -187,7 +190,20 @@ export default {
     color: #FFF;
     min-height: 100vh;
     padding: 0 !important;
-    -webkit-transition-duration: 3s;
+  }
+
+  .clear-all-request {
+    margin-top: 10px;
+  }
+
+  .clear-all-request a {
+    color: #FFF;
+    cursor: pointer;
+    padding: 2px 10px;
+  }
+
+  .clear-all-request a:hover {
+    background-color: #455b66;
   }
 
   .plus-icon-container,
@@ -312,6 +328,7 @@ export default {
     padding: 0 !important;
     max-height: 600px;
     overflow-x: hidden;
+    overflow-y: hidden;
   }
 
   .response-received-data .ui.grid,

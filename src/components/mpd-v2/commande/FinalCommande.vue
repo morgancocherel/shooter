@@ -1,6 +1,6 @@
 <template>
-  <div class="ui grid">
-    <div class="eleven wide column final-commande-container js-site-content">
+  <div class="ui grid main-container">
+    <div class="eleven wide column final-commande-container active-console js-site-content">
       <div class="ui grid">
         <div class="sixteen wide column center aligned">
           <h1 class="ui header">Consultation commande existante</h1>
@@ -49,6 +49,20 @@
                       <div class="four wide column left aligned"><strong>Quantité max proposable</strong></div>
                       <div class="one wide column left aligned">{{ item.proposition.quantiteMaxProposable }}</div>
                     </div>
+                    <div class="accordion sub-accordion" v-if="item.proposition.produit.type === 'ABONNEMENT'">
+                      <div class="title">
+                        <i class="dropdown icon"></i>
+                        <h4 class="ui header">Combinaisons Zones</h4>
+                      </div>
+                      <div class="content">
+                        <div class="ui grid second-level-accordion">
+                          <div class="two wide column left aligned"><strong>Id</strong></div>
+                          <div class="two wide column left aligned">{{ item.proposition.combinaisonZones.id }}</div>
+                          <div class="two wide column left aligned"><strong>Libelle</strong></div>
+                          <div class="ten wide column left aligned">{{ item.proposition.combinaisonZones.libelle }}</div>
+                        </div>
+                      </div>
+                    </div>
                     <div class="accordion sub-accordion">
                       <div class="title">
                         <i class="dropdown icon"></i>
@@ -68,6 +82,20 @@
                         </div>
                       </div>
                     </div>
+                    <div class="accordion sub-accordion" v-if="item.proposition.produit.type === 'ABONNEMENT'">
+                      <div class="title">
+                        <i class="dropdown icon"></i>
+                        <h4 class="ui header">Utilisation</h4>
+                      </div>
+                      <div class="content">
+                        <div class="ui grid second-level-accordion">
+                          <div class="two wide column left aligned"><strong>Date début</strong></div>
+                          <div class="three wide column left aligned">{{ item.proposition.utilisation.dateDebut }}</div>
+                          <div class="two wide column left aligned"><strong>Date fin</strong></div>
+                          <div class="nine wide column left aligned">{{ item.proposition.utilisation.dateFin }}</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -75,7 +103,8 @@
           </div>
         </div>
         <div class="sixteen wide column center aligned">
-          <router-link class="ui button submit-button back-button" to="/">Retour à la page d'accueil</router-link>
+          <router-link class="ui button submit-button back-button" to="/mpdV2/commandes">Retour</router-link>
+          <router-link class="ui button submit-button back-button" to="/">Page d'accueil</router-link>
         </div>
       </div>
     </div>
@@ -87,14 +116,20 @@
 import {createNamespacedHelpers} from 'vuex'
 import $ from 'jquery'
 import Console from '../../console/Console'
+import * as actions from '../../../store/modules/mpd-v2/commande/commande-action-types'
 
-const {mapState} = createNamespacedHelpers('mpdV2/Commande')
+const {mapActions, mapState} = createNamespacedHelpers('mpdV2/Commande')
 
 export default {
   name: 'Commande',
   components: {Console},
   computed: {
     ...mapState(['finalCommandeData'])
+  },
+  methods: {
+    ...mapActions({
+      'submitPayment': actions.SUBMIT_PAYMENT
+    })
   },
   mounted () {
     // Set up all accordions menus
@@ -104,9 +139,21 @@ export default {
 </script>
 
 <style scoped>
+  .main-container {
+    margin: 0;
+  }
+
   .final-commande-container {
-    padding-top: 0 !important;
+    padding: 0 !important;
     margin-top: 40px;
+  }
+
+  .final-commande-container.active-console {
+    padding-right: 20px !important;
+  }
+
+  .final-commande-container .ui.grid {
+    margin: 0;
   }
 
   /* navigation buttons */
@@ -125,6 +172,17 @@ export default {
 
   .back-button:hover {
     background-color: #7e9196;
+    color: #FFF;
+  }
+
+  .submit-payment {
+    background-color: #01C3A7;
+  }
+
+  .submit-payment:hover,
+  .submit-payment:focus {
+    background-color: #01aa91;
+    border-color: #01aa91;
     color: #FFF;
   }
 

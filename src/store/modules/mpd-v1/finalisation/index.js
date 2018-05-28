@@ -2,7 +2,7 @@ import * as mutationTypes from './finalisation-mutation-types'
 import * as actionTypes from './finalisation-action-types'
 import * as constShooter from '../../../const'
 import router from '../../../../router/index'
-import { callService } from '../../../../core/main'
+import { callServiceNoAccountRef } from '../../../../core/main'
 import { getBodyRRP, getBodyFRC } from '../../../../core/finalisation/index'
 import { formatRequestConsole } from '../../../../core/console/index'
 
@@ -109,7 +109,7 @@ const actions = {
     let body = getBodyRRP(state.jetonTransaction)
     let idService = 10
 
-    callService(method, service, env, contentType, body, username, password)
+    callServiceNoAccountRef(method, service, env, contentType, body, username, password)
       .then((response) => {
         dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
@@ -142,7 +142,7 @@ const actions = {
     let idService = 11
 
     let body = getBodyFRC(state.operationDistributionId, state.lastname, state.firstname, dateBirth)
-    callService(method, service, env, contentType, body, username, password)
+    callServiceNoAccountRef(method, service, env, contentType, body, username, password)
       .then((response) => {
         dispatch(actionTypes.EDIT_FINAL_DATA, response.data.commande)
 

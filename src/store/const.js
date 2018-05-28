@@ -34,10 +34,7 @@ export const versionmpd = {
 }
 
 export const error = {
-  message: null,
-  responseDataError: {
-    data: null
-  }
+  message: null
 }
 
 /* mpd-v1 */
@@ -214,10 +211,10 @@ export const mainForm = {
     'cur1 public',
     'Pipeline public',
     'Pipeline mobile',
-    'usn1 public',
+    'usine1 mpdv2',
     'usine5 mpdv2'
   ],
-  environment: 'integ1 public',
+  environment: 'usine1 mpdv2',
   username: 'mpdWEB',
   password: 'mpdWEB',
   currentHealthCheck: null,
@@ -228,30 +225,41 @@ export const mainForm = {
 /* mpd-v2 */
 
 /* Service MPD-v2 */
+export const constMPDV2 = {
+  xConsumerCustomID: 'app_sncf'
+}
+
 export const servicesMPDV2 = {
   servicePropositions: '/propositions/catalogues/{id}',
   servicePropositionSelected: '/propositions/{idProposition}',
   serviceCreateCommande: '/commandes',
-  serviceFinalCommande: '/commandes/{idCommande}'
+  serviceFinalCommande: '/commandes/{idCommande}',
+  servicePaiementCommande: '/paiement/commandes/{id}',
+  serviceCompteClient: '/comptesclients'
 }
 
 export const serviceMPDV2Description = {
+  0: 'La référence externe du compte client générée',
   1: 'Liste des propositions mise à disposition',
   2: 'Proposition mise à disposition selectionnée',
   3: 'Création d\'une nouvelle commande',
-  4: 'Consultation d\'une commande existante'
+  4: 'Consultation d\'une commande existante',
+  5: 'Demande de paiement initialisé'
 }
 
 /* proposition */
 export const proposition = {
-  listePropositions: null,
-  catalogueSTIF: 'STIF',
+  listProposition: null,
   idProposition: null,
   quantite: null,
   totalAffiche: null,
   proposalSelected: null,
   returnToProposition: false,
-  propositionIsLoading: false
+  propositionIsLoading: false,
+  listCatalogue: [
+    'STIF'
+  ],
+  catalogueSelected: 'STIF'
 }
 
 /* commande */
@@ -262,4 +270,15 @@ export const commandeMPDV2 = {
   totalAffiche: null,
   idProposition: null,
   commandeIsLoading: null
+}
+
+/* compte client */
+export const compteclient = {
+  createAccountClientSubmitIsLoading: false,
+  referenceExterne: null
+}
+
+/* paiement */
+export const paiementMPDV = {
+  urlIhmPaiement: null
 }

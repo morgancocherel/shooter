@@ -26,7 +26,7 @@
             <div class="box-icon">+</div>
           </div>
           <div class="sixteen wide column box-link js-link-right">
-            <a href="/mpdV2/propositions/catalogues" class="ui huge">Création d'une commande</a>
+            <a href="/mpdV2/comptesclients" class="ui huge">Création d'une commande</a>
           </div>
         </div>
       </div>

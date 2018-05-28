@@ -1,6 +1,6 @@
-import * as actionTypes from './payment-action-types'
-import * as mutationTypes from './payment-mutation-types'
-import { callService } from '../../../../core/main'
+import * as actionTypes from './paiement-action-types'
+import * as mutationTypes from './paiement-mutation-types'
+import { callServiceNoAccountRef } from '../../../../core/main'
 import { getBodyDPC } from '../../../../core/paiement/index'
 import { formatRequestConsole } from '../../../../core/console/index'
 import * as constShooter from '../../../const'
@@ -69,7 +69,7 @@ const actions = {
     let body = getBodyDPC(state.emailTravelerContact)
     let idService = 9
 
-    callService(method, service, env, contentType, body, username, password)
+    callServiceNoAccountRef(method, service, env, contentType, body, username, password)
       .then((response) => {
         dispatch('mpdV1/Finalisation/' + actionTypesFinalisation.EDIT_TRAVELER_EMAIL_CONTACT, state.emailTravelerContact, {root: true})
         dispatch('mpdV1/Finalisation/' + actionTypesFinalisation.EDIT_FIRSTNAME, state.firstname, {root: true})

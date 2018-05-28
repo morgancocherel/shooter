@@ -1,5 +1,5 @@
 <template>
-  <div id='app'>
+  <div id='app' class="js-app no-margin-right">
     <router-view></router-view>
   </div>
 </template>
@@ -17,6 +17,10 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #323E42;
-    margin: 60px 10px 0 20px;
+    margin: 60px 20px 0 20px;
+  }
+
+  .no-margin-right {
+    margin-right: 0 !important;
   }
 </style>

@@ -1,7 +1,7 @@
 import * as actionTypes from './devis-action-types'
 import * as mutationTypes from './devis-mutation-types'
 import * as constShooter from '../../../const'
-import { callService } from '../../../../core/main'
+import { callServiceNoAccountRef } from '../../../../core/main'
 import { addData, getBodyCTO, toDateEntered, getPriceSelected, setOffreSelected, setProposalSelected, setTravelerData } from '../../../../core/devis/index'
 import { formatRequestConsole } from '../../../../core/console/index'
 import router from '../../../../router/index'
@@ -160,7 +160,7 @@ const actions = {
     let idService = 5
     let versionmpd = constShooter.versionmpd.mpdv1
 
-    callService(method, service, env, contentType, body, username, password, versionmpd)
+    callServiceNoAccountRef(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         let proposals = addData(response.data.trajets)
         dispatch(actionTypes.EDIT_PROPOSAL_BRUT, proposals)
@@ -222,7 +222,7 @@ const actions = {
     let idService = 7
     let versionmpd = constShooter.versionmpd.mpdv1
 
-    callService(method, service, env, contentType, body, username, password, versionmpd)
+    callServiceNoAccountRef(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         let idCommande = response.data.idCommande
         dispatch('mpdV1/Commande/' + actionTypesCommande.EDIT_ID_COMMANDE, idCommande, {root: true})

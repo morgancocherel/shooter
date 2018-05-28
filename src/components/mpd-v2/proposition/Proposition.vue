@@ -1,13 +1,13 @@
 <template>
   <div class="ui grid main-container" :returnToProposition="returnToProposition">
-    <div class="eleven wide column proposition-container js-site-content">
+    <div class="eleven wide column proposition-container active-console js-site-content">
       <div class="ui grid">
         <div class="sixteen wide column center aligned">
           <h1 class="ui header">Propositions STIF</h1>
         </div>
         <div class="sixteen wide column left aligned" v-bind:class="{ loading: propositionIsLoading }">
           <div class="ui cards">
-            <div class="card js-card" v-for="prop in listePropositions" :key="prop.id">
+            <div class="card js-card" v-for="prop in listProposition" :key="prop.id">
               <div class="content">
                 <div class="right floated">{{ prop.produit.prix | priceFormat2 }}</div>
                 <h4 class="ui header card-libelle">{{ prop.produit.libelle }}</h4>
@@ -41,7 +41,6 @@
         </div>
         <div class="sixteen wide column center aligned navigation-container">
           <router-link class="ui button submit-button back-button" to="/">Retour</router-link>
-          <button class="ui button submit-button submit-proposition" @click="submitProposition">Relancer</button>
         </div>
       </div>
     </div>
@@ -64,7 +63,7 @@ export default {
   mixins: [filters],
   computed: {
     ...mapState([
-      'listePropositions',
+      'listProposition',
       'returnToProposition',
       'propositionIsLoading',
       'propositionSelectedIsLoading'
@@ -72,7 +71,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      'submitProposition': actions.SUBMIT_PROPOSITION,
       'submitPropositionSelectedWithData': actions.SUBMIT_PROPOSITION_SELECTED
     }),
     plusTicket: function (event) {
@@ -107,11 +105,6 @@ export default {
       toSend.priceCalculated = toSend.amount * toSend.price
       this.submitPropositionSelectedWithData(toSend)
     }
-  },
-  mounted () {
-    if (!this.returnToProposition) {
-      this.submitProposition()
-    }
   }
 }
 </script>
@@ -122,8 +115,16 @@ export default {
   }
 
   .proposition-container {
-    padding-top: 0 !important;
+    padding: 0 !important;
     margin-top: 40px;
+  }
+
+  .proposition-container.active-console {
+    padding-right: 20px !important;
+  }
+
+  .proposition-container .ui.grid {
+    margin: 0;
   }
 
   h1.ui.header {

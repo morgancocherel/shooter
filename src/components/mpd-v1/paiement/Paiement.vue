@@ -59,13 +59,13 @@
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
-import * as actions from '../../../store/modules/mpd-v1/paiement/payment-action-types'
+import * as actions from '../../../store/modules/mpd-v1/paiement/paiement-action-types'
 import filters from '../../../mixins/filters'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Payment')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Paiement')
 
 export default {
-  name: 'Payment',
+  name: 'Paiment',
   mixins: [filters],
   computed: {
     ...mapState([

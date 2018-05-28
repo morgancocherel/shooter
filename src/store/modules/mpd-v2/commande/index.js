@@ -1,7 +1,7 @@
 import * as mutationTypes from './commande-mutation-types'
 import * as actionTypes from './commande-action-types'
 import * as constShooter from '../../../const'
-import {callService} from '../../../../core/main'
+import { callServiceWithAccountRef } from '../../../../core/main'
 import router from '../../../../router'
 
 import * as actionTypesConsole from '../../console/console-action-types'
@@ -66,8 +66,10 @@ const actions = {
     let body = null
     let versionmpd = constShooter.versionmpd.mpdv2
     let idService = 4
+    let xaccountref = rootState.CompteClientMPDV2.referenceExterne
+    let XConsumerCustomID = null
 
-    callService(method, service, env, contentType, body, username, password, versionmpd)
+    callServiceWithAccountRef(method, service, env, contentType, body, username, password, versionmpd, xaccountref, XConsumerCustomID)
       .then((response) => {
         dispatch(actionTypes.EDIT_FINAL_COMMANDE_DATA, response.data)
         router.push({name: 'FinalCommandeMPDV2'})
@@ -75,8 +77,10 @@ const actions = {
         dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, false)
       })
       .catch((error) => {
-        let response = {}
-        response.data = null
+        let response = {
+          data: null,
+          status: error.message.split('code')[1]
+        }
         dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
         console.log(error, 'Request Commande error')
         dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, false)
@@ -102,6 +106,45 @@ const actions = {
   },
   [actionTypes.EDIT_COMMANDE_IS_LOADING] ({commit}, boolean) {
     commit(mutationTypes.SET_COMMANDE_IS_LOADING, boolean)
+  },
+  [actionTypes.SUBMIT_PAYMENT] ({dispatch, rootState}) {
+    dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, true)
+
+    let mainFormState = rootState.MainForm
+
+    // Data required for create commande request
+    let method = constShooter.methods.methodPost
+    let service = '/api' + constShooter.servicesMPDV2.servicePaiementCommande.replace(/{id}/i, state.idCommande)
+    let env = mainFormState.environment
+    let contentType = constShooter.contentType.json
+    let username = null
+    let password = null
+    let body = {
+      email: 'mcocherel@oui.sncf',
+      urlRedirection: 'https://www.google.com/'
+    }
+    let versionmpd = constShooter.versionmpd.mpdv2
+    let idService = 5
+    let xaccountref = rootState.CompteClientMPDV2.referenceExterne
+    let XConsumerCustomID = constShooter.constMPDV2.xConsumerCustomID
+    console.log(method, service, env, contentType, body, username, password, versionmpd, xaccountref, XConsumerCustomID)
+    callServiceWithAccountRef(method, service, env, contentType, body, username, password, versionmpd, xaccountref, XConsumerCustomID)
+      .then((response) => {
+        console.log(response.data)
+        dispatch('mpdV2/Paiment/' + actionTypes.EDIT_COMMANDE_IS_LOADING, response.data.urlIhmPaiement)
+        router.push({name: 'Paiement'})
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
+        dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, false)
+      })
+      .catch((error) => {
+        let response = {
+          data: null,
+          status: error.message.split('code')[1]
+        }
+        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        console.log(error, 'Request demande paiement error')
+        dispatch(actionTypes.EDIT_COMMANDE_IS_LOADING, false)
+      })
   }
 }
 

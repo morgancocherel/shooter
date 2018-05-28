@@ -1,6 +1,6 @@
 import Devis from './devis'
 import Commande from './commande'
-import Payment from './paiement'
+import Paiement from './paiement'
 import Finalisation from './finalisation'
 
 export default{
@@ -8,7 +8,7 @@ export default{
   modules: {
     Devis,
     Commande,
-    Payment,
+    Paiement,
     Finalisation
   }
 }

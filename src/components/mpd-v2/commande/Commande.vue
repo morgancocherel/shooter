@@ -1,6 +1,6 @@
 <template>
-  <div class="ui grid">
-    <div class="eleven wide column order-in-progress-container js-site-content">
+  <div class="ui grid main-container">
+    <div class="eleven wide column order-in-progress-container active-console js-site-content">
       <div class="ui grid">
         <div class="sixteen wide column center aligned">
           <h1 class="ui header">Commande en cours</h1>
@@ -17,7 +17,7 @@
           <button class="ui button submit-button back-button" @click="returnToPropositionSelected">Retour</button>
         </div>
         <div class="eight wide column right aligned">
-          <button class="ui button submit-button submit-consult-order" @click="submitCommande" v-bind:class="{ loading: commandeIsLoading }">Terminer</button>
+          <button class="ui button submit-button submit-consult-order" @click="submitCommande" v-bind:class="{ loading: commandeIsLoading }">Continuer</button>
         </div>
       </div>
     </div>
@@ -51,12 +51,24 @@ export default {
 </script>
 
 <style scoped>
+  .main-container {
+    margin: 0;
+  }
+
   .order-in-progress-container {
-    padding-top: 0 !important;
+    padding: 0 !important;
     margin-top: 40px;
   }
 
-  /* navigation buttons */
+  .order-in-progress-container.active-console {
+    padding-right: 20px !important;
+  }
+
+  .order-in-progress-container .ui.grid {
+    margin: 0;
+  }
+
+    /* navigation buttons */
   .submit-button {
     color: #FFF;
     padding: 12px 22px;

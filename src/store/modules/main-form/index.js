@@ -1,6 +1,6 @@
 import * as actionTypes from './main-form-action-types'
 import * as mutationTypes from './main-form-mutation-types'
-import { callService } from '../../../core/main'
+import { callServiceNoAccountRef } from '../../../core/main'
 import * as constShooter from '../../const'
 
 const state = {
@@ -49,7 +49,7 @@ const actions = {
     console.log(environment.target)
     let env = environment.target.value
     commit(mutationTypes.SET_ENV, env)
-    dispatch(actionTypes.SEND_HEALTH_CHECK, env)
+    // dispatch(actionTypes.SEND_HEALTH_CHECK, env)
   },
   [actionTypes.EDIT_USERNAME] ({commit}, username) {
     commit(mutationTypes.SET_USERNAME, username.target.value)
@@ -68,7 +68,7 @@ const actions = {
     let contentType = constShooter.contentType.json
     let versionmpd = null
 
-    callService(method, service, env, contentType, body, username, password, versionmpd)
+    callServiceNoAccountRef(method, service, env, contentType, body, username, password, versionmpd)
       .then((response) => {
         let version = response.data.version
         let status = response.data.status === 200

@@ -2,10 +2,10 @@ import * as mutationTypes from './commande-mutation-types'
 import * as actionTypes from './commande-action-types'
 import * as constShooter from '../../../const'
 import { formatRequestConsole } from '../../../../core/console/index'
-import { callService } from '../../../../core/main'
+import { callServiceNoAccountRef } from '../../../../core/main'
 import router from '../../../../router/index'
 
-import * as actionTypesPayment from '../paiement/payment-action-types'
+import * as actionTypesPaiement from '../paiement/paiement-action-types'
 import * as actionTypesFinalisation from '../finalisation/finalisation-action-types'
 import * as actionTypesHeaderTop from '../../header-top/header-top-action-types'
 import * as actionTypesConsole from '../../console/console-action-types'
@@ -138,14 +138,14 @@ const actions = {
     let body = null
     let idService = 8
 
-    callService(method, service, env, contentType, body, username, password)
+    callServiceNoAccountRef(method, service, env, contentType, body, username, password)
       .then((response) => {
-        dispatch('mpdV1/Payment/' + actionTypesPayment.EDIT_TRAVELER_EMAIL_CONTACT, state.emailTravelerContact, {root: true})
-        dispatch('mpdV1/Payment/' + actionTypesPayment.EDIT_FIRSTANME, state.firstname, {root: true})
-        dispatch('mpdV1/Payment/' + actionTypesPayment.EDIT_LASTANME, state.lastname, {root: true})
-        dispatch('mpdV1/Payment/' + actionTypesPayment.EDIT_PROPOSAL_SELECTED, state.proposalSelected, {root: true})
-        dispatch('mpdV1/Payment/' + actionTypesPayment.EDIT_PRICE_SELECTED, state.priceSelected, {root: true})
-        dispatch('mpdV1/Payment/' + actionTypesPayment.EDIT_ID_COMMANDE, state.idCommande, {root: true})
+        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_TRAVELER_EMAIL_CONTACT, state.emailTravelerContact, {root: true})
+        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_FIRSTANME, state.firstname, {root: true})
+        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_LASTANME, state.lastname, {root: true})
+        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_PROPOSAL_SELECTED, state.proposalSelected, {root: true})
+        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_PRICE_SELECTED, state.priceSelected, {root: true})
+        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_ID_COMMANDE, state.idCommande, {root: true})
 
         let id = response.data.voyages[0].offres[0].operationDistributions[0].id
         dispatch('mpdV1/Finalisation/' + actionTypesFinalisation.EDIT_OPERATION_DISTRIBUTION_ID, id, {root: true})
@@ -155,7 +155,7 @@ const actions = {
 
         dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
-        router.push({name: 'Payment'})
+        router.push({name: 'Paiment'})
         dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {

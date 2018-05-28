@@ -63,13 +63,15 @@ export default {
       function showConsole () {
         $('.js-console-content').addClass('active')
         let classNameToInsert = $('.js-site-content').attr('class').replace('sixteen', 'eleven')
-        $('.js-site-content').attr('class', classNameToInsert)
+        $('.js-site-content').attr('class', classNameToInsert).addClass('active-console')
+        $('.js-app').addClass('no-margin-right')
       }
 
       function hideConsole () {
         $('.js-console-content').removeClass('active')
         let classNameToInsert = $('.js-site-content').attr('class').replace('eleven', 'sixteen')
-        $('.js-site-content').attr('class', classNameToInsert)
+        $('.js-site-content').attr('class', classNameToInsert).removeClass('active-console')
+        $('.js-app').removeClass('no-margin-right')
       }
 
       $('.js-console-content').slideToggle(20, function () {

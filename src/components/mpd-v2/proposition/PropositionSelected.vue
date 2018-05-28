@@ -1,6 +1,6 @@
 <template>
-  <div class="ui grid">
-    <div class="eleven wide column proposition-selected-container js-site-content">
+  <div class="ui grid main-container">
+    <div class="eleven wide column proposition-selected-container active-console js-site-content">
       <div class="ui negative message error-message" v-bind:class="{ active: message !== null }">
         <i class="close icon" @click="closeMessage"></i>
         <div class="header">
@@ -78,12 +78,24 @@ export default {
 </script>
 
 <style scoped>
+  .main-container {
+    margin: 0;
+  }
+
   .proposition-selected-container {
-    padding-top: 0 !important;
+    padding: 0 !important;
     margin-top: 40px;
   }
 
-  /* navigation buttons */
+  .proposition-selected-container.active-console {
+    padding-right: 20px !important;
+  }
+
+  .proposition-selected-container .ui.grid {
+    margin: 0;
+  }
+
+    /* navigation buttons */
   .submit-button {
     color: #FFF;
     padding: 12px 22px;
