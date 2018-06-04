@@ -3,27 +3,27 @@
     <div class="left menu">
       <div class="ui header item no-border shooter-mpd" @click="goHome">Shooter MPD</div>
     </div>
-    <div class="menu">
-      <a class="item step-container js-step" v-bind:class="{ active: devisActiveStep }">
+    <div class="menu js-stage-point" data-stage="devis">
+      <a class="item step-container devis-stage" v-bind:class="{ active: devisActiveStep }">
         <i class="search icon"></i>
         <span class="active">Devis</span>
       </a>
-      <a class="item step-container js-step" v-bind:class="{ active: commandeActiveStep }">
+      <a class="item step-container commande-stage" v-bind:class="{ active: commandeActiveStep }">
         <i class="shopping basket icon"></i>
         <span>Commande</span>
       </a>
-      <a class="item step-container js-step" v-bind:class="{ active: paymentActiveStep }">
+      <a class="item step-container paiement-stage" v-bind:class="{ active: paymentActiveStep }">
         <i class="credit card icon"></i>
         <span>Paiement</span>
       </a>
-      <a class="item step-container" v-bind:class="{ active: finalisationActiveStep }">
+      <a class="item step-container finalisation-stage" v-bind:class="{ active: finalisationActiveStep }">
         <i class="align justify icon"></i>
         <span>Finalisation</span>
       </a>
     </div>
     <div class="right menu">
-      <a class="item no-border js-main-form">Identifiants & Environnements</a>
-      <a class="item js-console no-border open-console-icon">
+      <a class="item no-border" @click="mainForm">Paramètres</a>
+      <a class="item no-border open-console-icon" @click="showHideConsole">
         <i class="terminal icon"></i>
       </a>
     </div>
@@ -35,10 +35,10 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../store/modules/header-top/header-top-action-types'
 import $ from 'jquery'
 
-const { mapState, mapActions } = createNamespacedHelpers('HeaderTop')
+const { mapState, mapActions } = createNamespacedHelpers('headerTop')
 
 export default {
-  name: 'HeaderTop',
+  name: 'headerTop',
   computed: {
     ...mapState([
       'devisActiveStep',
@@ -50,39 +50,37 @@ export default {
   methods: {
     ...mapActions({
       'goHome': actions.GO_HOME
-    })
-  },
-  mounted () {
-    function toggleClassMainFormSidebar () {
+    }),
+    toggleClassMainFormSidebar: function () {
       $('.js-main-form-content').toggleClass('inactive-main-form')
       $('.js-main-form-content').toggleClass('active-main-form')
+    },
+    mainForm: function () {
+      // open close main form (username, password and environment form) sidebar
+      this.toggleClassMainFormSidebar()
+    },
+    toggleShowConsole: function () {
+      $('.js-console-content').addClass('active')
+      let classNameToInsert = $('.js-site-content').attr('class').replace('sixteen', 'eleven')
+      $('.js-site-content').attr('class', classNameToInsert).addClass('active-console')
+      $('.js-app').addClass('no-margin-right')
+      if ($('.js-site-content').parent().attr('data-content') === 'middle-on-hide-console') {
+        $('.js-site-content').parent().removeClass('container').addClass('main-container')
+      }
+    },
+    toggleHideConsole: function () {
+      $('.js-console-content').removeClass('active')
+      let classNameToInsert = $('.js-site-content').attr('class').replace('eleven', 'sixteen')
+      $('.js-site-content').attr('class', classNameToInsert).removeClass('active-console')
+      $('.js-app').removeClass('no-margin-right')
+      if ($('.js-site-content').parent().attr('data-content') === 'middle-on-hide-console') {
+        $('.js-site-content').parent().removeClass('main-container').addClass('container')
+      }
+    },
+    showHideConsole: function () {
+      $('.js-console-content').slideToggle(5)
+      $('.js-console-content').attr('class').includes('active') ? this.toggleHideConsole() : this.toggleShowConsole()
     }
-
-    // open close console sidebar
-    $('.js-console').click(function () {
-      function showConsole () {
-        $('.js-console-content').addClass('active')
-        let classNameToInsert = $('.js-site-content').attr('class').replace('sixteen', 'eleven')
-        $('.js-site-content').attr('class', classNameToInsert).addClass('active-console')
-        $('.js-app').addClass('no-margin-right')
-      }
-
-      function hideConsole () {
-        $('.js-console-content').removeClass('active')
-        let classNameToInsert = $('.js-site-content').attr('class').replace('eleven', 'sixteen')
-        $('.js-site-content').attr('class', classNameToInsert).removeClass('active-console')
-        $('.js-app').removeClass('no-margin-right')
-      }
-
-      $('.js-console-content').slideToggle(20, function () {
-        $('.js-console-content').attr('class').includes('active') ? hideConsole() : showConsole()
-      })
-    })
-
-    // open close main form (username, password and environment form) sidebar
-    $('.js-main-form').click(function () {
-      toggleClassMainFormSidebar()
-    })
   }
 }
 </script>
@@ -181,8 +179,14 @@ export default {
     display: none;
   }
 
-  .item.step-container.active span,
-  .item.step-container.active i {
+  .menu[data-stage='devis'] .devis-stage span,
+  .menu[data-stage='devis'] .devis-stage i,
+  .menu[data-stage='commande'] .commande-stage span,
+  .menu[data-stage='commande'] .commande-stage i,
+  .menu[data-stage='paiement'] .paiement-stage span,
+  .menu[data-stage='paiement'] .paiement-stage i,
+  .menu[data-stage='finalisation'] .finalisation-stage span,
+  .menu[data-stage='finalisation'] .finalisation-stage i {
     color: #FFF;
   }
 

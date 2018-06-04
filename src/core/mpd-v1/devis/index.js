@@ -1,6 +1,14 @@
 // For each trajet, add a unique id, price and class selected
 import $ from 'jquery'
-import * as constShooter from '../../store/const'
+import * as constShooter from '../../../store/const'
+import Axios from 'axios/index'
+import store from '../../../store/index'
+
+function toDateEntered (date, time) {
+  let dateNoTime = date.toISOString().replace(/T.*/i, '')
+  let datePlusTime = dateNoTime + 'T' + time + ':00:00.000Z'
+  return new Date(datePlusTime)
+}
 
 function proposalSelectedData (current, id, offerLength) {
   let firstClass = {}
@@ -54,37 +62,55 @@ export function addData (trajetsData) {
   return trajets
 }
 
-export function getBodyCTO (departureDate, travelerData, originTrain, destinationTrain) {
-  console.log(departureDate, travelerData, originTrain, destinationTrain)
-  const bodyCTO =
-    {
-      'trajet': {
-        'origin': 'FRNTE',
-        'destination': 'FRRNS',
-        'departureDatetime': departureDate,
-        'includeTypes': 'TER'
+export function trajetsOffres () {
+  const data = {
+    'trajet': {
+      'origin': 'FRNTE',
+      'destination': 'FRRNS',
+      'departureDatetime': toDateEntered(store.getters['mpdV1/devis/getDepartureDate'], store.getters['mpdV1/devis/getDepartureTime']),
+      'includeTypes': 'TER'
+    },
+    'voyageurs': [
+      {
+        'typologie': 'Adulte',
+        'age': 30,
+        'num': 1
+      }
+    ],
+    'idDemande': '1',
+    'diffusion': 'HORAIRE',
+
+    'supportsMat': [
+      'DIGITALISE'
+    ]
+  }
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: constShooter.methods.methodPost,
+      url: 'api' + constShooter.servicesMPDV1.serviceCTO,
+      headers: {
+        platform: store.getters['mainForm/getEnvironment'],
+        'X-CORRELATIONID': 'shooter-' + Math.random().toString().slice(2),
+        'versionmpd': constShooter.versionmpd.mpdv1,
+        'Content-Type': constShooter.contentType.json
       },
-      'voyageurs': [
-        {
-          'typologie': 'Adulte',
-          'age': 30,
-          'num': 1
+      auth: {
+        username: store.getters['mainForm/getUsername'],
+        password: store.getters['mainForm/getPassword']
+      },
+      data
+    })
+      .then((response) => {
+        let fullResponse = {
+          response: response,
+          body: data
         }
-      ],
-      'idDemande': '1',
-      'diffusion': 'HORAIRE',
-
-      'supportsMat': [
-        'DIGITALISE'
-      ]
-    }
-  return bodyCTO
-}
-
-export function toDateEntered (date, time) {
-  let dateNoTime = date.toISOString().replace(/T.*/i, '')
-  let datePlusTime = dateNoTime + 'T' + time + ':00:00.000Z'
-  return new Date(datePlusTime)
+        resolve(fullResponse)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
 }
 
 export function setProposalSelected (proposalBrut, proposals, proposalSelectedData) {
@@ -140,18 +166,43 @@ export function getPriceSelected (proposalSelected) {
   return priceSelected
 }
 
-export function setOffreSelected (voyage, classSelected) {
+function setOffreSelected (proposalSelected) {
   let voyageForAVO = {}
-  let offreSelected = classSelected === constShooter.classes.premiere ? voyage.offres[0] : voyage.offres[1]
-  voyageForAVO.itineraireAller = voyage.itineraireAller
-  voyageForAVO.voyageurs = voyage.voyageurs
+  let offreSelected = proposalSelected.proposal.classSelected === constShooter.classes.premiere ? proposalSelected.voyage.offres[0] : proposalSelected.voyage.offres[1]
+  voyageForAVO.itineraireAller = proposalSelected.voyage.itineraireAller
+  voyageForAVO.voyageurs = proposalSelected.voyage.voyageurs
   voyageForAVO.offres = [ offreSelected ]
-
   return voyageForAVO
 }
 
-export function setTravelerData (list) {
-  for (let element in list) {
-    console.log(element)
-  }
+export function addToBasket () {
+  const data = setOffreSelected(store.getters['mpdV1/devis/getProposalSelected'])
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: constShooter.methods.methodPost,
+      url: 'api' + constShooter.servicesMPDV1.serviceAVOnew,
+      headers: {
+        platform: store.getters['mainForm/getEnvironment'],
+        'X-CORRELATIONID': 'shooter-' + Math.random().toString().slice(2),
+        'versionmpd': constShooter.versionmpd.mpdv1,
+        'Content-Type': constShooter.contentType.json,
+        'IDEXTERNECOMMANDE': 1234567890
+      },
+      auth: {
+        username: store.getters['mainForm/getUsername'],
+        password: store.getters['mainForm/getPassword']
+      },
+      data
+    })
+      .then((response) => {
+        let fullResponse = {
+          response: response,
+          body: data
+        }
+        resolve(fullResponse)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
 }

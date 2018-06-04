@@ -17,7 +17,7 @@
           <button class="ui button submit-button back-button" @click="returnToPropositionSelected">Retour</button>
         </div>
         <div class="eight wide column right aligned">
-          <button class="ui button submit-button submit-consult-order" @click="submitCommande" v-bind:class="{ loading: commandeIsLoading }">Continuer</button>
+          <button class="ui button submit-button submit-consult-order" @click="consultOrderInProgress" v-bind:class="{ loading: commandeIsLoading }">Continuer</button>
         </div>
       </div>
     </div>
@@ -26,15 +26,16 @@
 </template>
 
 <script>
+import $ from 'jquery'
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/commande/commande-action-types'
 import Console from '../../console/Console'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Commande')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV2/commande')
 
 export default {
-  name: 'Commande',
-  components: {Console},
+  name: 'commande',
+  components: { Console },
   computed: {
     ...mapState([
       'idCommande',
@@ -43,9 +44,16 @@ export default {
   },
   methods: {
     ...mapActions({
-      'submitCommande': actions.SUBMIT_COMMANDE,
+      'consultOrderInProgress': actions.CONSULT_ORDER_IN_PROGRESS,
       'returnToPropositionSelected': actions.RETURN_TO_PROPOSITION_SELECTED
-    })
+    }),
+    setStagePoint: function () {
+      $('.js-stage-point').attr('data-stage', 'commande')
+    }
+  },
+  mounted () {
+    // Set the stage point
+    this.setStagePoint()
   }
 }
 </script>

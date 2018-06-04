@@ -102,9 +102,11 @@
             </div>
           </div>
         </div>
-        <div class="sixteen wide column center aligned">
+        <div class="eight wide column left aligned">
           <router-link class="ui button submit-button back-button" to="/mpdV2/commandes">Retour</router-link>
-          <router-link class="ui button submit-button back-button" to="/">Page d'accueil</router-link>
+        </div>
+        <div class="eight wide column right aligned">
+          <button class="ui button submit-button submit-payment" @click="submitPayment" v-bind:class="{ loading: commandeIsLoading }">Payer</button>
         </div>
       </div>
     </div>
@@ -118,13 +120,16 @@ import $ from 'jquery'
 import Console from '../../console/Console'
 import * as actions from '../../../store/modules/mpd-v2/commande/commande-action-types'
 
-const {mapActions, mapState} = createNamespacedHelpers('mpdV2/Commande')
+const {mapActions, mapState} = createNamespacedHelpers('mpdV2/commande')
 
 export default {
-  name: 'Commande',
+  name: 'commande',
   components: {Console},
   computed: {
-    ...mapState(['finalCommandeData'])
+    ...mapState([
+      'finalCommandeData',
+      'commandeIsLoading'
+    ])
   },
   methods: {
     ...mapActions({

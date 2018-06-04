@@ -1,14 +1,14 @@
-import CompteClient from './compte-client'
-import Proposition from './proposition'
-import Commande from './commande'
-import Paiement from './paiement'
+import compteClient from './compte-client'
+import proposition from './proposition'
+import commande from './commande'
+import paiement from './paiement'
 
 export default{
   namespaced: true,
   modules: {
-    CompteClient,
-    Proposition,
-    Commande,
-    Paiement
+    compteClient,
+    proposition,
+    commande,
+    paiement
   }
 }

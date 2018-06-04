@@ -36,14 +36,14 @@
           </div>
         </div>
         <div class="sixteen wide column left aligned search-section-participants js-add-passenger">
-          <input value="1 Adulte (26 - 59)" class="search-input passenger-input" type="button" data-input="addPassenger"
+          <input value="1 Adulte (26 - 59)" class="search-input js-search-input passenger-input" type="button" data-input="addPassenger"
                  @click="displayRightPanelAction">
-          <button type="button" class="search-add-participants" data-input="addPassenger" @click="displayRightPanelAction">
+          <button type="button" class="search-add-participants" data-input="addPassenger" @click="searchAddPassenger">
             Sélectionner d’autres passagers
           </button>
         </div>
         <div class="sixteen wide column right aligned devis-form-submit-button-container">
-          <button class="ui button devis-form-submit-button" @click="submitDevisForm" v-bind:class="{ loading: devisButtonIsLoading }">Rechercher</button>
+          <button class="ui button devis-form-submit-button" @click="submitDevisFormAction" v-bind:class="{ loading: devisButtonIsLoading }">Rechercher</button>
         </div>
       </div>
     </div>
@@ -68,10 +68,10 @@ import ReturnDate from './split-panel-right/ReturnDate'
 import AddPassenger from './split-panel-right/AddPassenger'
 import filters from '../../../mixins/filters'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Devis')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/devis')
 
 export default {
-  name: 'Devis',
+  name: 'devis',
   mixins: [filters],
   components: { ReturnDate, AddPassenger, DepartureDate, DestinationTrain, OriginTrain },
   computed: {
@@ -95,13 +95,6 @@ export default {
         if (value !== null && value !== undefined) {
           $(this).removeClass('empty')
         }
-      })
-    },
-    setHeightpanel: function () {
-      let value = $('.js-split-panel-left').outerHeight()
-      $('.js-split-panel-right').css({
-        'height': value,
-        'min-heigh': value
       })
     },
     previousRightPanelToInactive: function () {
@@ -195,6 +188,16 @@ export default {
       $('.js-list-station').mouseleave(function () {
         $('.js-list-station li a').first().addClass('selected')
       })
+    },
+    submitDevisFormAction: function () {
+      $('.js-departure-date-container').parent().attr('data-active', 'false')
+      $('.js-return-date-container').parent().attr('data-active', 'false')
+      $('.js-search-input').on('focusout')
+      this.submitDevisForm()
+    },
+    searchAddPassenger: function (event) {
+      event.target.closest('.js-add-passenger').children[0].focus()
+      this.displayRightPanelAction()
     }
   },
   mounted () {
@@ -233,9 +236,6 @@ export default {
     // Check the value of every input of the devis form
     this.checkInputValue()
 
-    // Set the same height for the two panels
-    this.setHeightpanel()
-
     // Set focus by default
     $('.js-origin-train').focus()
   }
@@ -257,6 +257,8 @@ export default {
      background-color: #FFF;
      border-radius: 0.3125em;
      border: 1px solid #DCE3E6;
+     height: 470px;
+     min-height: 470px;
    }
 
   .split-panel-left .ui.grid {
@@ -431,6 +433,7 @@ export default {
     box-shadow: 0px 1px 1px -1px #8C9DA1;
   }
 
+  .devis-form-submit-button:focus,
   .devis-form-submit-button:hover {
     background-color: #01aa91;
     border-color: #01aa91;
@@ -449,6 +452,8 @@ export default {
     border-radius: 0.3125em;
     border: 1px solid #DCE3E6;
     position: inherit;
+    height: 470px;
+    min-height: 470px;
   }
 
   .split-panel-right:after {

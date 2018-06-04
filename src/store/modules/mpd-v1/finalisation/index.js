@@ -2,12 +2,8 @@ import * as mutationTypes from './finalisation-mutation-types'
 import * as actionTypes from './finalisation-action-types'
 import * as constShooter from '../../../const'
 import router from '../../../../router/index'
-import { callServiceNoAccountRef } from '../../../../core/main'
-import { getBodyRRP, getBodyFRC } from '../../../../core/finalisation/index'
-import { formatRequestConsole } from '../../../../core/console/index'
-
-import * as actionTypesHeaderTop from '../../header-top/header-top-action-types'
-import * as actionTypesConsole from '../../console/console-action-types'
+import {submitTransaction, submitFinalisation} from '../../../../core/mpd-v1/finalisation'
+// import { formatRequestConsole } from '../../../../core/console/index'
 
 const state = {
   emailTravelerContact: constShooter.commande.emailTravelerContact,
@@ -95,30 +91,21 @@ const actions = {
   [actionTypes.EDIT_URL_IHM_PAIEMENT] ({commit}, url) {
     commit(mutationTypes.SET_URL_IHM_PAIEMENT, url)
   },
-  [actionTypes.SUBMIT_TRANSACTION] ({commit, dispatch, rootState}) {
+  [actionTypes.SUBMIT_TRANSACTION] ({commit, dispatch}) {
     dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, true)
-
-    let mainFormState = rootState.MainForm
-
-    let method = constShooter.methods.methodPost
-    let service = '/api' + constShooter.servicesMPDV1.serviceRRP
-    let env = mainFormState.environment
-    let contentType = constShooter.contentType.xml
-    let username = mainFormState.username
-    let password = mainFormState.password
-    let body = getBodyRRP(state.jetonTransaction)
-    let idService = 10
-
-    callServiceNoAccountRef(method, service, env, contentType, body, username, password)
+    let jetonTransaction = state.jetonTransaction
+    submitTransaction(jetonTransaction)
       .then((response) => {
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
-
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
         router.push({name: 'FinalPayment'})
         dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
-        let response = null
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        // let response = {
+        //   data: null,
+        //   status: error.message.split('code')[1]
+        // }
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
         console.log(error, 'Request RRP error')
         dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, false)
@@ -129,31 +116,20 @@ const actions = {
   },
   [actionTypes.SUBMIT_FINALISATION] ({rootState, dispatch}) {
     dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, true)
-
-    let mainFormState = rootState.MainForm
-
-    let method = constShooter.methods.methodPost
-    let service = '/api' + constShooter.servicesMPDV1.serviceFRC.replace(/{idCommande}/i, state.idCommande).replace(/{jetonTransaction}/i, state.jetonTransaction)
-    let env = mainFormState.environment
-    let contentType = constShooter.contentType.json
-    let username = mainFormState.username
-    let password = mainFormState.password
-    let dateBirth = '1995-01-18'
-    let idService = 11
-
-    let body = getBodyFRC(state.operationDistributionId, state.lastname, state.firstname, dateBirth)
-    callServiceNoAccountRef(method, service, env, contentType, body, username, password)
+    submitFinalisation()
       .then((response) => {
         dispatch(actionTypes.EDIT_FINAL_DATA, response.data.commande)
-
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
         router.push({name: 'FinalCommande'})
         dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
-        let response = null
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        // let response = {
+        //   data: null,
+        //   status: error.message.split('code')[1]
+        // }
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
         console.log(error, 'Request FRC error')
         dispatch(actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING, false)
@@ -167,15 +143,6 @@ const actions = {
   },
   [actionTypes.EDIT_FINALISATION_BUTTON_IS_LOADING] ({commit}, boolean) {
     commit(mutationTypes.SET_FINALISATION_BUTTON_IS_LOADING, boolean)
-  },
-  [actionTypes.RETURN_TO_PAYMENT] ({dispatch}) {
-    dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_FINALISATION_ACTIVE_STEP, false, {root: true})
-    dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_PAYMENT_ACTIVE_STEP, true, {root: true})
-
-    router.push({name: 'Payment'})
-  },
-  [actionTypes.RETURN_TO_FINAL_PAYMENT] () {
-    router.push({name: 'FinalPayment'})
   }
 }
 

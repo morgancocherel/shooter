@@ -14,7 +14,7 @@
             <div class="box-icon">+</div>
           </div>
           <div class="sixteen wide column box-link js-link-left">
-            <a href="/mpdV1/devis/devisForm" class="ui huge">Parcours CTO</a>
+            <router-link to="/mpdV1/devis/devisForm" class="ui huge">Parcours CTO</router-link>
           </div>
         </div>
       </div>
@@ -26,7 +26,7 @@
             <div class="box-icon">+</div>
           </div>
           <div class="sixteen wide column box-link js-link-right">
-            <a href="/mpdV2/comptesclients" class="ui huge">Création d'une commande</a>
+            <router-link to="/mpdV2/comptesclients" class="ui huge">Création d'une commande</router-link>
           </div>
         </div>
       </div>

@@ -1,14 +1,13 @@
 import * as mutationTypes from './commande-mutation-types'
 import * as actionTypes from './commande-action-types'
 import * as constShooter from '../../../const'
-import { formatRequestConsole } from '../../../../core/console/index'
-import { callServiceNoAccountRef } from '../../../../core/main'
+// import { formatRequestConsole } from '../../../../core/console/index'
+// import { callServiceNoAccountRef } from '../../../../core/main'
+import {consultOrderInProgress} from '../../../../core/mpd-v1/commande'
 import router from '../../../../router/index'
 
 import * as actionTypesPaiement from '../paiement/paiement-action-types'
 import * as actionTypesFinalisation from '../finalisation/finalisation-action-types'
-import * as actionTypesHeaderTop from '../../header-top/header-top-action-types'
-import * as actionTypesConsole from '../../console/console-action-types'
 
 const state = {
   idCommande: constShooter.commande.idCommande,
@@ -125,51 +124,36 @@ const actions = {
   [actionTypes.EDIT_TRAVELER_CONTACT] ({commit}, traveler) {
     commit(mutationTypes.SET_TRAVELER_CONTACT, traveler.target.value)
   },
-  [actionTypes.CONSULT_COMMANDE_IN_PROGRESS] ({dispatch, rootState}) {
+  [actionTypes.CONSULT_ORDER_IN_PROGRESS] ({dispatch}) {
     dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, true)
 
-    let mainFormState = rootState.MainForm
-    let method = constShooter.methods.methodGet
-    let service = '/api' + constShooter.servicesMPDV1.serviceCCM.replace(/{idCommande}/i, state.idCommande)
-    let env = mainFormState.environment
-    let contentType = constShooter.contentType.json
-    let username = mainFormState.username
-    let password = mainFormState.password
-    let body = null
-    let idService = 8
-
-    callServiceNoAccountRef(method, service, env, contentType, body, username, password)
+    consultOrderInProgress()
       .then((response) => {
-        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_TRAVELER_EMAIL_CONTACT, state.emailTravelerContact, {root: true})
-        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_FIRSTANME, state.firstname, {root: true})
-        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_LASTANME, state.lastname, {root: true})
-        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_PROPOSAL_SELECTED, state.proposalSelected, {root: true})
-        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_PRICE_SELECTED, state.priceSelected, {root: true})
-        dispatch('mpdV1/Paiment/' + actionTypesPaiement.EDIT_ID_COMMANDE, state.idCommande, {root: true})
+        dispatch('mpdV1/paiement/' + actionTypesPaiement.EDIT_TRAVELER_EMAIL_CONTACT, state.emailTravelerContact, {root: true})
+        dispatch('mpdV1/paiement/' + actionTypesPaiement.EDIT_FIRSTANME, state.firstname, {root: true})
+        dispatch('mpdV1/paiement/' + actionTypesPaiement.EDIT_LASTANME, state.lastname, {root: true})
+        dispatch('mpdV1/paiement/' + actionTypesPaiement.EDIT_PROPOSAL_SELECTED, state.proposalSelected, {root: true})
+        dispatch('mpdV1/paiement/' + actionTypesPaiement.EDIT_PRICE_SELECTED, state.priceSelected, {root: true})
 
         let id = response.data.voyages[0].offres[0].operationDistributions[0].id
-        dispatch('mpdV1/Finalisation/' + actionTypesFinalisation.EDIT_OPERATION_DISTRIBUTION_ID, id, {root: true})
+        dispatch('mpdV1/finalisation/' + actionTypesFinalisation.EDIT_OPERATION_DISTRIBUTION_ID, id, {root: true})
 
-        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, false, {root: true})
-        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_PAYMENT_ACTIVE_STEP, true, {root: true})
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
 
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
-
-        router.push({name: 'Paiment'})
+        router.push({name: 'Paiement'})
         dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
-        let response = null
-        dispatch(actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING, false)
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        // let response = {
+        //   data: null,
+        //   status: error.message.split('code')[1]
+        // }
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
         console.log(error, 'Request CTO error')
       })
   },
   [actionTypes.EDIT_COMMANDE_BUTTON_IS_LOADING] ({commit}, boolean) {
     commit(mutationTypes.SET_COMMANDE_BUTTON_IS_LOADING, boolean)
-  },
-  [actionTypes.RETURN_TO_TRAJETS_OFFRES] () {
-    router.push({name: 'TrajetsOffres'})
   },
   [actionTypes.EDIT_PROPOSAL_SELECTED] ({commit}, proposal) {
     commit(mutationTypes.SET_PROPOSAL_SELECTED, proposal)

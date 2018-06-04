@@ -212,14 +212,16 @@ export const mainForm = {
     'Pipeline public',
     'Pipeline mobile',
     'usine1 mpdv2',
-    'usine5 mpdv2'
+    'usine5 mpdv2',
+    'usine4 mpdv2'
   ],
-  environment: 'usine1 mpdv2',
+  environment: 'integ1 public',
   username: 'mpdWEB',
   password: 'mpdWEB',
   currentHealthCheck: null,
   loadingHealthCheck: null,
-  currentEnvVersion: null
+  currentEnvVersion: null,
+  noRulesMode: false
 }
 
 /* mpd-v2 */
@@ -233,7 +235,7 @@ export const servicesMPDV2 = {
   servicePropositions: '/propositions/catalogues/{id}',
   servicePropositionSelected: '/propositions/{idProposition}',
   serviceCreateCommande: '/commandes',
-  serviceFinalCommande: '/commandes/{idCommande}',
+  serviceConsultCommandeInProgress: '/commandes/{idCommande}',
   servicePaiementCommande: '/paiement/commandes/{id}',
   serviceCompteClient: '/comptesclients'
 }

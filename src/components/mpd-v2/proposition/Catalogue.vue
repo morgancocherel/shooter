@@ -12,7 +12,7 @@
           </div>
           <div class="sixteen wide column center aligned navigation-container">
             <router-link class="ui button submit-button back-button" to="/">Retour</router-link>
-            <button class="ui button submit-button submit-proposition" @click="submitProposition" v-bind:class="{ loading: propositionIsLoading }">Suivant</button>
+            <button class="ui button submit-button submit-catalogue" @click="getPropositionsCatalogueSelected" v-bind:class="{ loading: propositionIsLoading }">Suivant</button>
           </div>
         </div>
       </div>
@@ -25,10 +25,10 @@ import Console from '../../console/Console'
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/proposition/proposition-action-types'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Proposition')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV2/proposition')
 
 export default {
-  name: 'Proposition',
+  name: 'proposition',
   components: {Console},
   computed: {
     ...mapState([
@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      'submitProposition': actions.SUBMIT_PROPOSITION,
+      'getPropositionsCatalogueSelected': actions.GET_PROPOSITIONS_CATALOGUE_SELECTED,
       'updateCatalogue': actions.EDIT_CATALOGUE_SELECTED
     })
   }
@@ -90,12 +90,12 @@ export default {
     padding: 2rem 0;
   }
 
-  .submit-proposition {
+  .submit-catalogue {
     background-color: #01C3A7;
   }
 
-  .submit-proposition:hover,
-  .submit-proposition:focus {
+  .submit-catalogue:hover,
+  .submit-catalogue:focus {
     background-color: #01aa91;
     border-color: #01aa91;
     color: #FFF;

@@ -1,71 +1,78 @@
 <template>
-  <div class="ui grid container payment-container">
-    <div class="sixteen wide column left aligned summary-traveler-information">
-      <h3 class="ui header check-your-ticket">Vérifiez votre billet avant le paiement</h3>
-      <p class="traveler-information">L'email de confirmation sera envoyé à <strong>{{ firstname }} {{ lastname }}</strong> à l'adresse
-        <strong>{{ emailTravelerContact }}</strong> juste après le paiement.</p>
-    </div>
-    <div class="sixteen wide column">
-      <div class="ui grid segment main-segment traveler-information-container">
-        <div class="two wide column">
-          <p>{{ proposalSelected.departure_time.value | dateFormat }}</p>
+  <div class="ui grid main-container" data-content="middle-on-hide-console">
+    <div class="eleven wide column payment-container active-console js-site-content">
+      <div class="ui grid">
+        <div class="sixteen wide column left aligned summary-traveler-information">
+          <h3 class="ui header check-your-ticket">Vérifiez votre billet avant le paiement</h3>
+          <p class="traveler-information">L'email de confirmation sera envoyé à <strong>{{ firstname }} {{ lastname }}</strong> à l'adresse
+            <strong>{{ emailTravelerContact }}</strong> juste après le paiement.</p>
         </div>
-        <div class="one wide column">
-          <h5 class="ui header">{{ proposalSelected.departure_time.text }}</h5>
-          <h5 class="ui header">{{ proposalSelected.arrival_time.text }}</h5>
-        </div>
-        <div class="eleven wide column left aligned">
-          <h5 class="ui header">{{ proposalSelected.start_point.label }}</h5>
-          <h5 class="ui header">{{ proposalSelected.end_point.label }}</h5>
-        </div>
-        <div class="two wide column right aligned middle aligned">
-          <span><strong>{{ priceSelected | priceFormat }}</strong></span>
-        </div>
-        <div class="sixteen wide column ticket-information-container">
-          <div class="ui grid segment sub-segment">
-            <div class="one wide column left aligned no-padding-top-bottom no-padding-left">
-              <span>{{ proposalSelected.departure_time.text }}</span>
-              <span>{{ proposalSelected.arrival_time.text }}</span>
+        <div class="sixteen wide column">
+          <div class="ui grid segment main-segment traveler-information-container">
+            <div class="two wide column">
+              <p>{{ proposalSelected.departure_time.value | dateFormat }}</p>
             </div>
-            <div class="four wide column left aligned start-end-point-ticket no-padding-top-bottom">
-              <span>{{ proposalSelected.start_point.label }}</span>
-              <span>{{ proposalSelected.end_point.label }}</span>
+            <div class="one wide column">
+              <h5 class="ui header">{{ proposalSelected.departure_time.text }}</h5>
+              <h5 class="ui header">{{ proposalSelected.arrival_time.text }}</h5>
             </div>
-            <div class="three wide column center aligned middle aligned no-padding-top-bottom">
-              <div class="sncf_logo"></div>
-              <span>{{ proposalSelected.voyage.itineraireAller.segments[0].libelleEquipement }} {{ proposalSelected.voyage.itineraireAller.segments[0].numTrain }}</span>
+            <div class="eleven wide column left aligned">
+              <h5 class="ui header">{{ proposalSelected.start_point.label }}</h5>
+              <h5 class="ui header">{{ proposalSelected.end_point.label }}</h5>
             </div>
-            <div class="two wide column center aligned middle aligned no-padding-top-bottom">
-              <span>2<sup>nde</sup></span>
+            <div class="two wide column right aligned middle aligned">
+              <span><strong>{{ priceSelected | priceFormat }}</strong></span>
             </div>
-            <div class="three wide column center aligned middle aligned no-padding-top-bottom">
-              <span>Placement libre</span>
-            </div>
-            <div class="three wide column center aligned middle aligned no-padding-top-bottom no-pading-right">
-              <span>{{ firstname }} {{ lastname }}</span>
+            <div class="sixteen wide column ticket-information-container">
+              <div class="ui grid segment sub-segment">
+                <div class="one wide column left aligned no-padding-top-bottom no-padding-left">
+                  <span>{{ proposalSelected.departure_time.text }}</span>
+                  <span>{{ proposalSelected.arrival_time.text }}</span>
+                </div>
+                <div class="four wide column left aligned start-end-point-ticket no-padding-top-bottom">
+                  <span>{{ proposalSelected.start_point.label }}</span>
+                  <span>{{ proposalSelected.end_point.label }}</span>
+                </div>
+                <div class="three wide column center aligned middle aligned no-padding-top-bottom">
+                  <div class="sncf_logo"></div>
+                  <span>{{ proposalSelected.voyage.itineraireAller.segments[0].libelleEquipement }} {{ proposalSelected.voyage.itineraireAller.segments[0].numTrain }}</span>
+                </div>
+                <div class="two wide column center aligned middle aligned no-padding-top-bottom">
+                  <span>2<sup>nde</sup></span>
+                </div>
+                <div class="three wide column center aligned middle aligned no-padding-top-bottom">
+                  <span>Placement libre</span>
+                </div>
+                <div class="three wide column center aligned middle aligned no-padding-top-bottom no-pading-right">
+                  <span>{{ firstname }} {{ lastname }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <div class="eight wide column left aligned">
+          <router-link class="ui button submit-button back-button" to="/mpdV1/commande/basket">Retour</router-link>
+        </div>
+        <div class="eight wide column right aligned">
+          <button @click="submitPayment"  class="ui button submit-button submit-payment" v-bind:class="{loading : paymentButtonIsLoading}">Payer {{ priceSelected | priceFormat}}</button>
+        </div>
       </div>
     </div>
-    <div class="eight wide column left aligned">
-      <button class="ui button submit-button back-button" @click="returnToBasket">Retour</button>
-    </div>
-    <div class="eight wide column right aligned">
-      <button @click="submitPayment"  class="ui button submit-button submit-payment" v-bind:class="{loading : paymentButtonIsLoading}">Payer {{ priceSelected | priceFormat}}</button>
-    </div>
+    <console></console>
   </div>
 </template>
 
 <script>
+import $ from 'jquery'
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v1/paiement/paiement-action-types'
 import filters from '../../../mixins/filters'
-
-const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Paiement')
+import Console from '../../console/Console'
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/paiement')
 
 export default {
-  name: 'Paiment',
+  name: 'paiment',
+  components: {Console},
   mixins: [filters],
   computed: {
     ...mapState([
@@ -79,18 +86,41 @@ export default {
   },
   methods: {
     ...mapActions({
-      'submitPayment': actions.SUBMIT_PAYMENT,
-      'returnToBasket': actions.RETURN_TO_BASKET
-    })
+      'submitPayment': actions.SUBMIT_PAYMENT
+    }),
+    setStagePoint: function () {
+      $('.js-stage-point').attr('data-stage', 'paiement')
+    }
+  },
+  mounted () {
+    // Set the stage point
+    this.setStagePoint()
   }
 }
 </script>
 
 <style scoped>
   /* Mutual styles */
-  .payment-container {
-    margin: 40px 0 0 0;
+  .main-container {
+    margin: 0 !important;
+  }
+
+  .container {
     display: inline-flex;
+    margin: 0 !important;
+  }
+
+  .payment-container {
+    padding: 0 !important;
+    margin-top: 40px;
+  }
+
+  .payment-container.active-console {
+    padding-right: 20px !important;
+  }
+
+  .payment-container .ui.grid {
+    margin: 0;
   }
 
   .traveler-information-container {

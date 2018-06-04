@@ -20,7 +20,7 @@ import * as actions from '../../../../store/modules/mpd-v1/devis/devis-action-ty
 import {createNamespacedHelpers} from 'vuex'
 import moment from 'moment'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Devis')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/devis')
 
 export default {
   name: 'departureDate',

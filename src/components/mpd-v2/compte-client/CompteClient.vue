@@ -1,6 +1,6 @@
 <template>
     <div class="ui grid main-container">
-      <div class="eleven wide column client-account-container active-console">
+      <div class="eleven wide column client-account-container active-console js-site-content">
         <h1 class="ui header">Compte client</h1>
         <router-link class="ui button submit-button back-button" to="/">Retour</router-link>
         <button class="ui button submit-button create-account-client" @click="createClientAccount" v-bind:class="{ loading: createAccountClientSubmitIsLoading }">Créer un compte client</button>
@@ -11,14 +11,14 @@
 
 <script>
 import Console from '../../console/Console'
-import {createNamespacedHelpers} from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/compte-client/compte-client-action-types'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV2/CompteClient')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV2/compteClient')
 
 export default {
-  name: 'CompteClient',
-  components: {Console},
+  name: 'compteClient',
+  components: { Console },
   computed: {
     ...mapState([
       'createAccountClientSubmitIsLoading'
@@ -34,7 +34,7 @@ export default {
 
 <style scoped>
   .main-container {
-    margin: 0;
+    margin: 0 !important;
   }
 
   .client-account-container {

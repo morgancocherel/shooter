@@ -55,10 +55,10 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/proposition/proposition-action-types'
 import filters from '../../../mixins/filters'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Proposition')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV2/proposition')
 
 export default {
-  name: 'Proposition',
+  name: 'proposition',
   components: {Console},
   mixins: [filters],
   computed: {
@@ -111,7 +111,7 @@ export default {
 
 <style scoped>
   .main-container {
-    margin: 0;
+    margin: 0 !important;
   }
 
   .proposition-container {
@@ -161,6 +161,11 @@ export default {
     display: inherit;
   }
 
+  .duration-available,
+  .zone {
+    padding: 0 !important;
+  }
+
   /* navigation buttons */
   .submit-button {
     color: #FFF;
@@ -182,17 +187,6 @@ export default {
 
   .navigation-container {
     padding: 2rem 0;
-  }
-
-  .submit-proposition {
-    background-color: #01C3A7;
-  }
-
-  .submit-proposition:hover,
-  .submit-proposition:focus {
-    background-color: #01aa91;
-    border-color: #01aa91;
-    color: #FFF;
   }
 
   /* card ticket */

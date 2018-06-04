@@ -1,14 +1,11 @@
 import * as actionTypes from './devis-action-types'
 import * as mutationTypes from './devis-mutation-types'
 import * as constShooter from '../../../const'
-import { callServiceNoAccountRef } from '../../../../core/main'
-import { addData, getBodyCTO, toDateEntered, getPriceSelected, setOffreSelected, setProposalSelected, setTravelerData } from '../../../../core/devis/index'
+import { trajetsOffres, addData, getPriceSelected, addToBasket, setProposalSelected } from '../../../../core/mpd-v1/devis/index'
 import { formatRequestConsole } from '../../../../core/console/index'
 import router from '../../../../router/index'
 
 import * as actionTypesConsole from '../../console/console-action-types'
-import * as actionTypesFinalisation from '../finalisation/finalisation-action-types'
-import * as actionTypesHeaderTop from '../../header-top/header-top-action-types'
 import * as actionTypesCommande from '../commande/commande-action-types'
 
 const state = {
@@ -140,40 +137,30 @@ const actions = {
   [actionTypes.EDIT_RETURN_FORM] ({commit}, returnForm) {
     commit(mutationTypes.SET_RETURN_FORM, returnForm)
   },
-  [actionTypes.SUBMIT_DEVIS_FORM] ({commit, dispatch, rootState}) {
+  [actionTypes.SUBMIT_DEVIS_FORM] ({commit, dispatch}) {
     commit(mutationTypes.SET_DEVIS_BUTTON_IS_LOADING, true)
-
-    let mainFormState = rootState.MainForm
-
-    // Data required for the CTO Request
-    let method = constShooter.methods.methodPost
-    let service = '/api' + constShooter.servicesMPDV1.serviceCTO
-    let env = mainFormState.environment
-    let contentType = constShooter.contentType.json
-    let username = mainFormState.username
-    let password = mainFormState.password
-    let departureDate = toDateEntered(state.departureDate, state.departureTime)
-    let originTrain = state.originTrain
-    let destinationTrain = state.destinationTrain
-    let travelerData = setTravelerData(state.listTraveler)
-    let body = getBodyCTO(departureDate, travelerData, originTrain, destinationTrain)
-    let idService = 5
-    let versionmpd = constShooter.versionmpd.mpdv1
-
-    callServiceNoAccountRef(method, service, env, contentType, body, username, password, versionmpd)
-      .then((response) => {
-        let proposals = addData(response.data.trajets)
+    trajetsOffres()
+      .then((fullResponse) => {
+        let proposals = addData(fullResponse.response.data.trajets)
         dispatch(actionTypes.EDIT_PROPOSAL_BRUT, proposals)
         dispatch(actionTypes.EDIT_DEFAULT_PROPOSAL_SELECTED, proposals[0])
         dispatch(actionTypes.EDIT_PRICE_SELECTED, proposals[0].proposal)
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
+
+        let body = fullResponse.body
+        let response = fullResponse.response
+        let versionmpd = constShooter.versionmpd.mpdv1
+        let idService = 5
+        dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(response, idService, body, versionmpd), {root: true})
 
         router.push({name: 'TrajetsOffres'})
         commit(mutationTypes.SET_DEVIS_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
-        let response = null
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
+        // let response = {
+        //   data: null,
+        //   status: error.message.split('code')[1]
+        // }
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(response, idService), {root: true})
         console.log(error, 'Request CTO error')
         commit(mutationTypes.SET_DEVIS_BUTTON_IS_LOADING, false)
       })
@@ -208,38 +195,28 @@ const actions = {
   [actionTypes.EDIT_PROPOSAL_SELECTED_DATA] ({commit}, data) {
     commit(mutationTypes.SET_PROPOSAL_SELECTED_DATA, data)
   },
-  [actionTypes.ADD_TO_BASKET] ({commit, dispatch, rootState}) {
+  [actionTypes.ADD_TO_BASKET] ({commit, dispatch}) {
     dispatch(actionTypes.EDIT_DEVIS_BUTTON_IS_LOADING, true)
-
-    let mainFormState = rootState.MainForm
-    let method = constShooter.methods.methodPost
-    let service = '/api' + constShooter.servicesMPDV1.serviceAVOnew
-    let env = mainFormState.environment
-    let contentType = constShooter.contentType.json
-    let username = mainFormState.username
-    let password = mainFormState.password
-    let body = setOffreSelected(state.proposalSelected.voyage, state.proposalSelected.proposal.classSelected)
-    let idService = 7
-    let versionmpd = constShooter.versionmpd.mpdv1
-
-    callServiceNoAccountRef(method, service, env, contentType, body, username, password, versionmpd)
-      .then((response) => {
+    addToBasket()
+      .then((fullResponse) => {
+        let body = fullResponse.body
+        let response = fullResponse.response
+        let versionmpd = constShooter.versionmpd.mpdv1
         let idCommande = response.data.idCommande
-        dispatch('mpdV1/Commande/' + actionTypesCommande.EDIT_ID_COMMANDE, idCommande, {root: true})
-        dispatch('mpdV1/Commande/' + actionTypesCommande.EDIT_PROPOSAL_SELECTED, state.proposalSelected, {root: true})
-        dispatch('mpdV1/Commande/' + actionTypesCommande.EDIT_PRICE_SELECTED, state.priceSelected, {root: true})
-        dispatch('mpdV1/Finalisation/' + actionTypesFinalisation.EDIT_ID_COMMANDE, idCommande, {root: true})
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
-
-        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_DEVIS_ACTIVE_STEP, false, {root: true})
-        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, true, {root: true})
-
+        let idService = 6
+        dispatch('mpdV1/commande/' + actionTypesCommande.EDIT_ID_COMMANDE, idCommande, {root: true})
+        dispatch('mpdV1/commande/' + actionTypesCommande.EDIT_PROPOSAL_SELECTED, state.proposalSelected, {root: true})
+        dispatch('mpdV1/commande/' + actionTypesCommande.EDIT_PRICE_SELECTED, state.priceSelected, {root: true})
+        dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(response, idService, body, versionmpd), {root: true})
         router.push({name: 'Basket'})
         dispatch(actionTypes.EDIT_DEVIS_BUTTON_IS_LOADING, false)
       })
       .catch((error) => {
-        let response = null
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        // let response = {
+        //   data: null,
+        //   status: error.message.split('code')[1]
+        // }
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
         dispatch(actionTypes.EDIT_DEVIS_BUTTON_IS_LOADING, false)
         console.log(error, 'Request AVO error')
       })
@@ -248,7 +225,6 @@ const actions = {
     commit(mutationTypes.SET_DEVIS_BUTTON_IS_LOADING, boolean)
   },
   [actionTypes.EDIT_LIST_TRAVELER] ({commit, dispatch}) {
-    console.log('rrr')
     // dispatch(actionTypes.EDIT_CURRENT_NUM, state.currentNum + 1)
     // commit(mutationTypes.SET_LIST_TRAVELER)
   },

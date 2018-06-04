@@ -40,7 +40,7 @@
           <button class="ui button submit-button back-button" @click="returnToProposition">Retour</button>
         </div>
         <div class="eight wide column right aligned">
-          <button class="ui button submit-button submit-create-order" @click="createNewCommande" v-bind:class="{ loading: propositionIsLoading }">Créer la commande</button>
+          <button class="ui button submit-button submit-create-order" @click="createNewCommande">Créer la commande</button>
         </div>
       </div>
     </div>
@@ -53,11 +53,11 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v2/proposition/proposition-action-types'
 import Console from '../../console/Console'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV2/Proposition')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV2/proposition')
 
 export default {
-  name: 'Proposition',
-  components: { Console },
+  name: 'proposition',
+  components: {Console},
   computed: {
     ...mapState([
       'proposalSelected',

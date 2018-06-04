@@ -24,7 +24,7 @@ import AddPassengerSelect from './add-passenger/AddPassengerSelect'
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../../store/modules/mpd-v1/devis/devis-action-types'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Devis')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/devis')
 
 export default {
   name: 'AddPassenger',
@@ -44,7 +44,7 @@ export default {
 
 <style scoped>
   .add-passenger-container {
-    margin: 0;
+    margin: 0 !important;
   }
 
   .choose-passenger-container {

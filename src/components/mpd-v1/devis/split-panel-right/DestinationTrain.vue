@@ -18,7 +18,7 @@ import $ from 'jquery'
 import * as actions from '../../../../store/modules/mpd-v1/devis/devis-action-types'
 import {createNamespacedHelpers} from 'vuex'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Devis')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/devis')
 
 export default {
   name: 'OriginTrain',

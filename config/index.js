@@ -11,7 +11,8 @@ const platforms = {
   'Pipeline public': 'https://featurempdbuild4488frcmnfct.public.t-mpd.vs.cloud.socrate.vsct.fr',
   'Pipeline mobile': 'https://featurempdbuild4488frcmnfct.mobile.t-mpd.vs.cloud.socrate.vsct.fr',
   'usine1 mpdv2': 'https://usine1.api.mpd.socrate.vsct.fr',
-  'usine5 mpdv2': 'https://usine5.api.mpd.socrate.vsct.fr'
+  'usine5 mpdv2': 'https://usine5.api.mpd.socrate.vsct.fr',
+  'usine4 mpdv2': 'https://usine4.api.mpd.socrate.vsct.fr'
 }
 
 module.exports = {

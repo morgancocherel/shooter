@@ -1,14 +1,12 @@
 import * as mutationTypes from './proposition-mutation-types'
 import * as actionTypes from './proposition-action-types'
 import * as constShooter from '../../../const'
-import { callServiceNoAccountRef, callServiceWithAccountRef } from '../../../../core/main'
-import { getBodyProposition, removeFalseProposal, getBodyCreateCommande } from '../../../../core/mpd-v2/proposition'
-import { formatRequestConsole } from '../../../../core/console'
+import { getProposionsCatalogueSelected, removeFalseProposal, submitPropositionSelected, createNewCommande } from '../../../../core/mpd-v2/proposition'
+// import { formatRequestConsole } from '../../../../core/console'
 import router from '../../../../router'
 
-import * as actionTypesCommande from '../commande/commande-action-types'
-import * as actionTypesConsole from '../../console/console-action-types'
-import * as actionTypesHeaderTop from '../../header-top/header-top-action-types'
+// import * as actionTypesConsole from '../../console/console-action-types'
+import * as actionTypesCommande from '../../mpd-v2/commande/commande-action-types'
 
 const state = {
   listProposition: constShooter.proposition.listProposition,
@@ -66,37 +64,24 @@ const mutations = {
 }
 
 const actions = {
-  [actionTypes.SUBMIT_PROPOSITION] ({dispatch, rootState}) {
+  [actionTypes.GET_PROPOSITIONS_CATALOGUE_SELECTED] ({dispatch}) {
     dispatch(actionTypes.EDIT_PROPOSITION_IS_LOADING, true)
 
-    let mainFormState = rootState.MainForm
+    let cat = state.catalogueSelected
 
-    // Data required for proposition request
-    let method = constShooter.methods.methodPost
-    let service = '/api' + constShooter.servicesMPDV2.servicePropositions.replace(/{id}/i, state.catalogueSelected)
-    let env = mainFormState.environment
-    let contentType = constShooter.contentType.json
-    let username = null
-    let password = null
-    let body = getBodyProposition()
-    let versionmpd = constShooter.versionmpd.mpdv2
-    let idService = 1
-    let xaccountref = rootState.CompteClientMPDV2.referenceExterne
-    let XConsumerCustomID = null
-
-    callServiceWithAccountRef(method, service, env, contentType, body, username, password, versionmpd, xaccountref, XConsumerCustomID)
+    getProposionsCatalogueSelected(cat)
       .then((response) => {
         dispatch(actionTypes.EDIT_LISTE_PROPOSITIONS, removeFalseProposal(response.data.propositions))
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(response, idService, versionmpd), {root: true})
         router.push({name: 'Proposition'})
         dispatch(actionTypes.EDIT_PROPOSITION_IS_LOADING, false)
       })
       .catch((error) => {
-        let response = {
-          data: null,
-          status: error.message.split('code')[1]
-        }
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
+        // let response = {
+        //   data: null,
+        //   status: error.message.split('code')[1]
+        // }
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
         console.log(error, 'Request Proposition error')
         dispatch(actionTypes.EDIT_PROPOSITION_IS_LOADING, false)
       })
@@ -108,79 +93,47 @@ const actions = {
     dispatch(actionTypes.EDIT_ID_PROPOSITION, data.idProposition)
     dispatch(actionTypes.EDIT_QUANTITE, data.amount)
     dispatch(actionTypes.EDIT_TOTAL_AFFICHE, data.priceCalculated)
-    dispatch('mpdV2/Commande/' + actionTypesCommande.EDIT_ID_PROPOSITION, data.idProposition, {root: true})
-    dispatch('mpdV2/Commande/' + actionTypesCommande.EDIT_QUANTITE, data.amount, {root: true})
-    dispatch('mpdV2/Commande/' + actionTypesCommande.EDIT_TOTAL_AFFICHE, data.priceCalculated, {root: true})
 
-    let mainFormState = rootState.MainForm
+    let idProp = state.idProposition
 
-    // Data required for proposition request
-    let method = constShooter.methods.methodGet
-    let service = '/api' + constShooter.servicesMPDV2.servicePropositionSelected.replace(/{idProposition}/i, state.idProposition)
-    let env = mainFormState.environment
-    let contentType = constShooter.contentType.json
-    let username = null
-    let password = null
-    let body = null
-    let versionmpd = constShooter.versionmpd.mpdv2
-    let idService = 2
-    let xaccountref = rootState.CompteClientMPDV2.referenceExterne
-    let XConsumerCustomID = null
-
-    callServiceWithAccountRef(method, service, env, contentType, body, username, password, versionmpd, xaccountref, XConsumerCustomID)
+    submitPropositionSelected(idProp)
       .then((response) => {
         dispatch(actionTypes.EDIT_PROPOSITION_SELECTED, response.data)
         router.push({name: 'PropositionSelected'})
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
       })
       .catch((error) => {
-        let response = {
-          data: state.responseDataError,
-          status: error.message.split('code')[1]
-        }
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
+        // let response = {
+        //   data: state.responseDataError,
+        //   status: error.message.split('code')[1]
+        // }
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService, versionmpd), {root: true})
         console.log(error, 'Request Proposition selected error')
+      })
+  },
+  [actionTypes.CREATE_NEW_COMMANDE] ({dispatch}) {
+    let idProposition = state.idProposition
+    let quantite = state.quantite
+    let totalAffiche = state.totalAffiche
+
+    createNewCommande(idProposition, quantite, totalAffiche)
+      .then((response) => {
+        dispatch('mpdV2/commande/' + actionTypesCommande.EDIT_ID_COMMANDE, response.data.idCommande, {root: true})
+        router.push({name: 'Commande'})
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(response, idService), {root: true})
+      })
+      .catch((error) => {
+        // let response = {
+        //   data: state.responseDataError,
+        //   status: error.message.split('code')[1]
+        // }
+        // dispatch('console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
+        console.log(error, 'Erreur lors de la création de la commande')
+        // dispatch(actionTypes.EDIT_MESSAGE, error.message)
       })
   },
   [actionTypes.EDIT_PROPOSITION_SELECTED] ({commit}, prop) {
     commit(mutationTypes.SET_PROPOSITION_SELECTED, prop)
-  },
-  [actionTypes.CREATE_NEW_COMMANDE] ({dispatch, rootState}) {
-    dispatch(actionTypes.EDIT_PROPOSITION_IS_LOADING, true)
-
-    let mainFormState = rootState.MainForm
-
-    // Data required for create commande request
-    let method = constShooter.methods.methodPost
-    let service = '/api' + constShooter.servicesMPDV2.serviceCreateCommande
-    let env = mainFormState.environment
-    let contentType = constShooter.contentType.json
-    let username = null
-    let password = null
-    let body = getBodyCreateCommande(state.idProposition, state.quantite, state.totalAffiche)
-    let versionmpd = constShooter.versionmpd.mpdv2
-    let idService = 3
-    let xaccountref = rootState.CompteClientMPDV2.referenceExterne
-    let XConsumerCustomID = null
-
-    callServiceNoAccountRef(method, service, env, contentType, body, username, password, versionmpd, xaccountref, XConsumerCustomID)
-      .then((response) => {
-        dispatch('mpdV2/Commande/' + actionTypesCommande.EDIT_ID_COMMANDE, response.data.idCommande, {root: true})
-        router.push({name: 'Commande'})
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
-        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_DEVIS_ACTIVE_STEP, false, {root: true})
-        dispatch('HeaderTop/' + actionTypesHeaderTop.EDIT_COMMANDE_ACTIVE_STEP, true, {root: true})
-        dispatch(actionTypes.EDIT_PROPOSITION_IS_LOADING, false)
-      })
-      .catch((error) => {
-        let response = {
-          data: state.responseDataError,
-          status: error.message.split('code')[1]
-        }
-        dispatch('Console/' + actionTypesConsole.EDIT_ADD_REQUEST_TO_CONSOLE, formatRequestConsole(method, service, env, body, response, idService), {root: true})
-        dispatch(actionTypes.EDIT_MESSAGE, error.message)
-        dispatch(actionTypes.EDIT_PROPOSITION_IS_LOADING, false)
-      })
   },
   [actionTypes.EDIT_ID_PROPOSITION] ({commit}, id) {
     commit(mutationTypes.SET_ID_PROPOSITION, id)

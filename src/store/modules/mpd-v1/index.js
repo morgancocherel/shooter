@@ -1,14 +1,14 @@
-import Devis from './devis'
-import Commande from './commande'
-import Paiement from './paiement'
-import Finalisation from './finalisation'
+import devis from './devis'
+import commande from './commande'
+import paiement from './paiement'
+import finalisation from './finalisation'
 
 export default{
   namespaced: true,
   modules: {
-    Devis,
-    Commande,
-    Paiement,
-    Finalisation
+    devis,
+    commande,
+    paiement,
+    finalisation
   }
 }

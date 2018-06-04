@@ -13,8 +13,8 @@
         </div>
         <div class="fourteen wide column request-console-container js-request-console-container">
           <div class="ui grid method-service-container">
-            <div class="two wide column method-request">
-              <h5 class="ui header js-method-request" :method="req.requestSent.method">{{ req.requestSent.method }}</h5>
+            <div class="two wide column method-request" :method="req.requestSent.method">
+              <h5 class="ui header js-method-request">{{ req.requestSent.method }}</h5>
             </div>
             <div class="fourteen wide column left aligned service-request">
               <span>{{ req.requestSent.service }}</span>
@@ -24,15 +24,15 @@
             <div class="sixteen wide column left aligned no-padding-left request-title js-request-title" v-bind:class="{ active: req.requestSent.body !== null }">
               <h4 class="ui header">Requête</h4>
             </div>
-            <div class="sixteen wide column left aligned no-padding-left no-padding-right request-sent-data js-scroll-bar" v-bind:class="{ active: req.requestSent.body !== null }">
-              <div class="ui grid js-request-sent-data">
+            <div class="sixteen wide column left aligned request-sent-data js-request-sent-data js-scroll-bar" v-bind:class="{ active: req.requestSent.body !== null }">
+              <div class="ui grid">
                 <div class="sixteen wide column right aligned buttons-json">
                   <a @click="inputChangeViewData" class="js-input-json-view">Json</a>
                   <a @click="inputChangeViewData" class="js-input-formated-view">Formaté</a>
                 </div>
                 <div class="sixteen wide column input-content-json">
-                    <vue-json-pretty :data="req.requestSent.body" :options="{maxDepth: 3}" class="js-input-json-data input-json-data active"></vue-json-pretty>
-                    <tree-view :data="req.requestSent.body" :options="{maxDepth: 10}" class="js-input-formated-data input-formated-data"></tree-view>
+                  <vue-json-pretty :data="req.requestSent.body" :options="{maxDepth: 3}" class="js-input-json-data input-json-data active"></vue-json-pretty>
+                  <tree-view :data="req.requestSent.body" :options="{maxDepth: 10}" class="js-input-formated-data input-formated-data"></tree-view>
                 </div>
               </div>
             </div>
@@ -40,13 +40,13 @@
               <h4 class="ui header">Réponse</h4>
             </div>
             <div class="sixteen wide column left aligned no-padding-left response-status">
-              <h5 class="ui header left aligned status-message-request">
-                <i class="circle icon js-status" :status="req.responseReceived.status"></i>
+              <h5 class="ui header left aligned status-message-request" :status="req.responseReceived.status">
+                <i class="circle icon js-status"></i>
                 {{ req.responseReceived.status }} {{ req.requestSent.serviceDescription }}
               </h5>
             </div>
-            <div class="sixteen wide column left aligned no-padding-left no-padding-right response-received-data js-scroll-bar">
-              <div class="ui grid js-response-received-data">
+            <div class="sixteen wide column left aligned response-received-data js-response-received-data js-scroll-bar">
+              <div class="ui grid">
                 <div class="sixteen wide column right aligned buttons-json">
                   <a @click="outputChangeViewData" class="js-output-json-view">Json</a>
                   <a @click="outputChangeViewData" class="js-ouput-formated-view">Formaté</a>
@@ -71,10 +71,10 @@ import VueJsonPretty from 'vue-json-pretty'
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../store/modules/console/console-action-types'
 
-const {mapState, mapActions} = createNamespacedHelpers('Console')
+const {mapState, mapActions} = createNamespacedHelpers('console')
 
 export default {
-  name: 'Console',
+  name: 'console',
   computed: {
     ...mapState(['allRequest', 'active'])
   },
@@ -85,17 +85,6 @@ export default {
     ...mapActions({
       'clearAllRequest': actions.CLEAR_ALL_REQUEST
     }),
-    setColor: function () {
-      $('.js-method-request').each(function () {
-        let methodType = $(this).attr('method') === 'post' ? 'post' : 'get'
-        $(this).addClass('method-' + methodType)
-      })
-
-      $('.js-status').each(function () {
-        let statusType = $(this).attr('status') === '200' || $(this).attr('status') === '201' ? 'green' : 'red'
-        $(this).addClass('status-' + statusType)
-      })
-    },
     verifyActiveRequest: function () {
       $('.js-request-response-data-container').each(function () {
         let status = $(this).attr('active')
@@ -154,8 +143,6 @@ export default {
       currentRequest.getAttribute('active') ? currentRequest.setAttribute('active', false) : currentRequest.setAttribute('active', true)
       currentRequest.classList.toggle('active')
       currentPlusIcon.classList.toggle('active')
-
-      this.checkHeightViewData()
     },
     checkHeightViewData: function () {
       $('.js-response-received-data').height() > 600 ? $('.js-response-received-data').css('padding', '0 0 20px 20px') : $('.js-response-received-data').css('padding', '0 20px 20px 20px')
@@ -163,9 +150,8 @@ export default {
     }
   },
   updated () {
-    this.setColor()
     this.verifyActiveRequest()
-    this.checkHeightViewData()
+    // this.checkHeightViewData()
 
     // Remove dotted line from vue json pretty
     $('.vjs__tree__content').css('border-left', 'none')
@@ -173,12 +159,13 @@ export default {
     $('.js-scroll-bar').mCustomScrollbar()
   },
   mounted () {
-    this.setColor()
     this.verifyActiveRequest()
     // this.checkHeightViewData()
 
     // Remove dotted line from vue json pretty
     $('.vjs__tree__content').css('border-left', 'none')
+
+    $('.js-scroll-bar').mCustomScrollbar()
   }
 }
 </script>
@@ -216,7 +203,7 @@ export default {
   }
 
   .all-request-container {
-    margin: 30px 0;
+    margin: 30px 0 !important;
   }
 
   .main-all-request-container {
@@ -230,7 +217,7 @@ export default {
   .method-service-container {
     padding: 10px 5px 10px 20px !important;
     background-color: #222d32;
-    margin: 0;
+    margin: 0 !important;
   }
 
   .request-response-data-container {
@@ -239,7 +226,7 @@ export default {
   }
 
   .console-container .request-console-container:first-child {
-    margin: 0;
+    margin: 0 !important;
   }
 
   .method-request,
@@ -256,11 +243,11 @@ export default {
     color: #FFF;
   }
 
-  .method-post {
+  .method-request[method='post'] {
     background-color: #248fb2;
   }
 
-  .method-get {
+  .method-request[method='get'] {
     background-color: #6bbd5b;
   }
 
@@ -287,7 +274,6 @@ export default {
     font-weight: 300;
     color: #263238;
     font-weight: 300;
-    display: inline;
     float: left;
   }
 
@@ -295,22 +281,11 @@ export default {
     font-size: 5px !important;
     margin-right: 5px !important;
     display: inline-table !important;
-  }
-
-  .status-green {
-    color: #00aa13;
-  }
-
-  .status-red {
     color: #e53935;
   }
 
-  .no-padding-left {
-    padding-left: 0 !important;
-  }
-
-  .no-padding-right {
-    padding-right: 0 !important;
+  .status-message-request[status='200'] i{
+    color: #00aa13;
   }
 
   .request-title {
@@ -318,26 +293,19 @@ export default {
     display: none !important;
   }
 
-  .request-sent-data {
-    display: none !important;
-  }
-
   .response-received-data,
   .request-sent-data {
     background-color: #222d32;
-    padding: 0 !important;
     max-height: 600px;
     overflow-x: hidden;
     overflow-y: hidden;
+    padding: 2px 0 20px 20px !important;
   }
 
   .response-received-data .ui.grid,
   .request-sent-data .ui.grid {
-    margin: 0;
-  }
-
-  .response-received-data .ui.grid {
-    padding: 0 20px 20px 20px;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .output-content-json,
@@ -346,7 +314,7 @@ export default {
   }
 
   .buttons-json {
-    padding: 10px 0 0 0 !important;
+    padding: 0 !important;
   }
 
   .buttons-json a {
@@ -371,19 +339,11 @@ export default {
     padding: 5px 0 15px 0 !important;
   }
 
-  .response-received-data {
-    padding: 0 !important;
-  }
-
   .output-json-data,
   .output-formated-data,
   .input-json-data,
   .input-formated-data {
     display: none;
-  }
-
-  .reduce-padding-top {
-    padding-top: 20px !important;
   }
 
   /* plus icon */

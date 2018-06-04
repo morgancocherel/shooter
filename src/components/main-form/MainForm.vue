@@ -17,7 +17,7 @@
       <div class="ten wide column left aligned">
         <label>Environnement</label>
         <select class="ui dropdown fluid env-select" title="environment" @input="updateEnv">
-          <option v-for="env in allEnvironments" :value="env" :key="env">{{ env }}</option>
+          <option v-for="env in allEnvironments" :value="env" :key="env" :selected="env === environment">{{ env }}</option>
         </select>
       </div>
       <div class="six wide column center aligned middle aligned current-health-check-container">
@@ -43,10 +43,10 @@ import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../store/modules/main-form/main-form-action-types'
 import $ from 'jquery'
 
-const {mapState, mapActions} = createNamespacedHelpers('MainForm')
+const {mapState, mapActions} = createNamespacedHelpers('mainForm')
 
 export default {
-  name: 'MainForm',
+  name: 'mainForm',
   computed: {
     ...mapState([
       'allEnvironments',

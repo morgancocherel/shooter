@@ -1,29 +1,36 @@
 <template>
-  <div class="ui grid container final-commande-container">
-    <div class="sixteen wide column left aligned">
-      <h3 class="ui header">Résultat du paiement</h3>
-      <p class="sub-travel-information-reminder">
-        Un email récapitulatif de confirmation sera envoyé à <strong>{{ firstname }} {{ lastname }}</strong>
-        à l'adresse suivante: <strong>{{ emailTravelerContact }}</strong>
-      </p>
+  <div class="ui grid main-container" data-content="middle-on-hide-console">
+    <div class="eleven wide column final-payment-container active-console js-site-content">
+      <div class="ui grid">
+        <div class="sixteen wide column left aligned">
+          <h3 class="ui header">Résultat du paiement</h3>
+          <p class="sub-travel-information-reminder">
+            Un email récapitulatif de confirmation sera envoyé à <strong>{{ firstname }} {{ lastname }}</strong>
+            à l'adresse suivante: <strong>{{ emailTravelerContact }}</strong>
+          </p>
+        </div>
+        <div class="eight wide column left aligned">
+          <router-link class="ui button submit-button back-button" to="/mpdV1/finalisation/finTransaction">Annuler la commande</router-link>
+        </div>
+        <div class="eight wide column right aligned">
+          <button @click="submitFinalisation"  class="ui button submit-button submit-finalisation" v-bind:class="{ loading: finalisationButtonIsLoading }">Terminer</button>
+        </div>
+      </div>
     </div>
-    <div class="eight wide column left aligned">
-      <button class="ui button submit-button back-button" @click="returnToFinalOperation">Annuler la commande</button>
-    </div>
-    <div class="eight wide column right aligned">
-      <button @click="submitFinalisation"  class="ui button submit-button submit-finalisation" v-bind:class="{ loading: finalisationButtonIsLoading }">Terminer</button>
-    </div>
+    <console></console>
   </div>
 </template>
 
 <script>
 import {createNamespacedHelpers} from 'vuex'
 import * as actions from '../../../store/modules/mpd-v1/finalisation/finalisation-action-types'
+import Console from '../../console/Console'
 
-const {mapState, mapActions} = createNamespacedHelpers('mpdV1/Finalisation')
+const {mapState, mapActions} = createNamespacedHelpers('mpdV1/finalisation')
 
 export default {
-  name: 'Finalisation',
+  name: 'finalisation',
+  components: {Console},
   computed: {
     ...mapState([
       'finalisationButtonIsLoading',
@@ -34,16 +41,38 @@ export default {
   },
   methods: {
     ...mapActions({
-      'submitFinalisation': actions.SUBMIT_FINALISATION,
-      'returnToFinalOperation': actions.RETURN_TO_FINAL_PAYMENT
+      'submitFinalisation': actions.SUBMIT_FINALISATION
     })
   }
 }
 </script>
 
 <style scoped>
+  /* Mutual styles */
+  .main-container {
+    margin: 0 !important;
+  }
+
+  .container {
+    display: inline-flex;
+    margin: 0 !important;
+  }
+
+  .final-payment-container {
+    padding: 0 !important;
+    margin-top: 40px;
+  }
+
+  .final-payment-container.active-console {
+    padding-right: 20px !important;
+  }
+
+  .final-payment-container .ui.grid {
+    margin: 0;
+  }
+
   /* Navigation buttons */
-  .final-commande-container {
+  .final-payment-container {
     margin: 40px 0 0 0;
     display: inline-flex;
   }

@@ -46,7 +46,6 @@ const mutations = {
 
 const actions = {
   [actionTypes.EDIT_ENV] ({commit, dispatch}, environment) {
-    console.log(environment.target)
     let env = environment.target.value
     commit(mutationTypes.SET_ENV, env)
     // dispatch(actionTypes.SEND_HEALTH_CHECK, env)

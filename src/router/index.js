@@ -16,6 +16,7 @@ import CompteClient from '@/components/mpd-v2/compte-client/CompteClient'
 import PropositionSelected from '@/components/mpd-v2/proposition/PropositionSelected'
 import Commande from '@/components/mpd-v2/commande/Commande'
 import FinalCommandeMPDV2 from '@/components/mpd-v2/commande/FinalCommande'
+import PaiementMPDV2 from '@/components/mpd-v2/paiement/Paiement'
 
 /*eslint-disable */
 import '../plugins/jquery'
@@ -24,7 +25,6 @@ import '../plugins/semantic-ui'
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
   routes: [
     {
       path: '/',
@@ -47,7 +47,7 @@ export default new Router({
           component: TrajetsOffres
         },
         {
-          path: 'commande',
+          path: 'commande/basket',
           name: 'Basket',
           component: Basket
         },
@@ -107,6 +107,11 @@ export default new Router({
           path: 'commandes/finCommande',
           name: 'FinalCommandeMPDV2',
           component: FinalCommandeMPDV2
+        },
+        {
+          path: 'paiement',
+          name: 'PaiementMPDV2',
+          component: PaiementMPDV2
         }
       ]
     },
