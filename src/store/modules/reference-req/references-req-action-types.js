@@ -1,1 +1,0 @@
-export const GET_REFERENCES = 'GET_REFERENCES'

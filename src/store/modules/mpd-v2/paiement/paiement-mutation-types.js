@@ -1,0 +1,1 @@
+export const SET_URL_IHM_PAIEMENT = 'SET_URL_IHM_PAIEMENT'

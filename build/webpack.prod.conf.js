@@ -18,7 +18,7 @@ const env = process.env.NODE_ENV === 'testing'
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,
+      sourceMap: false,
       extract: true,
       usePostCSS: true
     })
@@ -40,7 +40,7 @@ const webpackConfig = merge(baseWebpackConfig, {
           warnings: false
         }
       },
-      sourceMap: config.build.productionSourceMap,
+      sourceMap: false,
       parallel: true
     }),
     // extract css into its own file

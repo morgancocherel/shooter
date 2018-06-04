@@ -1,1 +1,0 @@
-export const SET_REFERENCES = 'SET_REFERENCES'
